@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "TabClip",
+  "version": "1.0.0",
+  "description": "Use TabClip to store your tabs",
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "TabClip",
+    "default_icon": "icon.png"
+  },
+  "icons": {
+    "32": "icon.png"
+  },
+  "options_page": "tabclip.html"
+}
