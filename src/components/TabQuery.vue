@@ -2,7 +2,6 @@
 import {ref} from "vue";
 
 interface Tab {
-  id: number
   title: string
   url: string
 }

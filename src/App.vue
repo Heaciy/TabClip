@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// import TabGroup from '@/components/TabGroup.vue';
-import TabQuery from "@/components/TabQuery.vue";
+// import TabQuery from "@/components/TabQuery.vue";
+import TabGroupList from "@/components/TabGroupList.vue";
 import {onMounted} from "vue";
 
 const pinTab = (tab: chrome.tabs.Tab) => {
@@ -24,13 +24,12 @@ onMounted(() => {
       }
     })
   })
-
 })
 </script>
 
 <template>
-  <!--  <TabGroup></TabGroup>-->
-  <TabQuery></TabQuery>
+  <!--  <TabQuery></TabQuery>-->
+  <TabGroupList></TabGroupList>
 </template>
 
 <style scoped>

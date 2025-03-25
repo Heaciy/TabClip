@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-chrome.action.onClicked.addListener(() => {
+chrome.action.onClicked.addListener(async () => {
     chrome.tabs.query({}, (tabs) => {
         const extensionId = chrome.runtime.id;
         const extensionTab = tabs.find(tab => tab.url?.includes(extensionId));
@@ -70,7 +70,7 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     }
 ];
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener(async () => {
     contextMenus.forEach((menu) => {
         chrome.contextMenus.create(menu);
     });
