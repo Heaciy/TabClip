@@ -1,13 +1,13 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import {resolve} from 'path'
-import tailwind from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
 import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 export default defineConfig({
     plugins: [
         vue(),
+        tailwindcss(),
         viteStaticCopy({
             targets: [
                 {src: 'manifest.json', dest: './'}
@@ -21,11 +21,6 @@ export default defineConfig({
             }
         }
     ],
-    css: {
-        postcss: {
-            plugins: [tailwind(), autoprefixer()],
-        },
-    },
     build: {
         rollupOptions: {
             input: {

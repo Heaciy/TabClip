@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import TabQuery from "@/components/TabQuery.vue";
 import TabGroupList from "@/components/TabGroupList.vue";
 import {onMounted} from "vue";
 
@@ -28,7 +27,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <!--  <TabQuery></TabQuery>-->
   <TabGroupList></TabGroupList>
 </template>
 
