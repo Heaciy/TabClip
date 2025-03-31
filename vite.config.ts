@@ -41,6 +41,7 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: true,
         copyPublicDir: true,
+        minify: false,
     },
     resolve: {
         alias: {

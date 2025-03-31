@@ -1,18 +1,5 @@
 /// <reference types="chrome"/>
-chrome.action.onClicked.addListener(async () => {
-    chrome.tabs.query({}, (tabs) => {
-        const extensionId = chrome.runtime.id;
-        const extensionTab = tabs.find(tab => tab.url?.includes(extensionId));
-        if (extensionTab) {
-            chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
-            chrome.tabs.move(extensionTab.id!, {index: 0});
-            chrome.windows.update(extensionTab.windowId, {focused: true});
-            // TODO: 切换到对应的窗口上
-        } else {
-            chrome.tabs.create({url: 'tabclip.html', index: 0, pinned: true});
-        }
-    });
-});
+import { db } from "./database";
 
 const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
@@ -106,7 +93,7 @@ function addTabAndWindowListener(call: () => void) {
 
 // @ts-ignore
 function updateContextMenu(menuId: string, enabled: boolean) {
-    chrome.contextMenus.update(menuId, {enabled});
+    chrome.contextMenus.update(menuId, { enabled });
 }
 
 function isExtensionTab(tab: chrome.tabs.Tab): boolean {
@@ -121,27 +108,31 @@ function checkPinTab(tab: chrome.tabs.Tab): boolean {
     return !tab.pinned || storePinnedTabs;
 }
 
+function isTabAddable(tab: chrome.tabs.Tab): boolean {
+    return !isExtensionTab(tab) && checkPinTab(tab);
+}
+
 // @ts-ignore
 function updateAllContextMenu() {
     chrome.windows.getLastFocused((window: chrome.windows.Window) => {
         if (!window) return;
 
-        chrome.tabs.query({windowId: window.id}, (tabs) => {
+        chrome.tabs.query({ windowId: window.id }, (tabs) => {
             const activeTab = tabs.find(tab => tab.active);
             if (!tabs || !activeTab) return;
 
             const sendCurrentTabMenuEnabled = !isExtensionTab(activeTab);
             const sendTabsExceptThisMenuEnabled = tabs.some(tab => {
-                return tab.id !== activeTab.id && !isExtensionTab(tab) && checkPinTab(tab);
+                return tab.id !== activeTab.id && isTabAddable(tab);
             });
             const sendTabsToTheLeftMenuEnabled = tabs.some(tab => {
-                return tab.index < activeTab.index && !isExtensionTab(tab) && checkPinTab(tab);
+                return tab.index < activeTab.index && isTabAddable(tab);
             });
             const sendTabsToTheRightMenuEnabled = tabs.some(tab => {
-                return tab.index > activeTab.index && !isExtensionTab(tab) && checkPinTab(tab);
+                return tab.index > activeTab.index && isTabAddable(tab);
             });
             const sendAllTabsInCurrentWindowMenuEnabled = tabs.some((tab) => {
-                return !isExtensionTab(tab) && checkPinTab(tab);
+                return isTabAddable(tab);
             });
 
             chrome.tabs.query({}, (tabs) => {
@@ -163,3 +154,55 @@ function updateAllContextMenu() {
 }
 
 addTabAndWindowListener(updateAllContextMenu);
+
+class TabGroupManager {
+    async sendCurrentTab(tab: chrome.tabs.Tab) {
+        console.log(tab);
+        // 默认在菜单中已经检查过了是否可以操作
+        await db.addTab(tab)
+    }
+
+    async sendAllTabsInCurrentWindow(tab: chrome.tabs.Tab) {
+        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const tabsToAdd = storePinnedTabs ? allTabs : allTabs.filter(tab => isTabAddable(tab));
+        await db.addTabGroup({ tabs_meta: tabsToAdd })
+        // TODO: 关闭相关的窗口
+    }
+
+    async sendAllTabsInAllWindows(tab: chrome.tabs.Tab) {
+        console.log(tab);
+    }
+}
+
+const tabGroupManager = new TabGroupManager();
+
+// 点击扩展按钮的事件
+chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
+    console.log(tab)
+    chrome.tabs.query({}, (tabs) => {
+        const extensionId = chrome.runtime.id;
+        const extensionTab = tabs.find(tab => tab.url?.includes(extensionId));
+        if (extensionTab) {
+            chrome.tabs.update(extensionTab.id!, { active: true, pinned: true });
+            chrome.tabs.move(extensionTab.id!, { index: 0 });
+            chrome.windows.update(extensionTab.windowId, { focused: true });
+            // TODO: 切换到对应的窗口上
+        } else {
+            chrome.tabs.create({ url: 'tabclip.html', index: 0, pinned: true });
+        }
+    });
+    await tabGroupManager.sendAllTabsInCurrentWindow(tab);
+});
+// chrome.action.onClicked.addListener(async (tab) => await tabGroupManager.sendAllTabsInCurrentWindow(tab));
+
+const contextMenuHandlerMap = {
+    sendCurrentTabMenu: async (_info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => await tabGroupManager.sendCurrentTab(tab),
+    sendAllTabsInCurrentWindowMenu: async (_info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => await tabGroupManager.sendAllTabsInCurrentWindow(tab),
+    sendAllTabsInAllWindowsMenu: async (_info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => await tabGroupManager.sendAllTabsInAllWindows(tab),
+}
+chrome.contextMenus.onClicked.addListener(async (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
+    console.log("onClicked");
+    const menuId = info.menuItemId;
+    const handler = Object.entries(contextMenuHandlerMap).find(([key]) => key === menuId)?.[1];
+    (handler && tab) ? await handler(info, tab) : console.log(`no action matched for menuItemId: ${menuId}`);
+})
