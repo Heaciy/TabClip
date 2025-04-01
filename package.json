@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/vue": "^4.3.0",
     "@tailwindcss/vite": "^4.0.17",
+    "date-fns": "^4.1.0",
     "dexie": "^4.0.11",
     "vue": "^3.5.13"
   },
