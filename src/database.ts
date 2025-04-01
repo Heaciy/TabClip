@@ -33,6 +33,7 @@ class TabGroupDatabase extends Dexie {
 
     /** 添加 TabGroup */
     async addTabGroup(tabGroup: TabGroup) {
+        if (!tabGroup.tabs_meta?.length) return;
         return this.tabGroups.add({
             ...tabGroup,
             id: tabGroup.id || crypto.randomUUID(),
@@ -47,6 +48,7 @@ class TabGroupDatabase extends Dexie {
     /** 添加 Tab */
     async addTab(tab: Tab) {
         let latestTabGroup = await this.tabGroups.orderBy("create_time").reverse().first();
+        console.log(latestTabGroup);
         if (!latestTabGroup) {
             await this.addTabGroup({ tabs_meta: [tab] });
         } else {
@@ -75,7 +77,7 @@ class TabGroupDatabase extends Dexie {
 
     /** 查询所有 TabGroup */
     async getAllTabGroups(): Promise<TabGroup[]> {
-        const rawData = await this.tabGroups.toArray();
+        const rawData = await this.tabGroups.orderBy("create_time").reverse().toArray();
         return rawData.map((data) => ({
             ...data,
             tabs_meta: JSON.parse(data.tabs_meta),

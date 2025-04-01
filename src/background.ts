@@ -1,5 +1,5 @@
 /// <reference types="chrome"/>
-import { db } from "./database";
+import {db} from "./database";
 
 const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
@@ -93,7 +93,7 @@ function addTabAndWindowListener(call: () => void) {
 
 // @ts-ignore
 function updateContextMenu(menuId: string, enabled: boolean) {
-    chrome.contextMenus.update(menuId, { enabled });
+    chrome.contextMenus.update(menuId, {enabled});
 }
 
 function isExtensionTab(tab: chrome.tabs.Tab): boolean {
@@ -117,7 +117,7 @@ function updateAllContextMenu() {
     chrome.windows.getLastFocused((window: chrome.windows.Window) => {
         if (!window) return;
 
-        chrome.tabs.query({ windowId: window.id }, (tabs) => {
+        chrome.tabs.query({windowId: window.id}, (tabs) => {
             const activeTab = tabs.find(tab => tab.active);
             if (!tabs || !activeTab) return;
 
@@ -157,16 +157,16 @@ addTabAndWindowListener(updateAllContextMenu);
 
 class TabGroupManager {
     async sendCurrentTab(tab: chrome.tabs.Tab) {
-        console.log(tab);
         // 默认在菜单中已经检查过了是否可以操作
         await db.addTab(tab)
+        await chrome.tabs.remove(tab.id!);
     }
 
     async sendAllTabsInCurrentWindow(tab: chrome.tabs.Tab) {
-        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
         const tabsToAdd = storePinnedTabs ? allTabs : allTabs.filter(tab => isTabAddable(tab));
-        await db.addTabGroup({ tabs_meta: tabsToAdd })
-        // TODO: 关闭相关的窗口
+        await db.addTabGroup({tabs_meta: tabsToAdd});
+        await chrome.tabs.remove(tabsToAdd.map(tab => tab.id!));
     }
 
     async sendAllTabsInAllWindows(tab: chrome.tabs.Tab) {
@@ -178,22 +178,20 @@ const tabGroupManager = new TabGroupManager();
 
 // 点击扩展按钮的事件
 chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
-    console.log(tab)
+    await tabGroupManager.sendAllTabsInCurrentWindow(tab);
     chrome.tabs.query({}, (tabs) => {
         const extensionId = chrome.runtime.id;
         const extensionTab = tabs.find(tab => tab.url?.includes(extensionId));
         if (extensionTab) {
-            chrome.tabs.update(extensionTab.id!, { active: true, pinned: true });
-            chrome.tabs.move(extensionTab.id!, { index: 0 });
-            chrome.windows.update(extensionTab.windowId, { focused: true });
-            // TODO: 切换到对应的窗口上
+            chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
+            chrome.tabs.move(extensionTab.id!, {index: 0});
+            chrome.windows.update(extensionTab.windowId, {focused: true});
+            chrome.runtime.sendMessage(extensionId, {event: "TabGroupUpdate"})
         } else {
-            chrome.tabs.create({ url: 'tabclip.html', index: 0, pinned: true });
+            chrome.tabs.create({url: 'tabclip.html', index: 0, pinned: true});
         }
     });
-    await tabGroupManager.sendAllTabsInCurrentWindow(tab);
 });
-// chrome.action.onClicked.addListener(async (tab) => await tabGroupManager.sendAllTabsInCurrentWindow(tab));
 
 const contextMenuHandlerMap = {
     sendCurrentTabMenu: async (_info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => await tabGroupManager.sendCurrentTab(tab),
