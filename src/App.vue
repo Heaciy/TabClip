@@ -13,7 +13,7 @@ onMounted(() => {
   chrome.tabs.getCurrent(currentTab => {
     chrome.tabs.query({}, (tabs) => {
       if (currentTab) {
-        const extensionTab = tabs.find(tab => tab.url?.includes(extensionId) && tab.id !== currentTab?.id);
+        const extensionTab = tabs.find(tab => tab.url?.includes(`chrome-extension://${extensionId}`) && tab.id !== currentTab?.id);
         if (extensionTab) {
           pinTab(extensionTab);
           chrome.tabs.remove(currentTab.id!);
