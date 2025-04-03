@@ -178,15 +178,15 @@ class TabGroupManager {
     }
 
     sendAllTabsInCurrentWindow = async (tab: chrome.tabs.Tab) => {
+        redirectToExtensionPage();
         const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
         await this.addTabs(allTabs);
-        redirectToExtensionPage();
     }
 
     sendAllTabsInAllWindows = async (_tab: chrome.tabs.Tab) => {
+        redirectToExtensionPage();
         const allTabs = await chrome.tabs.query({});
         await this.addTabs(allTabs);
-        redirectToExtensionPage();
     }
 
     sendTabsToTheLeft = async (tab: chrome.tabs.Tab) => {
