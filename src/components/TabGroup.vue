@@ -12,9 +12,9 @@ const updateGroup = async (tabGroup: TabGroup) => {
 }
 
 function handleLinkClick(index: number) {
-    setTimeout(() => {
-        emits('remove-tab', index);
-    }, 100);
+    const tab = props.tabGroup.tabs_meta[index];
+    chrome.tabs.create({ url: tab.url });
+    emits('remove-tab', index);
 }
 
 async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
@@ -31,6 +31,11 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
         emits('remove-group');
     }
 
+}
+
+async function copyTabGroup(tabGroup: TabGroup) {
+    const text = tabGroup.tabs_meta.map(tab => `${tab.title}\n${tab.url}`).join('\n\n');
+    await navigator.clipboard.writeText(text);
 }
 </script>
 
@@ -54,6 +59,9 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
             <button @click="openTabGroup(tabGroup)">
                 <Icon icon="radix-icons:open-in-new-window"></Icon>
             </button>
+            <button @click="copyTabGroup(tabGroup)">
+                <Icon icon="radix-icons:copy"></Icon>
+            </button>
         </div>
         <div v-for="(tab, index) in props.tabGroup.tabs_meta" class="flex items-center group gap-2">
             <button @click="$emit('remove-tab', index)"
@@ -62,7 +70,7 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
                 <Icon icon="radix-icons:cross-2" class="h-4 w-4" />
             </button>
             <TabIcon :tab-url="tab.url"></TabIcon>
-            <a @click="handleLinkClick(index)" :href="tab.url" target="_blank"
+            <a @click.prevent="handleLinkClick(index)" :href="tab.url"
                 class="text-sm text-nowrap overflow-hidden text-ellipsis">{{ tab.title }}</a>
         </div>
     </div>
