@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { format } from "date-fns";
 import { Icon } from '@iconify/vue';
+import { Button } from "@/components/ui/button";
 import TabIcon from "./TabIcon.vue";
 import { db, type TabGroup } from "@/database";
 
@@ -47,21 +48,21 @@ async function copyTabGroup(tabGroup: TabGroup) {
             </span>
             <span class="inline-flex items-center">
                 {{ format(props.tabGroup.create_time, "yyyy-MM-dd HH:mm:ss") }}</span>
-            <button @click="$emit('remove-group')" :disabled="props.tabGroup.is_locked">
+            <Button @click="$emit('remove-group')" :disabled="props.tabGroup.is_locked" variant="ghost" size="icon">
                 <Icon icon="radix-icons:trash"></Icon>
-            </button>
-            <button @click="props.tabGroup.is_starred = !props.tabGroup.is_starred; updateGroup(props.tabGroup)">
+            </Button>
+            <Button @click="props.tabGroup.is_starred = !props.tabGroup.is_starred; updateGroup(props.tabGroup)" variant="ghost" size="icon">
                 <Icon :icon="props.tabGroup.is_starred ? 'radix-icons:star-filled' : 'radix-icons:star'"></Icon>
-            </button>
-            <button @click="props.tabGroup.is_locked = !props.tabGroup.is_locked; updateGroup(props.tabGroup);">
+            </Button>
+            <Button @click="props.tabGroup.is_locked = !props.tabGroup.is_locked; updateGroup(props.tabGroup);" variant="ghost" size="icon">
                 <Icon :icon="props.tabGroup.is_locked ? 'radix-icons:lock-closed' : 'radix-icons:lock-open-1'"></Icon>
-            </button>
-            <button @click="openTabGroup(tabGroup)">
+            </Button>
+            <Button @click="openTabGroup(tabGroup)" variant="ghost" size="icon">
                 <Icon icon="radix-icons:open-in-new-window"></Icon>
-            </button>
-            <button @click="copyTabGroup(tabGroup)">
+            </Button>
+            <Button @click="copyTabGroup(tabGroup)" variant="ghost" size="icon">
                 <Icon icon="radix-icons:copy"></Icon>
-            </button>
+            </Button>
         </div>
         <div v-for="(tab, index) in props.tabGroup.tabs_meta" class="flex items-center group gap-2">
             <button @click="$emit('remove-tab', index)"

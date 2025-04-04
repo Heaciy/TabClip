@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import TabGroupList from "@/components/TabGroupList.vue";
 import {onMounted} from "vue";
+import TabGroupList from "@/components/TabGroupList.vue";
+import Navbar from "@/components/Navbar.vue";
 
 const pinTab = (tab: chrome.tabs.Tab) => {
   chrome.tabs.update(tab.id!, {active: true, pinned: true});
@@ -27,6 +28,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <Navbar></Navbar>
   <TabGroupList></TabGroupList>
 </template>
 
