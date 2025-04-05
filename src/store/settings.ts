@@ -1,24 +1,46 @@
-import {type Ref, ref, watchEffect} from "vue";
+import {type Ref, ref, watch} from "vue";
 import {defineStore} from "pinia";
 
-const defaultSettings = {
+
+interface Settings {
+    storePinnedTabs: boolean,
+    defaultLockGroup: boolean,
+    openGroupInNewWindow: boolean,
+    pageSize: number,
+}
+
+const defaultSettings: Settings = {
     storePinnedTabs: false,
     defaultLockGroup: false,
     openGroupInNewWindow: true,
     pageSize: 10,
 }
 
+async function loadSettings(): Promise<Settings> {
+    return new Promise((resolve) => {
+        // use chrome.storage.local to replace localStorage
+        chrome.storage.local.get("settings", (result) => {
+            const storedSettings = result.settings;
+            resolve(storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings);
+        });
+    });
+}
+
 export const useSettingStore = defineStore("setting", () => {
-    function loadSetings() {
-        const storedSettings = localStorage.getItem("settings");
-        return storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings;
-    }
+    const settings: Ref<Settings> = ref(defaultSettings);
+    const isLoaded: Ref<boolean> = ref(false);
 
-    const settings:Ref = ref(loadSetings());
+    loadSettings().then(savedSettings => {
+        settings.value = savedSettings;
+        isLoaded.value = true;
+    });
 
-    watchEffect(() => {
-        localStorage.setItem("settings", JSON.stringify(settings.value));
-    })
+    watch(settings, async (_newSettings) => {
+        // 只有在加载完成后才保存设置，避免覆盖原始设置
+        if (isLoaded.value) {
+            await chrome.storage.local.set({"settings": JSON.stringify(settings.value)});
+        }
+    });
 
 
     function refreshSettings(newSettings = {}) {
@@ -30,3 +52,8 @@ export const useSettingStore = defineStore("setting", () => {
         refreshSettings,
     }
 })
+
+export {
+    loadSettings,
+    type Settings
+}

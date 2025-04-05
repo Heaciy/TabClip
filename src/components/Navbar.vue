@@ -3,6 +3,7 @@ import {useColorMode} from '@vueuse/core'
 import {Icon} from "@iconify/vue";
 import {Button} from "@/components/ui/button";
 import {Input} from '@/components/ui/input';
+import SettingSheet from "@/components/SettingsSheet.vue";
 
 const mode = useColorMode();
 </script>
@@ -20,9 +21,7 @@ const mode = useColorMode();
             <Button variant="ghost" size="icon" @click="mode === 'light' ? mode = 'dark' : mode = 'light'">
                 <Icon :icon="`radix-icons:${mode === 'light' ? 'moon' : 'sun'}`" :class="'size-4'"></Icon>
             </Button>
-            <Button variant="ghost" size="icon">
-                <Icon icon="radix-icons:gear" :class="'size-4'"></Icon>
-            </Button>
+            <SettingSheet></SettingSheet>
         </div>
     </header>
 </template>

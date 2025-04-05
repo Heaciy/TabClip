@@ -4,7 +4,9 @@ import { Icon } from '@iconify/vue';
 import { Button } from "@/components/ui/button";
 import TabIcon from "./TabIcon.vue";
 import { db, type TabGroup } from "@/database";
+import {useSettingStore} from "@/store/settings.ts";
 
+const settingStore = useSettingStore();
 const props = defineProps(['tabGroup'])
 const emits = defineEmits(['remove-group', 'remove-tab'])
 
@@ -57,7 +59,7 @@ async function copyTabGroup(tabGroup: TabGroup) {
             <Button @click="props.tabGroup.is_locked = !props.tabGroup.is_locked; updateGroup(props.tabGroup);" variant="ghost" size="icon">
                 <Icon :icon="props.tabGroup.is_locked ? 'radix-icons:lock-closed' : 'radix-icons:lock-open-1'"></Icon>
             </Button>
-            <Button @click="openTabGroup(tabGroup)" variant="ghost" size="icon">
+            <Button @click="openTabGroup(tabGroup,settingStore.settings.openGroupInNewWindow)" variant="ghost" size="icon">
                 <Icon icon="radix-icons:open-in-new-window"></Icon>
             </Button>
             <Button @click="copyTabGroup(tabGroup)" variant="ghost" size="icon">

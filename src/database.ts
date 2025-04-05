@@ -1,4 +1,5 @@
-import Dexie, { type EntityTable } from "dexie";
+import Dexie, {type EntityTable} from "dexie";
+import {loadSettings} from "@/store/settings.ts";
 
 interface Tab {
     title?: string;
@@ -34,12 +35,13 @@ class TabGroupDatabase extends Dexie {
     /** 添加 TabGroup */
     async addTabGroup(tabGroup: TabGroup) {
         if (!tabGroup.tabs_meta?.length) return;
+        const settings = await loadSettings();
         return this.tabGroups.add({
             ...tabGroup,
             id: tabGroup.id || crypto.randomUUID(),
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({ title, url }) => ({ title, url }))),
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
             is_starred: tabGroup.is_starred || false,
-            is_locked: tabGroup.is_locked || false,
+            is_locked: tabGroup.is_locked || settings.defaultLockGroup,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
         });
@@ -50,7 +52,7 @@ class TabGroupDatabase extends Dexie {
         let latestTabGroup = await this.tabGroups.orderBy("create_time").reverse().first();
         console.log(latestTabGroup);
         if (!latestTabGroup) {
-            await this.addTabGroup({ tabs_meta: [tab] });
+            await this.addTabGroup({tabs_meta: [tab]});
         } else {
             const tabsMeta = JSON.parse(latestTabGroup.tabs_meta) as Array<Tab>;
             tabsMeta.unshift(tab);
@@ -65,7 +67,7 @@ class TabGroupDatabase extends Dexie {
     async updateTabGroup(tabGroup: TabGroup) {
         return this.tabGroups.update(tabGroup.id!, {
             ...tabGroup,
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({ title, url }) => ({ title, url }))),
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
             update_time: new Date(),
         });
     }
@@ -88,5 +90,5 @@ class TabGroupDatabase extends Dexie {
 // 创建数据库实例
 const db = new TabGroupDatabase();
 
-export type { Tab, TabGroup };
-export { db };
+export type {Tab, TabGroup};
+export {db};

@@ -1,5 +1,6 @@
 /// <reference types="chrome"/>
-import { db } from "./database";
+import {db} from "./database";
+import {loadSettings, type Settings} from "@/store/settings.ts";
 
 const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
@@ -93,23 +94,21 @@ function addTabAndWindowListener(call: () => void) {
 
 // @ts-ignore
 function updateContextMenu(menuId: string, enabled: boolean) {
-    chrome.contextMenus.update(menuId, { enabled });
+    chrome.contextMenus.update(menuId, {enabled});
 }
 
 function isExtensionTab(tab: chrome.tabs.Tab): boolean {
     return !!tab.url && tab.url.includes("tabclip.html");
 }
 
-
-const storePinnedTabs = false; // TODO: 从设置中读取
 type Pair<T, U> = [T, U];
 
-function checkPinTab(tab: chrome.tabs.Tab): boolean {
-    return !tab.pinned || storePinnedTabs;
+function checkPinTab(tab: chrome.tabs.Tab, settings: Settings): boolean {
+    return !tab.pinned || settings.storePinnedTabs;
 }
 
-function isTabAddable(tab: chrome.tabs.Tab): boolean {
-    return !isExtensionTab(tab) && checkPinTab(tab);
+function isTabAddable(tab: chrome.tabs.Tab, settings: Settings): boolean {
+    return !isExtensionTab(tab) && checkPinTab(tab, settings);
 }
 
 // @ts-ignore
@@ -117,36 +116,38 @@ function updateAllContextMenu() {
     chrome.windows.getLastFocused((window: chrome.windows.Window) => {
         if (!window) return;
 
-        chrome.tabs.query({ windowId: window.id }, (tabs) => {
+        chrome.tabs.query({windowId: window.id}, (tabs) => {
             const activeTab = tabs.find(tab => tab.active);
             if (!tabs || !activeTab) return;
 
-            const sendCurrentTabMenuEnabled = !isExtensionTab(activeTab);
-            const sendTabsExceptThisMenuEnabled = tabs.some(tab => {
-                return tab.id !== activeTab.id && isTabAddable(tab);
-            });
-            const sendTabsToTheLeftMenuEnabled = tabs.some(tab => {
-                return tab.index < activeTab.index && isTabAddable(tab);
-            });
-            const sendTabsToTheRightMenuEnabled = tabs.some(tab => {
-                return tab.index > activeTab.index && isTabAddable(tab);
-            });
-            const sendAllTabsInCurrentWindowMenuEnabled = tabs.some((tab) => {
-                return isTabAddable(tab);
-            });
+            loadSettings().then((settings) => {
+                const sendCurrentTabMenuEnabled = !isExtensionTab(activeTab);
+                const sendTabsExceptThisMenuEnabled = tabs.some(tab => {
+                    return tab.id !== activeTab.id && isTabAddable(tab, settings);
+                });
+                const sendTabsToTheLeftMenuEnabled = tabs.some(tab => {
+                    return tab.index < activeTab.index && isTabAddable(tab, settings);
+                });
+                const sendTabsToTheRightMenuEnabled = tabs.some(tab => {
+                    return tab.index > activeTab.index && isTabAddable(tab, settings);
+                });
+                const sendAllTabsInCurrentWindowMenuEnabled = tabs.some((tab) => {
+                    return isTabAddable(tab, settings);
+                });
 
-            chrome.tabs.query({}, (tabs) => {
-                const sendAllTabsInAllWindowsMenuEnabled = tabs.some(tab => tab.windowId !== activeTab.windowId && isTabAddable(tab));
-                const contextMenuStatus: Pair<string, boolean>[] = [
-                    ["sendCurrentTabMenu", sendCurrentTabMenuEnabled],
-                    ["sendAllTabsInAllWindowsMenu", sendAllTabsInAllWindowsMenuEnabled],
-                    ["sendTabsToTheLeftMenu", sendTabsToTheLeftMenuEnabled],
-                    ["sendTabsToTheRightMenu", sendTabsToTheRightMenuEnabled],
-                    ["sendTabsExceptThisMenu", sendTabsExceptThisMenuEnabled],
-                    ["sendAllTabsInCurrentWindowMenu", sendAllTabsInCurrentWindowMenuEnabled],
-                ]
-                contextMenuStatus.map(([menuId, status]) => {
-                    updateContextMenu(menuId, status);
+                chrome.tabs.query({}, (tabs) => {
+                    const sendAllTabsInAllWindowsMenuEnabled = tabs.some(tab => tab.windowId !== activeTab.windowId && isTabAddable(tab, settings));
+                    const contextMenuStatus: Pair<string, boolean>[] = [
+                        ["sendCurrentTabMenu", sendCurrentTabMenuEnabled],
+                        ["sendAllTabsInAllWindowsMenu", sendAllTabsInAllWindowsMenuEnabled],
+                        ["sendTabsToTheLeftMenu", sendTabsToTheLeftMenuEnabled],
+                        ["sendTabsToTheRightMenu", sendTabsToTheRightMenuEnabled],
+                        ["sendTabsExceptThisMenu", sendTabsExceptThisMenuEnabled],
+                        ["sendAllTabsInCurrentWindowMenu", sendAllTabsInCurrentWindowMenuEnabled],
+                    ]
+                    contextMenuStatus.map(([menuId, status]) => {
+                        updateContextMenu(menuId, status);
+                    })
                 })
             })
         })
@@ -159,44 +160,45 @@ class TabGroupManager {
     // Use arrow functions (ensure that 'this' always points to the instance)
 
     addTabs = async (tabsToAdd: chrome.tabs.Tab[]) => {
-        const addableTabs = tabsToAdd.filter(tab => isTabAddable(tab));
-        await db.addTabGroup({ tabs_meta: addableTabs });
+        const settings = await loadSettings();
+        const addableTabs = tabsToAdd.filter(tab => isTabAddable(tab, settings));
+        await db.addTabGroup({tabs_meta: addableTabs});
         await chrome.tabs.remove(addableTabs.map(tab => tab.id!));
-        chrome.runtime.sendMessage(chrome.runtime.id, { event: "TabGroupUpdate" })
+        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"})
     };
 
     sendCurrentTab = async (tab: chrome.tabs.Tab) => {
         await db.addTab(tab);
         await chrome.tabs.remove(tab.id!);
-        chrome.runtime.sendMessage(chrome.runtime.id, { event: "TabGroupUpdate" })
+        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"})
     }
 
     sendTabsExceptThis = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
         const tabsToAdd = allTabs.filter(_tab => _tab.id !== tab.id);
         await this.addTabs(tabsToAdd);
     }
 
     sendAllTabsInCurrentWindow = async (tab: chrome.tabs.Tab) => {
-        redirectToExtensionPage();
-        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        await redirectToExtensionPage();
+        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
         await this.addTabs(allTabs);
     }
 
     sendAllTabsInAllWindows = async (_tab: chrome.tabs.Tab) => {
-        redirectToExtensionPage();
+        await redirectToExtensionPage();
         const allTabs = await chrome.tabs.query({});
         await this.addTabs(allTabs);
     }
 
     sendTabsToTheLeft = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
         const tabsToAdd = allTabs.filter(_tab => _tab.index < tab.index);
         await this.addTabs(tabsToAdd);
     }
 
     sendTabsToTheRight = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
         const tabsToAdd = allTabs.filter(_tab => _tab.index > tab.index);
         await this.addTabs(tabsToAdd);
     }
@@ -229,17 +231,16 @@ chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
     await tabGroupManager.sendAllTabsInCurrentWindow(tab);
 });
 
-function redirectToExtensionPage() {
-    chrome.tabs.query({}, (tabs) => {
-        const extensionId = chrome.runtime.id;
-        const extensionTab = tabs.find(tab => tab.url?.includes(`chrome-extension://${extensionId}`));
-        if (extensionTab) {
-            chrome.tabs.update(extensionTab.id!, { active: true, pinned: true });
-            chrome.tabs.move(extensionTab.id!, { index: 0 });
-            chrome.windows.update(extensionTab.windowId, { focused: true });
-            chrome.runtime.sendMessage(extensionId, { event: "TabGroupUpdate" })
-        } else {
-            chrome.tabs.create({ url: `tabclip.html`, index: 0, pinned: true });
-        }
-    });
+async function redirectToExtensionPage() {
+    const tabs = await chrome.tabs.query({});
+    const extensionId = chrome.runtime.id;
+    const extensionTab = tabs.find(tab => tab.url?.includes(`chrome-extension://${extensionId}`));
+    if (extensionTab) {
+        await chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
+        await chrome.tabs.move(extensionTab.id!, {index: 0});
+        await chrome.windows.update(extensionTab.windowId, {focused: true});
+        await chrome.runtime.sendMessage(extensionId, {event: "TabGroupUpdate"})
+    } else {
+        await chrome.tabs.create({url: `tabclip.html`, index: 0, pinned: true});
+    }
 }
