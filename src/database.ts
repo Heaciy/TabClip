@@ -1,5 +1,7 @@
 import Dexie, {type EntityTable} from "dexie";
 import {loadSettings} from "@/store/settings.ts";
+import {type SearchConditions} from "@/store/search.ts";
+import {getLocalTimeZone} from "@internationalized/date";
 
 interface Tab {
     title?: string;
@@ -25,7 +27,7 @@ class TabGroupDatabase extends Dexie {
     constructor() {
         super("TabClip");
         this.version(1).stores({
-            tabGroups: "++id, tabs_meta, is_starred, is_locked, create_time",
+            tabGroups: "id, tabs_meta, is_starred, is_locked, create_time",
         });
 
         // 初始化表
@@ -50,7 +52,6 @@ class TabGroupDatabase extends Dexie {
     /** 添加 Tab */
     async addTab(tab: Tab) {
         let latestTabGroup = await this.tabGroups.orderBy("create_time").reverse().first();
-        console.log(latestTabGroup);
         if (!latestTabGroup) {
             await this.addTabGroup({tabs_meta: [tab]});
         } else {
@@ -78,8 +79,24 @@ class TabGroupDatabase extends Dexie {
     }
 
     /** 查询所有 TabGroup */
-    async getAllTabGroups(): Promise<TabGroup[]> {
-        const rawData = await this.tabGroups.orderBy("create_time").reverse().toArray();
+    async getAllTabGroups(searchConditions: SearchConditions = {}): Promise<TabGroup[]> {
+        const settings = await loadSettings();
+        let {
+            text,
+            startTime,
+            endTime,
+            starredOnly,
+            pageSize = settings.pageSize,
+            pageIndex = 1,
+        } = searchConditions;
+
+        let querySet = this.tabGroups.orderBy("create_time").reverse();
+        if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
+        if (startTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
+        if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({ days: 1 }).toDate(getLocalTimeZone()));
+        if (text) querySet = querySet.filter((tabGroup) => tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()));
+
+        const rawData = await querySet.offset((pageIndex - 1) * pageSize).limit(pageSize).toArray();
         return rawData.map((data) => ({
             ...data,
             tabs_meta: JSON.parse(data.tabs_meta),

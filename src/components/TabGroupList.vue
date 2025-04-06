@@ -1,11 +1,96 @@
 <script setup lang="ts">
-import {type ComponentPublicInstance, onMounted, ref, type Ref} from "vue";
+import {type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch} from "vue";
 import type {TabGroup} from "@/database.ts";
 import {db} from "@/database.ts";
+import {useSearchStore} from "@/store/search.ts";
+import {useSettingStore} from "@/store/settings.ts";
 import TabGroupComponent from './TabGroup.vue';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
+
+const isLoading = ref(false);
+const searchStore = useSearchStore();
+const settingsStore = useSettingStore();
+
+const pageIndex = ref(1);
+const pageSize = settingsStore.settings?.pageSize;
+
+const resetTabGroups = () => {
+    pageIndex.value = 1;
+    tabGroups.value = [];
+    isLoading.value = false;
+}
+
+const fetchTabGroups = async () => {
+    if (isLoading.value) return;
+
+    isLoading.value = true;
+    const tabGroupPageData = await db.getAllTabGroups({
+        ...searchStore.searchConditions, ...{
+            pageIndex: pageIndex.value,
+            pageSize,
+        }
+    });
+    tabGroups.value.push(...tabGroupPageData);
+
+    await nextTick(() => {
+        observeLastTabGroup();
+        isLoading.value = false;
+    })
+}
+
+watch(() => searchStore.searchConditions, async () => {
+    resetTabGroups();
+    await fetchTabGroups();
+})
+
+
+watch(pageIndex, async () => {
+    await fetchTabGroups();
+})
+
+onMounted(async () => {
+    await fetchTabGroups();
+    chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
+        if (message.event === "TabGroupUpdate") {
+            tabGroups.value = await db.getAllTabGroups();
+        }
+    });
+})
+
+onUnmounted(() => {
+    observer.disconnect();
+})
+
+const observer = new IntersectionObserver(
+    (entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting && !isLoading.value) {
+                const lastTabGroup = tabGroups.value[tabGroups.value.length - 1];
+                if (entry.target === tabGroupRefs.value.get(lastTabGroup.id!)?.$el) {
+                    pageIndex.value++;
+                }
+            }
+        })
+    },
+    {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1,
+    }
+)
+
+function observeLastTabGroup() {
+    if (tabGroups.value.length) {
+        const lastTabGroup = tabGroups.value[tabGroups.value.length - 1];
+        const lastTabGroupEl = tabGroupRefs.value.get(lastTabGroup.id!)?.$el;
+        if (lastTabGroupEl instanceof HTMLElement) {
+            observer.observe(lastTabGroupEl);
+        }
+    }
+}
+
 
 const removeGroup = async (groupIndex: number) => {
     if (tabGroups.value[groupIndex].is_locked) {
@@ -29,16 +114,6 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
         await db.updateTabGroup(group);
     }
 }
-
-
-onMounted(async () => {
-    tabGroups.value = await db.getAllTabGroups();
-    chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
-        if (message.event === "TabGroupUpdate") {
-            tabGroups.value = await db.getAllTabGroups();
-        }
-    });
-});
 </script>
 
 <template>

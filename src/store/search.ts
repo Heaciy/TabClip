@@ -7,6 +7,8 @@ export interface SearchConditions {
     startTime?: DateValue,
     endTime?: DateValue,
     starredOnly?: boolean,
+    pageSize?: number,
+    pageIndex?: number,
 }
 
 export const useSearchStore = defineStore('search', () => {
