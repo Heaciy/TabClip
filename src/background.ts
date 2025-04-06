@@ -156,6 +156,14 @@ function updateAllContextMenu() {
 
 addTabAndWindowListener(updateAllContextMenu);
 
+async function sendRefreshMessage() {
+    try {
+        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 class TabGroupManager {
     // Use arrow functions (ensure that 'this' always points to the instance)
 
@@ -164,13 +172,13 @@ class TabGroupManager {
         const addableTabs = tabsToAdd.filter(tab => isTabAddable(tab, settings));
         await db.addTabGroup({tabs_meta: addableTabs});
         await chrome.tabs.remove(addableTabs.map(tab => tab.id!));
-        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"})
+        await sendRefreshMessage();
     };
 
     sendCurrentTab = async (tab: chrome.tabs.Tab) => {
         await db.addTab(tab);
         await chrome.tabs.remove(tab.id!);
-        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"})
+        await sendRefreshMessage();
     }
 
     sendTabsExceptThis = async (tab: chrome.tabs.Tab) => {
@@ -239,7 +247,7 @@ async function redirectToExtensionPage() {
         await chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
         await chrome.tabs.move(extensionTab.id!, {index: 0});
         await chrome.windows.update(extensionTab.windowId, {focused: true});
-        await chrome.runtime.sendMessage(extensionId, {event: "TabGroupUpdate"})
+        await sendRefreshMessage();
     } else {
         await chrome.tabs.create({url: `tabclip.html`, index: 0, pinned: true});
     }
