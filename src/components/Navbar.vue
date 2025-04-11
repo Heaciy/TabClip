@@ -4,8 +4,21 @@ import {Icon} from "@iconify/vue";
 import {Button} from "@/components/ui/button";
 import SettingSheet from "@/components/SettingsSheet.vue";
 import Search from "@/components/Search.vue";
+import ExportUtil from "@/components/ExportUtil.vue";
+import {
+    DropdownMenu,
+    DropdownMenuGroup,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuItem
+} from "@/components/ui/dropdown-menu";
 
 const mode = useColorMode();
+const redirectToGithub = () => {
+    window.open('https://github.com/Heaciy/TabClip', '_blank');
+};
 </script>
 
 <template>
@@ -21,6 +34,36 @@ const mode = useColorMode();
                 <Icon :icon="`radix-icons:${mode === 'light' ? 'moon' : 'sun'}`" :class="'size-4'"></Icon>
             </Button>
             <SettingSheet></SettingSheet>
+            <Button variant="ghost" size="icon" @click="redirectToGithub">
+                <Icon icon="radix-icons:github-logo"></Icon>
+            </Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                    <Button variant="ghost" size="icon">
+                        <Icon icon="radix-icons:dots-vertical" class="size-4"></Icon>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-48" align="end">
+                    <DropdownMenuLabel>Data Operations</DropdownMenuLabel>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuGroup>
+                        <ExportUtil></ExportUtil>
+                        <DropdownMenuItem>
+                            <span class="mr-auto">Import Data</span>
+                            <Icon icon="radix-icons:upload"></Icon>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuLabel>Danger Operations</DropdownMenuLabel>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem variant="destructive">
+                            <span class="mr-auto">Delete Groups</span>
+                            <Icon icon="radix-icons:exclamation-triangle"></Icon>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
     </header>
 </template>
