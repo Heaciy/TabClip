@@ -2,7 +2,6 @@
 import {useColorMode} from '@vueuse/core'
 import {Icon} from "@iconify/vue";
 import {Button} from "@/components/ui/button";
-// import {Input} from '@/components/ui/input';
 import SettingSheet from "@/components/SettingsSheet.vue";
 import Search from "@/components/Search.vue";
 
@@ -14,8 +13,6 @@ const mode = useColorMode();
         <!--left-->
         <div class="flex flex-1 items-center space-x-4">
             <img :src="mode==='light'? '/logo.png' : '/logo-black.png'" alt="TabClip" class="h-11">
-            <!--<Input type="text" placeholder="Search" class="w-80"></Input>-->
-            <!--<Button>Search</Button>-->
             <Search></Search>
         </div>
         <!--right-->

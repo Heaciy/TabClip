@@ -172,7 +172,7 @@ const onReset = () => {
             </form>
             <SheetFooter>
                 <Button type="reset" form="settingsForm" variant="destructive">
-                    Reset
+                    Discard
                 </Button>
                 <Button type="submit" form="settingsForm">
                     Save changes

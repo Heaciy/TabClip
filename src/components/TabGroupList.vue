@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch} from "vue";
-import type {TabGroup} from "@/database.ts";
-import {db} from "@/database.ts";
-import {useSearchStore} from "@/store/search.ts";
-import {useSettingStore} from "@/store/settings.ts";
+import { type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch } from "vue";
+import type { TabGroup } from "@/database.ts";
+import { db } from "@/database.ts";
+import { useSearchStore } from "@/store/search.ts";
+import { useSettingStore } from "@/store/settings.ts";
 import TabGroupComponent from './TabGroup.vue';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
@@ -114,15 +114,28 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
         await db.updateTabGroup(group);
     }
 }
+
+const updateGroup = async (groupIndex: number, params: { is_starred?: boolean, is_locked?: boolean }) => {
+    const group = tabGroups.value[groupIndex];
+    Object.assign(group, {
+        is_starred: params.is_starred ?? group.is_starred,
+        is_locked: params.is_locked ?? group.is_locked
+    });
+    await db.updateTabGroup(group);
+
+    if (searchStore.searchConditions.starredOnly && params.is_starred === false) {
+        tabGroupRefs.value.delete(group.id!);
+        tabGroups.value.splice(groupIndex, 1);
+    }
+}
 </script>
 
 <template>
     <div>
-        <TabGroupComponent
-            v-for="(tabGroup, index) in tabGroups" :tab-group="tabGroup" :key="tabGroup.id"
+        <TabGroupComponent v-for="(tabGroup, index) in tabGroups" :tab-group="tabGroup" :key="tabGroup.id"
             :ref="(el: ComponentPublicInstance) => { tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance); return tabGroup.id; }"
-            @remove-group="removeGroup(index)"
-            @remove-tab="removeTab(index, $event)">
+            @remove-group="removeGroup(index)" @remove-tab="removeTab(index, $event)"
+            @update-group="updateGroup(index, $event)">
         </TabGroupComponent>
     </div>
 </template>
