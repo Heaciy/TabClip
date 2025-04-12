@@ -61,7 +61,8 @@ onMounted(async () => {
     await fetchTabGroups();
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.event === "TabGroupUpdate") {
-            tabGroups.value = await db.getAllTabGroups();
+            resetTabGroups();
+            await fetchTabGroups();
         }
     });
 })
