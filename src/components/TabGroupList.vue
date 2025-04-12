@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import {type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch} from "vue";
+import {
+    type ComponentPublicInstance,
+    computed,
+    type ComputedRef,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    ref,
+    type Ref,
+    watch
+} from "vue";
 import type {TabGroup} from "@/database.ts";
 import {db} from "@/database.ts";
 import {useSearchStore} from "@/store/search.ts";
@@ -16,7 +26,7 @@ const settingsStore = useSettingStore();
 const refreshStore = useRefreshStore();
 
 const pageIndex = ref(1);
-const pageSize = settingsStore.settings?.pageSize;
+const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
 
 const resetTabGroups = () => {
     pageIndex.value = 1;
@@ -31,7 +41,7 @@ const fetchTabGroups = async () => {
     const data = await db.getAllTabGroups({
         ...searchStore.searchConditions, ...{
             pageIndex: pageIndex.value,
-            pageSize,
+            pageSize: pageSize.value,
         }
     });
     tabGroups.value.push(...data.tabGroups);
@@ -43,16 +53,10 @@ const fetchTabGroups = async () => {
     })
 }
 
-watch(() => searchStore.searchConditions, async () => {
+watch([() => searchStore.searchConditions, () => refreshStore.refreshed, pageSize], async () => {
     resetTabGroups();
     await fetchTabGroups();
 })
-
-watch(() => refreshStore.refreshed, async () => {
-    resetTabGroups();
-    await fetchTabGroups();
-})
-
 
 watch(pageIndex, async () => {
     await fetchTabGroups();
