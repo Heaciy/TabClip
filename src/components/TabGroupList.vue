@@ -28,13 +28,14 @@ const fetchTabGroups = async () => {
     if (isLoading.value) return;
 
     isLoading.value = true;
-    const tabGroupPageData = await db.getAllTabGroups({
+    const data = await db.getAllTabGroups({
         ...searchStore.searchConditions, ...{
             pageIndex: pageIndex.value,
             pageSize,
         }
     });
-    tabGroups.value.push(...tabGroupPageData);
+    tabGroups.value.push(...data.tabGroups);
+    refreshStore.refreshTotal(data.groupTotal, data.tabTotal);
 
     await nextTick(() => {
         observeLastTabGroup();
@@ -107,7 +108,7 @@ const removeGroup = async (groupIndex: number) => {
     const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
     tabGroupRefs.value.delete(removedGroup.id!);
     await db.deleteTabGroup(removedGroup.id!)
-
+    refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
 }
 
 const removeTab = async (groupIndex: number, tabIndex: number) => {
@@ -121,6 +122,7 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
     } else {
         await db.updateTabGroup(group);
     }
+    refreshStore.refreshTotal(refreshStore.groupTotal, refreshStore.tabTotal - 1);
 }
 
 const updateGroup = async (groupIndex: number, params: { is_starred?: boolean, is_locked?: boolean }) => {

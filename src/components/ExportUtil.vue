@@ -31,7 +31,7 @@ const exportLargeJsonFile = async () => {
                             break;
                         }
                         // 每次处理一页数据
-                        const tabGroups = await db.getAllTabGroups({pageSize, pageIndex});
+                        const tabGroups = (await db.getAllTabGroups({pageSize, pageIndex})).tabGroups;
                         if (tabGroups && tabGroups.length > 0) {
                             const jsonList = tabGroups.map(tabGroup => JSON.stringify(tabGroup));
                             const prefix = pageIndex === 1 ? '' : ',';

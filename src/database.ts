@@ -9,16 +9,17 @@ interface Tab {
 }
 
 interface TabGroup {
-    id?: string; // UUID
-    tabs_meta: Array<Tab>; // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
+    id?: string;  // UUID
+    tabs_meta: Array<Tab>;
     is_starred?: boolean;
     is_locked?: boolean;
     create_time?: Date;
     update_time?: Date;
+    total?: number;
 }
 
 interface DBTabGroup extends Omit<TabGroup, "tabs_meta"> {
-    tabs_meta: string;
+    tabs_meta: string;  // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
 }
 
 class TabGroupDatabase extends Dexie {
@@ -27,7 +28,7 @@ class TabGroupDatabase extends Dexie {
     constructor() {
         super("TabClip");
         this.version(1).stores({
-            tabGroups: "id, tabs_meta, is_starred, is_locked, create_time",
+            tabGroups: "id, tabs_meta, is_starred, is_locked, create_time, total",
         });
 
         // 初始化表
@@ -46,6 +47,7 @@ class TabGroupDatabase extends Dexie {
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
+            total: tabGroup.tabs_meta.length,
         });
     }
 
@@ -60,6 +62,7 @@ class TabGroupDatabase extends Dexie {
             await this.tabGroups.update(latestTabGroup.id, {
                 tabs_meta: JSON.stringify(tabsMeta),
                 update_time: new Date(),
+                total: tabsMeta.length,
             });
         }
     }
@@ -70,6 +73,7 @@ class TabGroupDatabase extends Dexie {
             ...tabGroup,
             tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
             update_time: new Date(),
+            total: tabGroup.tabs_meta.length,
         });
     }
 
@@ -79,7 +83,11 @@ class TabGroupDatabase extends Dexie {
     }
 
     /** 查询所有 TabGroup */
-    async getAllTabGroups(searchConditions: SearchConditions = {}): Promise<TabGroup[]> {
+    async getAllTabGroups(searchConditions: SearchConditions = {}): Promise<{
+        tabGroups: TabGroup[],
+        groupTotal: number,
+        tabTotal: number
+    }> {
         const settings = await loadSettings();
         let {
             text,
@@ -96,11 +104,22 @@ class TabGroupDatabase extends Dexie {
         if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({days: 1}).toDate(getLocalTimeZone()));
         if (text) querySet = querySet.filter((tabGroup) => tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()));
 
+        const groupTotal = await querySet.count();
+        let tabTotal = 0;
+        await querySet.each(tabGroup => {
+            tabTotal += tabGroup.total ?? 0;
+        })
+
         const rawData = await querySet.offset((pageIndex - 1) * pageSize).limit(pageSize).toArray();
-        return rawData.map((data) => ({
-            ...data,
-            tabs_meta: JSON.parse(data.tabs_meta),
-        }));
+
+        return {
+            tabGroups: rawData.map((data) => ({
+                ...data,
+                tabs_meta: JSON.parse(data.tabs_meta),
+            })),
+            groupTotal: groupTotal,
+            tabTotal: tabTotal,
+        }
     }
 
     /** 批量更新/插入 TabGroup */
@@ -109,7 +128,8 @@ class TabGroupDatabase extends Dexie {
             ...tabGroup,
             tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
-            update_time: new Date()
+            update_time: new Date(),
+            total: tabGroup.tabs_meta.length,
         }))
         await this.tabGroups.bulkPut(data);
     }

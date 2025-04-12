@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSearchStore } from '@/store/search';
+import {useRefreshStore} from "@/store/refreshStore.ts";
 
 enum StarStatus {
     All,
@@ -10,7 +11,7 @@ enum StarStatus {
 
 const starStatus = ref(StarStatus.All);
 const searchStore = useSearchStore();
-const props = defineProps({ groupTotal: { type: Number, default: 0 }, tabTotal: { type: Number, default: 0 } });
+const refreshStore = useRefreshStore();
 
 watch(starStatus, () => {
     searchStore.updateSearchConditions({ starredOnly: starStatus.value === StarStatus.StarredOnly })
@@ -24,8 +25,8 @@ watch(starStatus, () => {
                     <h3 class="font-semibold leading-none tracking-tight">{{ !searchStore.isEmpty() ? 'Search' :
                         starStatus === StarStatus.All ? 'All tabs' : 'Starred' }}</h3>
                     <div class="space-x-2">
-                        <span>{{ props.groupTotal }} groups</span>
-                        <span>{{ props.tabTotal }} tabs</span>
+                        <span>{{ refreshStore.groupTotal }} groups</span>
+                        <span>{{ refreshStore.tabTotal }} tabs</span>
                     </div>
                 </div>
                 <TabsList>
