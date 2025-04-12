@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Icon} from "@iconify/vue";
+import {toast} from "vue-sonner";
 import {db} from "@/database.ts";
 import {useSettingStore} from "@/store/settings.ts";
 import {DropdownMenuItem} from "@/components/ui/dropdown-menu";
@@ -77,6 +78,9 @@ const exportLargeJsonFile = async () => {
                 filename: "tabGroups_export.json",
                 saveAs: true,
             });
+            toast.success("Export successful", {
+                description: `Successfully Exported ${total} tab groups.`
+            })
         } catch (downloadError) {
             console.error("Chrome下载API失败:", downloadError);
             // 回退到传统下载方法
@@ -86,6 +90,9 @@ const exportLargeJsonFile = async () => {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            toast.success("Export successful", {
+                description: `Successfully Exported ${total} tab groups.`
+            })
         } finally {
             // 确保释放Blob URL
             setTimeout(() => {
@@ -93,6 +100,9 @@ const exportLargeJsonFile = async () => {
             }, 100);
         }
     } catch (error) {
+        toast.error("Export failed", {
+            description: `Export failed: ${error}`
+        })
         console.error("导出过程出错:", error);
         throw new Error(`导出JSON文件失败: ${error instanceof Error ? error.message : "未知错误"}`);
     }

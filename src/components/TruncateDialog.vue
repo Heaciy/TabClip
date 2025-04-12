@@ -1,0 +1,74 @@
+<script setup lang="ts">
+import {computed, ref} from "vue";
+import {
+    Dialog,
+    DialogFooter,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogClose,
+    DialogDescription
+} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {db} from "@/database.ts";
+import {toast} from "vue-sonner";
+import {useRefreshStore} from "@/store/refreshStore.ts";
+
+const isDialogOpened = defineModel({default: false});
+const CONFIRM_TEXT = "Delete All Groups";
+const confirmInput = ref("");
+const deleteEnabled = computed(() => confirmInput.value === CONFIRM_TEXT);
+const refreshStore = useRefreshStore();
+
+const doTruncate = async () => {
+    await db.tabGroups.clear();
+    confirmInput.value = "";
+    isDialogOpened.value = false;
+
+    refreshStore.refresh();
+    toast.success("Delete successful", {description: "Successfully deleted all tab groups."});
+}
+
+const handleOpenChange = (open: boolean) => {
+    isDialogOpened.value = open;
+}
+</script>
+
+<template>
+    <Dialog :open="isDialogOpened" @update:open="handleOpenChange">
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle class="text-red-500">Delete Groups</DialogTitle>
+                <DialogDescription class="text-red-400">
+                    This will delete all your tab groups. Type
+                    <span class="font-bold mx-1">{{ CONFIRM_TEXT }}</span>
+                    to confirm.
+                </DialogDescription>
+            </DialogHeader>
+
+            <div class="flex items-center space-x-2">
+                <div class="grid flex-1 gap-2">
+                    <Input v-model="confirmInput"/>
+                </div>
+                <Button type="button" variant="destructive" :disabled="!deleteEnabled"
+                        @click="doTruncate">
+                    Delete
+                </Button>
+            </div>
+
+            <DialogFooter class="sm:justify-start">
+                <DialogClose as-child>
+                    <Button type="button">
+                        Close
+                    </Button>
+                </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
+
+</template>
+
+<style scoped>
+
+</style>

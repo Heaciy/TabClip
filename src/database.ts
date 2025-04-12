@@ -93,7 +93,7 @@ class TabGroupDatabase extends Dexie {
         let querySet = this.tabGroups.orderBy("create_time").reverse();
         if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
         if (startTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
-        if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({ days: 1 }).toDate(getLocalTimeZone()));
+        if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({days: 1}).toDate(getLocalTimeZone()));
         if (text) querySet = querySet.filter((tabGroup) => tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()));
 
         const rawData = await querySet.offset((pageIndex - 1) * pageSize).limit(pageSize).toArray();
@@ -101,6 +101,17 @@ class TabGroupDatabase extends Dexie {
             ...data,
             tabs_meta: JSON.parse(data.tabs_meta),
         }));
+    }
+
+    /** 批量更新/插入 TabGroup */
+    async bulkPutGroups(tabGroups: Array<TabGroup>) {
+        const data = tabGroups.map((tabGroup) => ({
+            ...tabGroup,
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
+            create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
+            update_time: new Date()
+        }))
+        await this.tabGroups.bulkPut(data);
     }
 }
 

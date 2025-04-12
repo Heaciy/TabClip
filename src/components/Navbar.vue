@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {ref} from "vue";
 import {useColorMode} from '@vueuse/core'
 import {Icon} from "@iconify/vue";
 import {Button} from "@/components/ui/button";
@@ -14,8 +15,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuItem
 } from "@/components/ui/dropdown-menu";
+import TruncateDialog from "@/components/TruncateDialog.vue";
+import ImportDialog from "@/components/ImportDialog.vue";
+
 
 const mode = useColorMode();
+
+const isTruncateDialogOpened = ref(false);
+const isImportDialogOpened = ref(false);
 const redirectToGithub = () => {
     window.open('https://github.com/Heaciy/TabClip', '_blank');
 };
@@ -48,7 +55,7 @@ const redirectToGithub = () => {
                     <DropdownMenuSeparator/>
                     <DropdownMenuGroup>
                         <ExportUtil></ExportUtil>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem @click="isImportDialogOpened=true">
                             <span class="mr-auto">Import Data</span>
                             <Icon icon="radix-icons:upload"></Icon>
                         </DropdownMenuItem>
@@ -57,7 +64,7 @@ const redirectToGithub = () => {
                     <DropdownMenuLabel>Danger Operations</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuGroup>
-                        <DropdownMenuItem variant="destructive">
+                        <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened=true">
                             <span class="mr-auto">Delete Groups</span>
                             <Icon icon="radix-icons:exclamation-triangle"></Icon>
                         </DropdownMenuItem>
@@ -65,6 +72,8 @@ const redirectToGithub = () => {
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
+        <TruncateDialog v-model="isTruncateDialogOpened"></TruncateDialog>
+        <ImportDialog v-model="isImportDialogOpened"></ImportDialog>
     </header>
 </template>
 

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch } from "vue";
-import type { TabGroup } from "@/database.ts";
-import { db } from "@/database.ts";
-import { useSearchStore } from "@/store/search.ts";
-import { useSettingStore } from "@/store/settings.ts";
+import {type ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, type Ref, watch} from "vue";
+import type {TabGroup} from "@/database.ts";
+import {db} from "@/database.ts";
+import {useSearchStore} from "@/store/search.ts";
+import {useSettingStore} from "@/store/settings.ts";
+import {useRefreshStore} from "@/store/refreshStore.ts";
 import TabGroupComponent from './TabGroup.vue';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
@@ -12,6 +13,7 @@ const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
 const isLoading = ref(false);
 const searchStore = useSearchStore();
 const settingsStore = useSettingStore();
+const refreshStore = useRefreshStore();
 
 const pageIndex = ref(1);
 const pageSize = settingsStore.settings?.pageSize;
@@ -41,6 +43,11 @@ const fetchTabGroups = async () => {
 }
 
 watch(() => searchStore.searchConditions, async () => {
+    resetTabGroups();
+    await fetchTabGroups();
+})
+
+watch(() => refreshStore.refreshed, async () => {
     resetTabGroups();
     await fetchTabGroups();
 })
@@ -133,9 +140,9 @@ const updateGroup = async (groupIndex: number, params: { is_starred?: boolean, i
 <template>
     <div>
         <TabGroupComponent v-for="(tabGroup, index) in tabGroups" :tab-group="tabGroup" :key="tabGroup.id"
-            :ref="(el: ComponentPublicInstance) => { tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance); return tabGroup.id; }"
-            @remove-group="removeGroup(index)" @remove-tab="removeTab(index, $event)"
-            @update-group="updateGroup(index, $event)">
+                           :ref="(el: ComponentPublicInstance) => { tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance); return tabGroup.id; }"
+                           @remove-group="removeGroup(index)" @remove-tab="removeTab(index, $event)"
+                           @update-group="updateGroup(index, $event)">
         </TabGroupComponent>
     </div>
 </template>
