@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import TruncateDialog from "@/components/TruncateDialog.vue";
 import ImportDialog from "@/components/ImportDialog.vue";
+import Logo from "@/components/Logo.vue";
 
 
 const mode = useColorMode();
@@ -32,7 +33,7 @@ const redirectToGithub = () => {
     <header class="flex py-2 px-2 md:px-4 border-b border-border">
         <!--left-->
         <div class="flex flex-1 items-center space-x-4">
-            <img :src="mode==='light'? '/logo.png' : '/logo-black.png'" alt="TabClip" class="h-11">
+            <Logo class="h-11 fill-[#1e1e1e] dark:fill-[#f3f3f3] -translate-y-0.5"></Logo>
             <Search></Search>
         </div>
         <!--right-->
