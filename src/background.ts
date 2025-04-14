@@ -10,6 +10,18 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     },
     {
         parentId: "TabClip",
+        id: "displayTabClipMenu",
+        title: "显示 TabClip",
+        contexts: ["all"],
+    },
+    {
+        parentId: "TabClip",
+        id: "separator0",
+        type: "separator",
+        contexts: ["all"],
+    },
+    {
+        parentId: "TabClip",
         id: "sendAllTabsInCurrentWindowMenu",
         title: "发送当前窗口全部标签页至 TabClip",
         contexts: ["all"],
@@ -175,6 +187,10 @@ class TabGroupManager {
         await sendRefreshMessage();
     };
 
+    displayTabClip = async (_tab: chrome.tabs.Tab) =>{
+        await redirectToExtensionPage();
+    }
+
     sendCurrentTab = async (tab: chrome.tabs.Tab) => {
         await db.addTab(tab);
         await chrome.tabs.remove(tab.id!);
@@ -221,6 +237,7 @@ function createContextMenuHandler(action: (tab: chrome.tabs.Tab) => Promise<void
 }
 
 const contextMenuHandlerMap = {
+    displayTabClipMenu: createContextMenuHandler(tabGroupManager.displayTabClip),
     sendCurrentTabMenu: createContextMenuHandler(tabGroupManager.sendCurrentTab),
     sendTabsExceptThisMenu: createContextMenuHandler(tabGroupManager.sendTabsExceptThis),
     sendAllTabsInCurrentWindowMenu: createContextMenuHandler(tabGroupManager.sendAllTabsInCurrentWindow),
