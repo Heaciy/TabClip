@@ -147,6 +147,7 @@ const updateGroup = async (groupIndex: number, params: { is_starred?: boolean, i
 <template>
     <div>
         <TabGroupComponent v-for="(tabGroup, index) in tabGroups" :tab-group="tabGroup" :key="tabGroup.id"
+                           :search-text="searchStore.searchConditions.text"
                            :ref="(el: ComponentPublicInstance) => { tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance); return tabGroup.id; }"
                            @remove-group="removeGroup(index)" @remove-tab="removeTab(index, $event)"
                            @update-group="updateGroup(index, $event)">
