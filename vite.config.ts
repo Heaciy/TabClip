@@ -10,7 +10,8 @@ export default defineConfig({
         tailwindcss(),
         viteStaticCopy({
             targets: [
-                {src: 'manifest.json', dest: './'}
+                {src: 'manifest.json', dest: './'},
+                {src: 'src/locales/_locales', dest: './', rename: '_locales'}
             ]
         }),
         {

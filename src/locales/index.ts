@@ -1,0 +1,1 @@
+export {i18n, availableLocales} from "./i18n";

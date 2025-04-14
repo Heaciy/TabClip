@@ -60,7 +60,7 @@ function highlightedTitle(title: string): string {
     <div class="m-5">
         <div class="flex flex-row gap-3 align-middle mb-2">
             <span class="inline-flex items-center">
-                Total: {{ props.tabGroup.tabs_meta.length }} tabs
+                {{ $t("tabGroup.total", {total: props.tabGroup.tabs_meta.length}) }}
             </span>
             <span class="inline-flex items-center">
                 {{ format(props.tabGroup.create_time!, "yyyy-MM-dd HH:mm:ss") }}</span>

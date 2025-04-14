@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import {Icon} from "@iconify/vue";
 import {toast} from "vue-sonner";
+import {useI18n} from 'vue-i18n';
 import {db} from "@/database.ts";
 import {useSettingStore} from "@/store/settings.ts";
 import {DropdownMenuItem} from "@/components/ui/dropdown-menu";
 
+const {t} = useI18n();
 const settingsStore = useSettingStore();
 
 const exportLargeJsonFile = async () => {
@@ -78,8 +80,8 @@ const exportLargeJsonFile = async () => {
                 filename: "tabGroups_export.json",
                 saveAs: true,
             });
-            toast.success("Export successful", {
-                description: `Successfully Exported ${total} tab groups.`
+            toast.success(t("exportGroups.success.toastTitle"), {
+                description: t("exportGroups.success.toastDesc", {total: total})
             })
         } catch (downloadError) {
             console.error("Chrome下载API失败:", downloadError);
@@ -90,8 +92,8 @@ const exportLargeJsonFile = async () => {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            toast.success("Export successful", {
-                description: `Successfully Exported ${total} tab groups.`
+            toast.success(t("exportGroups.success.toastTitle"), {
+                description: t("exportGroups.success.toastDesc", {total: total})
             })
         } finally {
             // 确保释放Blob URL
@@ -100,8 +102,8 @@ const exportLargeJsonFile = async () => {
             }, 100);
         }
     } catch (error) {
-        toast.error("Export failed", {
-            description: `Export failed: ${error}`
+        toast.error(t("exportGroups.error.toastTitle"), {
+            description: t("exportGroups.error.toastDesc", {error: error}),
         })
         console.error("导出过程出错:", error);
         throw new Error(`导出JSON文件失败: ${error instanceof Error ? error.message : "未知错误"}`);
@@ -111,7 +113,7 @@ const exportLargeJsonFile = async () => {
 
 <template>
     <DropdownMenuItem @click="exportLargeJsonFile">
-        <span class="mr-auto">Export Data</span>
+        <span class="mr-auto">{{ $t("moreOperations.dataOperations.exportGroups") }}</span>
         <Icon icon="radix-icons:download"></Icon>
     </DropdownMenuItem>
 </template>

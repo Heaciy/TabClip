@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
+import {useI18n} from 'vue-i18n';
 import {
     Dialog,
     DialogFooter,
@@ -15,6 +16,7 @@ import {db} from "@/database.ts";
 import {toast} from "vue-sonner";
 import {useRefreshStore} from "@/store/refreshStore.ts";
 
+const {t} = useI18n();
 const isDialogOpened = defineModel({default: false});
 const CONFIRM_TEXT = "Delete All Groups";
 const confirmInput = ref("");
@@ -27,7 +29,7 @@ const doTruncate = async () => {
     isDialogOpened.value = false;
 
     refreshStore.refresh();
-    toast.success("Delete successful", {description: "Successfully deleted all tab groups."});
+    toast.success(t("truncateGroups.success.toastTitle"), {description: t("truncateGroups.success.toastDesc")});
 }
 
 const handleOpenChange = (open: boolean) => {
@@ -39,11 +41,11 @@ const handleOpenChange = (open: boolean) => {
     <Dialog :open="isDialogOpened" @update:open="handleOpenChange">
         <DialogContent>
             <DialogHeader>
-                <DialogTitle class="text-red-500">Delete Groups</DialogTitle>
+                <DialogTitle class="text-red-500">{{ $t("truncateGroups.title") }}</DialogTitle>
                 <DialogDescription class="text-red-400">
-                    This will delete all your tab groups. Type
+                    {{ $t("truncateGroups.descLeft") }}
                     <span class="font-bold mx-1">{{ CONFIRM_TEXT }}</span>
-                    to confirm.
+                    {{ $t("truncateGroups.descRight") }}
                 </DialogDescription>
             </DialogHeader>
 
@@ -53,14 +55,14 @@ const handleOpenChange = (open: boolean) => {
                 </div>
                 <Button type="button" variant="destructive" :disabled="!deleteEnabled"
                         @click="doTruncate">
-                    Delete
+                    {{ $t("truncateGroups.buttonDelete") }}
                 </Button>
             </div>
 
             <DialogFooter class="sm:justify-start">
                 <DialogClose as-child>
                     <Button type="button">
-                        Close
+                        {{ $t("truncateGroups.buttonCancel") }}
                     </Button>
                 </DialogClose>
             </DialogFooter>

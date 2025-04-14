@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils.ts";
 import { Icon } from "@iconify/vue";
 import { format } from 'date-fns';
 import { DateFormatter, getLocalTimeZone, type DateValue } from "@internationalized/date";
+import { useI18n } from 'vue-i18n';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,7 +12,8 @@ import { CalendarIcon } from "@radix-icons/vue";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { type SearchConditions, useSearchStore } from "@/store/search.ts";
 
-const df = new DateFormatter("en-US", { dateStyle: "long" });
+const { t, locale } = useI18n();
+const df = computed(() => new DateFormatter(locale.value, { dateStyle: "long" }));
 const searched = ref(false);
 const searchStore = useSearchStore();
 
@@ -49,7 +51,7 @@ function formatDateValue(dateValue?: DateValue, formatStr?: string): string | un
 }
 
 const inputPlaceholder = computed(() => {
-    const defaultPlaceholder = "Search";
+    const defaultPlaceholder = t("search.textPlaceholder");
     const conditions = searchConditions.value;
     if (!conditions.text && !popoverConditionsIsEmpty.value) {
         const formatStr = "yyyy/MM/dd";
@@ -105,15 +107,15 @@ watch(searchConditions, (_newSearchConditions) => {
                     <div class="grid gap-4">
                         <div class="space-y-2">
                             <h4 class="font-medium leading-none">
-                                Search
+                                {{ $t("search.popoverTitle") }}
                             </h4>
                             <p class="text-sm text-muted-foreground">
-                                Set more query conditions.
+                                {{ $t("search.popoverDesc") }}
                             </p>
                         </div>
                         <div class="grid gap-2">
                             <div class="flex items-center gap-4">
-                                <div class="mr-auto"><label>Start Time</label></div>
+                                <div class="mr-auto"><label>{{ $t("search.startTime") }}</label></div>
                                 <div class="flex gap-4">
                                     <div class="min-w-48">
                                         <Popover>
@@ -124,14 +126,14 @@ watch(searchConditions, (_newSearchConditions) => {
                                                     {{
                                                         searchConditions.startTime
                                                             ? df.format(searchConditions.startTime.toDate(getLocalTimeZone()))
-                                                            : "Pick a date"
+                                                            : $t("search.timePlaceholder")
                                                     }}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent class="w-auto p-0">
                                                 <Calendar v-model="searchConditions.startTime"
                                                     :max-value="searchConditions.endTime ? searchConditions.endTime : undefined"
-                                                    initial-focus />
+                                                    :locale=locale initial-focus />
                                             </PopoverContent>
                                         </Popover>
                                     </div>
@@ -142,7 +144,7 @@ watch(searchConditions, (_newSearchConditions) => {
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
-                                <div class="mr-auto"><label>End Time</label></div>
+                                <div class="mr-auto"><label>{{ $t("search.endTime") }}</label></div>
                                 <div class="flex gap-4">
                                     <div class="min-w-48">
                                         <div class="min-w-48">
@@ -154,14 +156,14 @@ watch(searchConditions, (_newSearchConditions) => {
                                                         {{
                                                             searchConditions.endTime
                                                                 ? df.format(searchConditions.endTime.toDate(getLocalTimeZone()))
-                                                                : "Pick a date"
+                                                                : $t("search.timePlaceholder")
                                                         }}
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent class="w-auto p-0">
                                                     <Calendar v-model="searchConditions.endTime"
                                                         :min-value="searchConditions.startTime ? searchConditions.startTime : undefined"
-                                                        initial-focus />
+                                                        :locale=locale initial-focus />
                                                 </PopoverContent>
                                             </Popover>
                                         </div>
@@ -177,10 +179,10 @@ watch(searchConditions, (_newSearchConditions) => {
                 </PopoverContent>
             </Popover>
         </div>
-        <Button v-if="!searched" @click="doSearch">Search</Button>
+        <Button v-if="!searched" @click="doSearch">{{ $t("search.buttonSearch") }}</Button>
         <Button v-else @click="doReset" variant="destructive">
-            <span class="invisible">Search</span>
-            <span class="absolute">Cancel</span>
+            <span class="invisible">{{ $t("search.buttonSearch") }}</span>
+            <span class="absolute">{{ $t("search.buttonCancel") }}</span>
         </Button>
     </div>
 </template>

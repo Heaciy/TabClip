@@ -2,6 +2,18 @@
 import {db} from "./database";
 import {loadSettings, type Settings} from "@/store/settings.ts";
 
+const i18n = (
+    messageName: string,
+    substitutions?: string | string[],
+    defaultValue?: string
+): string => {
+    const translation = chrome.i18n.getMessage(messageName, substitutions);
+    if (translation) return translation;
+
+    console.warn(`No translation available for: ${messageName}`);
+    return defaultValue ?? messageName;
+};
+
 const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
         id: "TabClip",
@@ -11,7 +23,7 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
         parentId: "TabClip",
         id: "displayTabClipMenu",
-        title: "显示 TabClip",
+        title: i18n("displayTabClip"),
         contexts: ["all"],
     },
     {
@@ -23,13 +35,13 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
         parentId: "TabClip",
         id: "sendAllTabsInCurrentWindowMenu",
-        title: "发送当前窗口全部标签页至 TabClip",
+        title: i18n("sendAllTabsInCurrentWindow"),
         contexts: ["all"],
     },
     {
         parentId: "TabClip",
         id: "sendAllTabsInAllWindowsMenu",
-        title: "发送所有窗口全部标签页至 TabClip",
+        title: i18n("sendAllTabsInAllWindows"),
         contexts: ["all"],
     },
     {
@@ -41,13 +53,13 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
         parentId: "TabClip",
         id: "sendCurrentTabMenu",
-        title: "发送此标签页至 TabClip",
+        title: i18n("sendCurrentTab"),
         contexts: ["all"],
     },
     {
         parentId: "TabClip",
         id: "sendTabsExceptThisMenu",
-        title: "发送除此标签页外的标签页至 TabClip",
+        title: i18n("sendTabsExceptThis"),
         contexts: ["all"],
     },
     {
@@ -59,13 +71,13 @@ const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
         parentId: "TabClip",
         id: "sendTabsToTheLeftMenu",
-        title: "发送左侧标签页至 TabClip",
+        title: i18n("sendTabsToTheLeft"),
         contexts: ["all"],
     },
     {
         parentId: "TabClip",
         id: "sendTabsToTheRightMenu",
-        title: "发送右侧标签页至 TabClip",
+        title: i18n("sendTabsToTheRight"),
         contexts: ["all"],
     }
 ];
@@ -187,7 +199,7 @@ class TabGroupManager {
         await sendRefreshMessage();
     };
 
-    displayTabClip = async (_tab: chrome.tabs.Tab) =>{
+    displayTabClip = async (_tab: chrome.tabs.Tab) => {
         await redirectToExtensionPage();
     }
 

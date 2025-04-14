@@ -18,6 +18,7 @@ import {
 import TruncateDialog from "@/components/TruncateDialog.vue";
 import ImportDialog from "@/components/ImportDialog.vue";
 import Logo from "@/components/Logo.vue";
+import I18n from "@/components/I18n.vue";
 
 
 const mode = useColorMode();
@@ -38,6 +39,7 @@ const redirectToGithub = () => {
         </div>
         <!--right-->
         <div class="flex items-center space-x-0.5">
+            <I18n></I18n>
             <Button variant="ghost" size="icon" @click="mode === 'light' ? mode = 'dark' : mode = 'light'">
                 <Icon :icon="`radix-icons:${mode === 'light' ? 'moon' : 'sun'}`" :class="'size-4'"></Icon>
             </Button>
@@ -52,21 +54,21 @@ const redirectToGithub = () => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-48" align="end">
-                    <DropdownMenuLabel>Data Operations</DropdownMenuLabel>
+                    <DropdownMenuLabel>{{ $t("moreOperations.dataOperations.label") }}</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuGroup>
                         <ExportUtil></ExportUtil>
                         <DropdownMenuItem @click="isImportDialogOpened=true">
-                            <span class="mr-auto">Import Data</span>
+                            <span class="mr-auto">{{ $t("moreOperations.dataOperations.importGroups") }}</span>
                             <Icon icon="radix-icons:upload"></Icon>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuLabel>Danger Operations</DropdownMenuLabel>
+                    <DropdownMenuLabel>{{ $t("moreOperations.dangerOperations.label") }}</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuGroup>
                         <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened=true">
-                            <span class="mr-auto">Delete Groups</span>
+                            <span class="mr-auto">{{ $t("moreOperations.dangerOperations.truncateGroups") }}</span>
                             <Icon icon="radix-icons:exclamation-triangle"></Icon>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>

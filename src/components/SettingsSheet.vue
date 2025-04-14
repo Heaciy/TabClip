@@ -75,9 +75,9 @@ const onReset = () => {
         </SheetTrigger>
         <SheetContent>
             <SheetHeader>
-                <SheetTitle>Edit Settings</SheetTitle>
+                <SheetTitle>{{ $t('settings.sheetTile') }}</SheetTitle>
                 <SheetDescription>
-                    Make changes to your settings here. Click save when you're done.
+                    {{ $t('settings.sheetDesc') }}
                 </SheetDescription>
             </SheetHeader>
             <form class="space-y-6 p-4" @submit="onSubmit" @reset="onReset" id="settingsForm">
@@ -86,10 +86,10 @@ const onReset = () => {
                         <FormItem class="flex flex-row items-center justify-between">
                             <div class="space-y-0.5">
                                 <FormLabel class="text-base">
-                                    Store Pinned Tabs
+                                    {{ $t('settings.storePinnedTabs.title') }}
                                 </FormLabel>
                                 <FormDescription>
-                                    Store pinned tabs when adding group, default not.
+                                    {{ $t('settings.storePinnedTabs.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -104,10 +104,10 @@ const onReset = () => {
                         <FormItem class="flex flex-row items-center justify-between">
                             <div class="space-y-0.5">
                                 <FormLabel class="text-base">
-                                    Default Lock Group
+                                    {{ $t('settings.defaultLockGroup.title') }}
                                 </FormLabel>
                                 <FormDescription>
-                                    Default lock group when adding group, default not.
+                                    {{ $t('settings.defaultLockGroup.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -123,10 +123,10 @@ const onReset = () => {
                         <FormItem class="flex flex-row items-center justify-between">
                             <div class="space-y-0.5">
                                 <FormLabel class="text-base">
-                                    Open Group In New Window
+                                    {{ $t('settings.openGroupInNewWindow.title') }}
                                 </FormLabel>
                                 <FormDescription>
-                                    Open a new window when recover group, default not and open in current window.
+                                    {{ $t('settings.openGroupInNewWindow.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -142,10 +142,10 @@ const onReset = () => {
                         <FormItem class="flex flex-row items-center justify-between">
                             <div class="space-y-0.5">
                                 <FormLabel class="text-base">
-                                    Page size
+                                    {{ $t('settings.pageSize.title') }}
                                 </FormLabel>
                                 <FormDescription>
-                                    The number of TabGroups loaded each time.
+                                    {{ $t('settings.pageSize.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>
@@ -157,7 +157,7 @@ const onReset = () => {
                                     </FormControl>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Page size</SelectLabel>
+                                            <SelectLabel>{{ $t('settings.pageSize.selectLabel') }}</SelectLabel>
                                             <SelectItem v-for="(size,index) in pageSizeChoices" :key="index"
                                                         :value="size">
                                                 {{ size }}
@@ -172,10 +172,10 @@ const onReset = () => {
             </form>
             <SheetFooter>
                 <Button type="reset" form="settingsForm" variant="destructive">
-                    Discard
+                    {{ $t('settings.buttonDiscard') }}
                 </Button>
                 <Button type="submit" form="settingsForm">
-                    Save changes
+                    {{ $t('settings.buttonSave') }}
                 </Button>
             </SheetFooter>
         </SheetContent>

@@ -1,0 +1,29 @@
+{
+  "appName": {
+    "message": "TabClip"
+  },
+  "appDesc": {
+    "message": "Clip your tabs together like a paperclip!"
+  },
+  "displayTabClip": {
+    "message": "Display TabClip"
+  },
+  "sendCurrentTab": {
+    "message": "Send only this tab to TabClip"
+  },
+  "sendTabsExceptThis": {
+    "message": "Send all tabs except this tab to TabClip"
+  },
+  "sendAllTabsInCurrentWindow": {
+    "message": "Send all tabs in current window to TabClip"
+  },
+  "sendAllTabsInAllWindows": {
+    "message": "Send all tabs from all windows to TabClip"
+  },
+  "sendTabsToTheLeft": {
+    "message": "Send tabs on the left to TabClip"
+  },
+  "sendTabsToTheRight": {
+    "message": "Send tabs on the right to TabClip"
+  }
+}
