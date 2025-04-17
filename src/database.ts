@@ -6,6 +6,7 @@ import {getLocalTimeZone} from "@internationalized/date";
 interface Tab {
     title?: string;
     url?: string;
+    pinned?: boolean;
 }
 
 interface TabGroup {
@@ -35,6 +36,10 @@ class TabGroupDatabase extends Dexie {
         this.tabGroups = this.table("tabGroups");
     }
 
+    formatTab({ title, url, pinned }: Tab): Tab {
+        return pinned ? { title, url, pinned } : { title, url }
+    }
+
     /** 添加 TabGroup */
     async addTabGroup(tabGroup: TabGroup) {
         if (!tabGroup.tabs_meta?.length) return;
@@ -42,7 +47,7 @@ class TabGroupDatabase extends Dexie {
         return this.tabGroups.add({
             ...tabGroup,
             id: tabGroup.id || crypto.randomUUID(),
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
             is_starred: tabGroup.is_starred || false,
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
             create_time: tabGroup.create_time || new Date(),
@@ -71,7 +76,7 @@ class TabGroupDatabase extends Dexie {
     async updateTabGroup(tabGroup: TabGroup) {
         return this.tabGroups.update(tabGroup.id!, {
             ...tabGroup,
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
             update_time: new Date(),
             total: tabGroup.tabs_meta.length,
         });
@@ -126,7 +131,7 @@ class TabGroupDatabase extends Dexie {
     async bulkPutGroups(tabGroups: Array<TabGroup>) {
         const data = tabGroups.map((tabGroup) => ({
             ...tabGroup,
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(({title, url}) => ({title, url}))),
+            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
             update_time: new Date(),
             total: tabGroup.tabs_meta.length,

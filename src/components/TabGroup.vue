@@ -17,20 +17,18 @@ function handleLinkClick(index: number) {
 }
 
 async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
-    if (newWindow) {
-        chrome.windows.create(
-            {focused: true, url: tabGroup.tabs_meta.map(tab => tab.url!)},
-            () => {
-                emits('remove-group');
-            }
-        )
-    } else {
-        const window = await chrome.windows.getCurrent();
-        tabGroup.tabs_meta.map(async (tab) => {
-            await chrome.tabs.create({windowId: window.id, url: tab.url!});
-        });
-        emits('remove-group');
+    const window = newWindow ? await chrome.windows.create({ focused: true }) : await chrome.windows.getCurrent();
+    const tabsToClose: Array<chrome.tabs.Tab> = newWindow ? await chrome.tabs.query({ windowId: window.id! }) : [];
+
+    tabGroup.tabs_meta.map(async (tab) => {
+        await chrome.tabs.create({ windowId: window.id, url: tab.url!, pinned: tab.pinned });
+    });
+
+    if (tabsToClose) {
+        await chrome.tabs.remove(tabsToClose.map(tab => tab.id!));
     }
+
+    emits('remove-group');
 }
 
 async function copyTabGroup(tabGroup: TabGroup) {

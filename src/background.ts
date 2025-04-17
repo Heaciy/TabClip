@@ -122,7 +122,7 @@ function updateContextMenu(menuId: string, enabled: boolean) {
 }
 
 function isExtensionTab(tab: chrome.tabs.Tab): boolean {
-    return !!tab.url && tab.url.includes("tabclip.html");
+    return (tab.url || tab.pendingUrl)!.includes("tabclip.html");
 }
 
 type Pair<T, U> = [T, U];
