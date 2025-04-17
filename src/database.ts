@@ -11,6 +11,7 @@ interface Tab {
 
 interface TabGroup {
     id?: string;  // UUID
+    name?: string;
     tabs_meta: Array<Tab>;
     is_starred?: boolean;
     is_locked?: boolean;
@@ -36,8 +37,8 @@ class TabGroupDatabase extends Dexie {
         this.tabGroups = this.table("tabGroups");
     }
 
-    formatTab({ title, url, pinned }: Tab): Tab {
-        return pinned ? { title, url, pinned } : { title, url }
+    formatTab({title, url, pinned}: Tab): Tab {
+        return pinned ? {title, url, pinned} : {title, url}
     }
 
     /** 添加 TabGroup */

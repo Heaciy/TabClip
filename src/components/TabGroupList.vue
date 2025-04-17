@@ -129,12 +129,19 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
     refreshStore.refreshTotal(refreshStore.groupTotal, refreshStore.tabTotal - 1);
 }
 
-const updateGroup = async (groupIndex: number, params: { is_starred?: boolean, is_locked?: boolean }) => {
+const updateGroup = async (groupIndex: number, params: {
+    name?: string,
+    is_starred?: boolean,
+    is_locked?: boolean
+}) => {
     const group = tabGroups.value[groupIndex];
     Object.assign(group, {
         is_starred: params.is_starred ?? group.is_starred,
         is_locked: params.is_locked ?? group.is_locked
     });
+    if (params.name) {
+        group.name = params.name;
+    }
     await db.updateTabGroup(group);
 
     if (searchStore.searchConditions.starredOnly && params.is_starred === false) {
