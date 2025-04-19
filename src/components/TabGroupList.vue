@@ -10,7 +10,7 @@ import {
     type Ref,
     watch
 } from "vue";
-import type {TabGroup} from "@/database.ts";
+import type {Tab, TabGroup} from "@/database.ts";
 import {db} from "@/database.ts";
 import {useSearchStore} from "@/store/search.ts";
 import {useSettingStore} from "@/store/settings.ts";
@@ -132,13 +132,21 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
 const updateGroup = async (groupIndex: number, params: {
     name?: string,
     is_starred?: boolean,
-    is_locked?: boolean
+    is_locked?: boolean,
+    tabs_meta?: Array<Tab>,
 }) => {
     const group = tabGroups.value[groupIndex];
     Object.assign(group, {
         is_starred: params.is_starred ?? group.is_starred,
-        is_locked: params.is_locked ?? group.is_locked
+        is_locked: params.is_locked ?? group.is_locked,
+        tabs_meta: params.tabs_meta ?? group.tabs_meta,
     });
+
+    if (group.tabs_meta.length < 1) {
+        await removeGroup(groupIndex);
+        return;
+    }
+
     if (params.name) {
         group.name = params.name;
     }

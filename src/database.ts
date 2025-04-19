@@ -4,6 +4,7 @@ import {type SearchConditions} from "@/store/search.ts";
 import {getLocalTimeZone} from "@internationalized/date";
 
 interface Tab {
+    id?: number | string;
     title?: string;
     url?: string;
     pinned?: boolean;
@@ -121,7 +122,10 @@ class TabGroupDatabase extends Dexie {
         return {
             tabGroups: rawData.map((data) => ({
                 ...data,
-                tabs_meta: JSON.parse(data.tabs_meta),
+                tabs_meta: JSON.parse(data.tabs_meta).map((tab: Tab, index: number) => {
+                    tab.id = index;
+                    return tab;
+                }),
             })),
             groupTotal: groupTotal,
             tabTotal: tabTotal,
