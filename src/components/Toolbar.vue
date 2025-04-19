@@ -19,23 +19,25 @@ watch(starStatus, () => {
 </script>
 <template>
     <div>
-        <Tabs :default-value="StarStatus.All" v-model:model-value="starStatus">
-            <div class="flex items-center px-4 py-2">
+        <Tabs :default-value="StarStatus.All" v-model:model-value="starStatus" class='my-4'>
+            <div class="flex pl-6 pr-4">
                 <div class="flex-auto">
-                    <h3 class="font-semibold leading-none tracking-tight">{{
+                    <h2 class="text-foreground font-semibold">
+                        {{
                             !searchStore.isEmpty() ? $t('toolBar.searchTitle') :
                                 starStatus === StarStatus.All ? $t('toolBar.allTabsTitle') : $t('toolBar.starredTitle')
-                        }}</h3>
-                    <div class="space-x-2">
+                        }}
+                    </h2>
+                    <div class="space-x-3 text-muted-foreground text-sm">
                         <span>{{ $t('toolBar.groupNum', {groupNum: refreshStore.groupTotal}) }}</span>
                         <span>{{ $t('toolBar.tabNum', {tabNum: refreshStore.tabTotal}) }}</span>
                     </div>
                 </div>
                 <TabsList>
-                    <TabsTrigger :value="StarStatus.All">
+                    <TabsTrigger :value="StarStatus.All" class="px-3">
                         {{ $t('toolBar.allTabsTab') }}
                     </TabsTrigger>
-                    <TabsTrigger :value="StarStatus.StarredOnly">
+                    <TabsTrigger :value="StarStatus.StarredOnly" class="px-3">
                         {{ $t('toolBar.starredTab') }}
                     </TabsTrigger>
                 </TabsList>
