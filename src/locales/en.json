@@ -102,5 +102,15 @@
     "fileRequired": "Please select a file",
     "fileSize": "File size must be less than {maxSize}",
     "fileType": "File must be {fileType} format"
+  },
+  "heatmap": {
+    "title": "Heatmap",
+    "desc": "The heatmap of your data.",
+    "buttonClose": "Close",
+    "groupsSelect": "Groups",
+    "tabsSelect": "Tabs",
+    "recentYear": "Recent year",
+    "typePlaceholder": "Type",
+    "yearPlaceholder": "Year"
   }
 }

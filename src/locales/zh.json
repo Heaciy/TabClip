@@ -104,5 +104,15 @@
     "fileRequired": "请选择一个文件",
     "fileSize": "文件大小必须小于 {maxSize}",
     "fileType": "文件必须是 {fileType} 文件"
+  },
+  "heatmap": {
+    "title": "热力图",
+    "desc": "标签数据时间分布",
+    "buttonClose": "关闭",
+    "groupsSelect": "标签组",
+    "tabsSelect": "标签页",
+    "recentYear": "最近一年",
+    "typePlaceholder": "类型",
+    "yearPlaceholder": "年份"
   }
 }

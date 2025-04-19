@@ -19,6 +19,7 @@ import TruncateDialog from "@/components/TruncateDialog.vue";
 import ImportDialog from "@/components/ImportDialog.vue";
 import Logo from "@/components/Logo.vue";
 import I18n from "@/components/I18n.vue";
+import Heatmap from "@/components/Heatmap.vue";
 
 
 const mode = useColorMode();
@@ -43,6 +44,7 @@ const redirectToGithub = () => {
             <Button variant="ghost" size="icon" @click="mode === 'light' ? mode = 'dark' : mode = 'light'">
                 <Icon :icon="`radix-icons:${mode === 'light' ? 'moon' : 'sun'}`" :class="'size-4'"></Icon>
             </Button>
+            <Heatmap></Heatmap>
             <SettingSheet></SettingSheet>
             <Button variant="ghost" size="icon" @click="redirectToGithub">
                 <Icon icon="radix-icons:github-logo"></Icon>

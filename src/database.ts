@@ -2,6 +2,7 @@ import Dexie, {type EntityTable} from "dexie";
 import {loadSettings} from "@/store/settings.ts";
 import {type SearchConditions} from "@/store/search.ts";
 import {getLocalTimeZone} from "@internationalized/date";
+import {eachDayOfInterval, format, parse, addDays} from "date-fns";
 
 interface Tab {
     id?: number | string;
@@ -23,6 +24,17 @@ interface TabGroup {
 
 interface DBTabGroup extends Omit<TabGroup, "tabs_meta"> {
     tabs_meta: string;  // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
+}
+
+interface HeatmapData {
+    date_list: string[],
+    group_num_list: number[],
+    tab_num_list: number[],
+    group_max: number,
+    group_min: number,
+    tab_max: number,
+    tab_min: number,
+    years: number[]
 }
 
 class TabGroupDatabase extends Dexie {
@@ -122,8 +134,8 @@ class TabGroupDatabase extends Dexie {
         return {
             tabGroups: rawData.map((data) => ({
                 ...data,
-                tabs_meta: JSON.parse(data.tabs_meta).map((tab: Tab, index: number) => {
-                    tab.id = index;
+                tabs_meta: JSON.parse(data.tabs_meta).map((tab: Tab) => {
+                    tab.id = crypto.randomUUID();
                     return tab;
                 }),
             })),
@@ -143,10 +155,74 @@ class TabGroupDatabase extends Dexie {
         }))
         await this.tabGroups.bulkPut(data);
     }
+
+    /** 获取热力图数据 */
+    async heatmap(year?: number): Promise<HeatmapData> {
+        const [startDate, endDate] = getDateRange(year).map((dateStr) => {
+            return parse(dateStr, 'yyyy-MM-dd', new Date());
+        });
+
+        const dateList = eachDayOfInterval({start: startDate, end: endDate}).map(date =>
+            format(date, 'yyyy-MM-dd')
+        );
+
+        const groupCountMap: Record<string, number> = {};
+        const tabCountMap: Record<string, number> = {};
+        for (const dateStr of dateList) {
+            groupCountMap[dateStr] = 0;
+            tabCountMap[dateStr] = 0;
+        }
+
+        let querySet = this.tabGroups.orderBy("create_time").reverse();
+
+        const years: Array<number> = [];
+        const endYear = new Date().getFullYear();
+        const startYear = (await querySet.clone().last())?.create_time?.getFullYear() || new Date().getFullYear();
+        for (let year = startYear; year <= endYear; year++) {
+            years.unshift(year);
+        }
+
+        querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startDate && tabGroup.create_time! < addDays(endDate, 1));
+        await querySet.each((tabGroup) => {
+            if (!tabGroup.create_time) return;
+            const dateStr = format(tabGroup.create_time, 'yyyy-MM-dd');
+            groupCountMap[dateStr] += 1;
+            tabCountMap[dateStr] += tabGroup.total || 0;
+        });
+
+        const group_num_list = dateList.map(date => groupCountMap[date]);
+        const tab_num_list = dateList.map(date => tabCountMap[date]);
+
+        return {
+            date_list: dateList,
+            group_num_list,
+            tab_num_list,
+            years,
+            group_max: Math.max(...group_num_list),
+            group_min: Math.min(...group_num_list),
+            tab_max: Math.max(...tab_num_list),
+            tab_min: Math.min(...tab_num_list),
+        };
+    }
+}
+
+const getDateRange = (year?: number): [string, string] => {
+    if (!!year && year !== -1) {
+        // 如果提供了 year，则返回该年从 01-01 到 12-31 的范围
+        const startDate = new Date(year, 0, 1); // January is month 0
+        const endDate = new Date(year, 11, 31); // December is month 11
+        return [format(startDate, 'yyyy-MM-dd'), format(endDate, 'yyyy-MM-dd')];
+    } else {
+        // 如果没有提供 year，则返回从一年前到今天的范围
+        const today = new Date();
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(today.getFullYear() - 1);
+        return [format(oneYearAgo, 'yyyy-MM-dd'), format(today, 'yyyy-MM-dd')];
+    }
 }
 
 // 创建数据库实例
 const db = new TabGroupDatabase();
 
-export type {Tab, TabGroup};
-export {db};
+export type {Tab, TabGroup, HeatmapData};
+export {db, getDateRange};
