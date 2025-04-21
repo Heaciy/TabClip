@@ -13,8 +13,21 @@ const starStatus = ref(StarStatus.All);
 const searchStore = useSearchStore();
 const refreshStore = useRefreshStore();
 
+const isPassivelyRefreshing = ref(false);
+
 watch(starStatus, () => {
-    searchStore.updateSearchConditions({starredOnly: starStatus.value === StarStatus.StarredOnly})
+    if (!isPassivelyRefreshing.value) {
+        searchStore.updateSearchConditions({starredOnly: starStatus.value === StarStatus.StarredOnly});
+    }
+    isPassivelyRefreshing.value = false;
+})
+
+watch(() => searchStore.passivelyRefreshed, () => {
+    const newStatus = searchStore.searchConditions.starredOnly ? StarStatus.StarredOnly : StarStatus.All;
+    if (newStatus !== starStatus.value) {
+        isPassivelyRefreshing.value = true;
+        starStatus.value = newStatus;
+    }
 })
 </script>
 <template>

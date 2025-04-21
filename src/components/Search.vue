@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { computed, ref, watch, type Ref } from "vue";
-import { cn } from "@/lib/utils.ts";
-import { Icon } from "@iconify/vue";
-import { format } from 'date-fns';
-import { DateFormatter, getLocalTimeZone, type DateValue } from "@internationalized/date";
-import { useI18n } from 'vue-i18n';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "@radix-icons/vue";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { type SearchConditions, useSearchStore } from "@/store/search.ts";
+import {computed, ref, watch, type Ref} from "vue";
+import {cn} from "@/lib/utils.ts";
+import {Icon} from "@iconify/vue";
+import {format} from 'date-fns';
+import {DateFormatter, getLocalTimeZone, type DateValue} from "@internationalized/date";
+import {useI18n} from 'vue-i18n';
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Calendar} from "@/components/ui/calendar";
+import {CalendarIcon} from "@radix-icons/vue";
+import {Popover, PopoverTrigger, PopoverContent} from "@/components/ui/popover";
+import {type SearchConditions, useSearchStore} from "@/store/search.ts";
 
-const { t, locale } = useI18n();
-const df = computed(() => new DateFormatter(locale.value, { dateStyle: "long" }));
+const {t, locale} = useI18n();
+const df = computed(() => new DateFormatter(locale.value, {dateStyle: "long"}));
 const searched = ref(false);
 const searchStore = useSearchStore();
 
@@ -75,30 +75,43 @@ const popoverConditionsIsEmpty = computed(() => {
     return !conditions.startTime && !conditions.endTime;
 })
 
+const isPassivelyRefreshing = ref(false);
+
 watch(searchConditions, (_newSearchConditions) => {
-    if (searched.value) {
+    if (!isPassivelyRefreshing.value && searched.value) {
         searchStore.resetSearchConditions();
         searched.value = false;
     }
-}, { deep: true })
+    isPassivelyRefreshing.value = false;
+}, {deep: true})
+
+watch(() => searchStore.passivelyRefreshed, () => {
+    isPassivelyRefreshing.value = true;
+    searchConditions.value = {
+        text: searchStore.searchConditions.text,
+        startTime: searchStore.searchConditions.startTime,
+        endTime: searchStore.searchConditions.endTime,
+    }
+    searched.value = true;
+})
 </script>
 
 <template>
     <div class="flex items-center space-x-4">
         <div class="relative items-center">
             <Input id="search" type="text" :placeholder="inputPlaceholder" class="w-80 pr-16"
-                v-model="searchConditions.text" @keyup.enter="doSearch" />
+                   v-model="searchConditions.text" @keyup.enter="doSearch"/>
             <Popover>
                 <div class="absolute end-0 inset-y-0 text-gray-300">
                     <Button variant="icon"
-                        class="has-[>svg]:px-0 text-muted-foreground transition-opacity duration-500 ease-in-out"
-                        :class="cn(searchConditionsIsEmpty ? 'opacity-0 pointer-events-none' : 'opacity-100')"
-                        v-show="!searchConditionsIsEmpty" @click="resetSearchConditions">
+                            class="has-[>svg]:px-0 text-muted-foreground transition-opacity duration-500 ease-in-out"
+                            :class="cn(searchConditionsIsEmpty ? 'opacity-0 pointer-events-none' : 'opacity-100')"
+                            v-show="!searchConditionsIsEmpty" @click="resetSearchConditions">
                         <Icon icon="radix-icons:cross-circled"></Icon>
                     </Button>
                     <PopoverTrigger as-child>
                         <Button variant="icon"
-                            :class="cn('px-2.5', !popoverConditionsIsEmpty && 'text-muted-foreground')">
+                                :class="cn('px-2.5', !popoverConditionsIsEmpty && 'text-muted-foreground')">
                             <Icon icon="radix-icons:mix"></Icon>
                         </Button>
                     </PopoverTrigger>
@@ -121,8 +134,8 @@ watch(searchConditions, (_newSearchConditions) => {
                                         <Popover>
                                             <PopoverTrigger as-child>
                                                 <Button variant="outline"
-                                                    :class="cn('justify-start text-left font-normal w-full', !searchConditions.startTime && 'text-muted-foreground',)">
-                                                    <CalendarIcon class="mr-2 h-4 w-4" />
+                                                        :class="cn('justify-start text-left font-normal w-full', !searchConditions.startTime && 'text-muted-foreground',)">
+                                                    <CalendarIcon class="mr-2 h-4 w-4"/>
                                                     {{
                                                         searchConditions.startTime
                                                             ? df.format(searchConditions.startTime.toDate(getLocalTimeZone()))
@@ -132,13 +145,13 @@ watch(searchConditions, (_newSearchConditions) => {
                                             </PopoverTrigger>
                                             <PopoverContent class="w-auto p-0">
                                                 <Calendar v-model="searchConditions.startTime"
-                                                    :max-value="searchConditions.endTime ? searchConditions.endTime : undefined"
-                                                    :locale=locale initial-focus />
+                                                          :max-value="searchConditions.endTime ? searchConditions.endTime : undefined"
+                                                          :locale=locale initial-focus/>
                                             </PopoverContent>
                                         </Popover>
                                     </div>
                                     <Button variant="outline" size="icon" class="px-2 text-gray-500 hover:text-gray-700"
-                                        @click="() => { searchConditions.startTime = undefined }">
+                                            @click="() => { searchConditions.startTime = undefined }">
                                         <Icon icon="radix-icons:trash"></Icon>
                                     </Button>
                                 </div>
@@ -151,8 +164,8 @@ watch(searchConditions, (_newSearchConditions) => {
                                             <Popover>
                                                 <PopoverTrigger as-child>
                                                     <Button variant="outline"
-                                                        :class="cn('justify-start text-left font-normal w-full', !searchConditions.endTime && 'text-muted-foreground',)">
-                                                        <CalendarIcon class="mr-2 h-4 w-4" />
+                                                            :class="cn('justify-start text-left font-normal w-full', !searchConditions.endTime && 'text-muted-foreground',)">
+                                                        <CalendarIcon class="mr-2 h-4 w-4"/>
                                                         {{
                                                             searchConditions.endTime
                                                                 ? df.format(searchConditions.endTime.toDate(getLocalTimeZone()))
@@ -162,14 +175,14 @@ watch(searchConditions, (_newSearchConditions) => {
                                                 </PopoverTrigger>
                                                 <PopoverContent class="w-auto p-0">
                                                     <Calendar v-model="searchConditions.endTime"
-                                                        :min-value="searchConditions.startTime ? searchConditions.startTime : undefined"
-                                                        :locale=locale initial-focus />
+                                                              :min-value="searchConditions.startTime ? searchConditions.startTime : undefined"
+                                                              :locale=locale initial-focus/>
                                                 </PopoverContent>
                                             </Popover>
                                         </div>
                                     </div>
                                     <Button variant="outline" size="icon" class="px-2 text-gray-500 hover:text-gray-700"
-                                        @click="() => { searchConditions.endTime = undefined }">
+                                            @click="() => { searchConditions.endTime = undefined }">
                                         <Icon icon="radix-icons:trash"></Icon>
                                     </Button>
                                 </div>

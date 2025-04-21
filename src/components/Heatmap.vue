@@ -50,7 +50,8 @@ const doSearch = (params: any) => {
         searchStore.updateSearchConditions({
             startTime: parseDate(dateStr),
             endTime: parseDate(dateStr),
-        })
+            starredOnly: false,
+        }, true)
     }
 }
 

@@ -17,17 +17,21 @@ export const useSearchStore = defineStore('search', () => {
         startTime: undefined,
         endTime: undefined,
     })
+    const passivelyRefreshed: Ref<number> = ref(0);
 
     function isEmpty(): boolean {
         const conditions = searchConditions.value;
         return !conditions.text && !conditions.startTime && !conditions.endTime;
     }
 
-    function updateSearchConditions(newConditions: SearchConditions) {
+    function updateSearchConditions(newConditions: SearchConditions, passivelyRefresh: boolean = false) {
         searchConditions.value = {...searchConditions.value, ...newConditions};
+        if (passivelyRefresh) {
+            passivelyRefreshed.value++;
+        }
     }
 
-    function resetSearchConditions() {
+    function resetSearchConditions(passivelyRefresh: boolean = false) {
         searchConditions.value = {
             ...searchConditions.value,
             ...{
@@ -36,10 +40,14 @@ export const useSearchStore = defineStore('search', () => {
                 endTime: undefined,
             }
         }
+        if (passivelyRefresh) {
+            passivelyRefreshed.value++;
+        }
     }
 
     return {
         searchConditions,
+        passivelyRefreshed,
         updateSearchConditions,
         resetSearchConditions,
         isEmpty,
