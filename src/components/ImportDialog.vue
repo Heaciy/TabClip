@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { v5 as uuidv5 } from 'uuid';
 import { useI18n } from 'vue-i18n';
 import { toast } from "vue-sonner";
 import { configure, defineRule, useForm } from 'vee-validate';
-import { db, type TabGroup } from "@/database.ts";
+import { db, type Tab, type TabGroup } from "@/database.ts";
 import { useRefreshStore } from "@/store/refreshStore.ts";
 
 import { Button } from '@/components/ui/button';
@@ -84,18 +85,43 @@ function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function formatOnetabGroup(onetabGroup: { id: string, tabsMeta: Array<Tab>, createDate: number, locked: boolean, starred: boolean }): TabGroup {
+    return {
+        id: uuidv5(onetabGroup.id, uuidv5.DNS),
+        tabs_meta: onetabGroup.tabsMeta.map(({ url, title }) => ({ url, title })),
+        create_time: new Date(onetabGroup.createDate),
+        update_time: new Date(),
+        total: onetabGroup.tabsMeta.length,
+        is_locked: onetabGroup.locked ?? false,
+        is_starred: onetabGroup.starred ?? false,
+    }
+}
+
 const onSubmit = form.handleSubmit(async (values) => {
     isSubmitting.value = true;
     const file = values.file as File;
     const jsonStr = await file.text();
     try {
         const data = JSON.parse(jsonStr);
-        const tabGroups: Array<TabGroup> = data.tabGroups;
+
+        let appType, tabGroups;
+
+        if (data.state?.tabGroups) {
+            appType = "Onetab";
+            tabGroups = data.state.tabGroups;
+        } else if (data.tabGroups) {
+            appType = "TabClip";
+            tabGroups = data.tabGroups;
+        } else {
+            throw new Error('File format error');
+        }
+
         const pageSize = 100;
         const pageCount = Math.ceil(tabGroups.length / pageSize);
         for (let pageIndex = 1; pageIndex <= pageCount; pageIndex++) {
-            await db.bulkPutGroups(tabGroups.slice((pageIndex - 1) * pageSize, pageIndex * pageSize));
-            await sleep(1000);
+            const slice = tabGroups.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+            await db.bulkPutGroups(appType === "Onetab" ? slice.map(formatOnetabGroup) : slice);
+            await sleep(100);
         }
         isDialogOpen.value = false;
 
@@ -157,7 +183,7 @@ async function handleOpenChange(open: boolean) {
                 </Button>
                 <Button type="submit" form="dialogForm" :disabled="isSubmitting">{{
                     isSubmitting ? $t("importGroups.buttonImporting") : $t("importGroups.buttonImport")
-                }}
+                    }}
                 </Button>
             </DialogFooter>
         </DialogContent>
