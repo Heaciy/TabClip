@@ -141,6 +141,7 @@ const updateGroup = async (groupIndex: number, params: {
         is_starred: params.is_starred ?? group.is_starred,
         is_locked: params.is_locked ?? group.is_locked,
         tabs_meta: params.tabs_meta ?? group.tabs_meta,
+        name: params.name ?? group.name,
     });
 
     if (group.tabs_meta.length < 1) {
@@ -148,9 +149,6 @@ const updateGroup = async (groupIndex: number, params: {
         return;
     }
 
-    if (params.name) {
-        group.name = params.name;
-    }
     await db.updateTabGroup(group);
 
     if (searchStore.searchConditions.starredOnly && params.is_starred === false) {

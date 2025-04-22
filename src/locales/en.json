@@ -96,6 +96,7 @@
     "tabNum": "{tabNum} Tabs"
   },
   "tabGroup": {
+    "InputGroupName": "Input name",
     "total": "Total: {total} tabs"
   },
   "veeValidate": {

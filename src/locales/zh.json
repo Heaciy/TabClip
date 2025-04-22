@@ -98,6 +98,7 @@
     "tabNum": "{tabNum} 标签页"
   },
   "tabGroup": {
+    "InputGroupName": "输入名称",
     "total": "{total} 个标签页"
   },
   "veeValidate": {
