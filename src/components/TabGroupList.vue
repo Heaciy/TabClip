@@ -16,6 +16,7 @@ import {useSearchStore} from "@/store/search.ts";
 import {useSettingStore} from "@/store/settings.ts";
 import {useRefreshStore} from "@/store/refreshStore.ts";
 import TabGroupComponent from './TabGroup.vue';
+import BackToTop from "./BackToTop.vue";
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
@@ -168,4 +169,5 @@ const updateGroup = async (groupIndex: number, params: {
                            @update-group="updateGroup(index, $event)">
         </TabGroupComponent>
     </div>
+    <BackToTop/>
 </template>
