@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { v5 as uuidv5 } from 'uuid';
 import { useI18n } from 'vue-i18n';
-import { toast } from "vue-sonner";
 import { configure, defineRule, useForm } from 'vee-validate';
-import { db, type Tab, type TabGroup } from "@/database.ts";
-import { useRefreshStore } from "@/store/refreshStore.ts";
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,12 +20,12 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
+import Progress from "./ui/progress/Progress.vue";
 
 const { t } = useI18n();
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 const isDialogOpen = defineModel({ default: false });
-const isSubmitting = ref<boolean>(false);
-const refreshStore = useRefreshStore();
+const props = withDefaults(defineProps<{ isImporting: boolean, progress: number, importData: (file: File) => Promise<void> }>(), { isImporting: false, progress: 0 });
 
 function bytesToMB(bytes: number): number {
     const mb = bytes / (1024 * 1024);
@@ -81,59 +76,14 @@ const form = useForm({
     validationSchema: formSchema,
 })
 
-function sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function formatOnetabGroup(onetabGroup: { id: string, tabsMeta: Array<Tab>, createDate: number, locked: boolean, starred: boolean }): TabGroup {
-    return {
-        id: uuidv5(onetabGroup.id, uuidv5.DNS),
-        tabs_meta: onetabGroup.tabsMeta.map(({ url, title }) => ({ url, title })),
-        create_time: new Date(onetabGroup.createDate),
-        update_time: new Date(),
-        total: onetabGroup.tabsMeta.length,
-        is_locked: onetabGroup.locked ?? false,
-        is_starred: onetabGroup.starred ?? false,
-    }
-}
-
 const onSubmit = form.handleSubmit(async (values) => {
-    isSubmitting.value = true;
     const file = values.file as File;
-    const jsonStr = await file.text();
     try {
-        const data = JSON.parse(jsonStr);
-
-        let appType, tabGroups;
-
-        if (data.state?.tabGroups) {
-            appType = "Onetab";
-            tabGroups = data.state.tabGroups;
-        } else if (data.tabGroups) {
-            appType = "TabClip";
-            tabGroups = data.tabGroups;
-        } else {
-            throw new Error('File format error');
-        }
-
-        const pageSize = 100;
-        const pageCount = Math.ceil(tabGroups.length / pageSize);
-        for (let pageIndex = 1; pageIndex <= pageCount; pageIndex++) {
-            const slice = tabGroups.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-            await db.bulkPutGroups(appType === "Onetab" ? slice.map(formatOnetabGroup) : slice);
-            await sleep(100);
-        }
-        isDialogOpen.value = false;
-
-        refreshStore.refresh();
-        toast.success(t("importGroups.success.toastTitle"), {
-            description: t("importGroups.success.toastDesc", { total: tabGroups.length }),
-        })
+        await props.importData(file);
     } catch (err) {
         console.error(t("importGroups.error.parseError"), err);
         form.setErrors({ file: t("importGroups.error.fileFormatError") });
     }
-    isSubmitting.value = false;
 });
 
 const onReset = () => {
@@ -159,14 +109,14 @@ async function handleOpenChange(open: boolean) {
                 </DialogDescription>
             </DialogHeader>
 
-            <form id="dialogForm" class="space-y-2" @submit="onSubmit" @reset="onReset">
+            <form v-if="!props.isImporting" id="dialogForm" class="space-y-2" @submit="onSubmit" @reset="onReset">
                 <FormField v-slot="{ handleChange }" name="file">
                     <FormItem>
                         <FormLabel>{{ $t("importGroups.form.file.label") }}<span class="text-red-500 ml-1">*</span>
                         </FormLabel>
                         <FormControl>
                             <input type="file" accept=".json" @change="(e: any) => handleChange(e.target.files[0])"
-                                :disabled="isSubmitting"
+                                :disabled="props.isImporting"
                                 class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 leading-7">
                         </FormControl>
                         <FormDescription>
@@ -176,14 +126,14 @@ async function handleOpenChange(open: boolean) {
                     </FormItem>
                 </FormField>
             </form>
+            <Progress v-else :model-value="props.progress" />
 
             <DialogFooter>
-                <Button type="reset" form="dialogForm" variant="destructive" :disabled="isSubmitting">
+                <Button type="reset" form="dialogForm" variant="destructive" :disabled="props.isImporting">
                     {{ $t("importGroups.buttonReset") }}
                 </Button>
-                <Button type="submit" form="dialogForm" :disabled="isSubmitting">{{
-                    isSubmitting ? $t("importGroups.buttonImporting") : $t("importGroups.buttonImport")
-                    }}
+                <Button type="submit" form="dialogForm" :disabled="props.isImporting">
+                    {{ props.isImporting ? $t("importGroups.buttonImporting") : $t("importGroups.buttonImport") }}
                 </Button>
             </DialogFooter>
         </DialogContent>

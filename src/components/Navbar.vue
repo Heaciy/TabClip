@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {useColorMode} from '@vueuse/core'
-import {Icon} from "@iconify/vue";
-import {Button} from "@/components/ui/button";
+import { ref } from "vue";
+import { useColorMode } from '@vueuse/core'
+import { Icon } from "@iconify/vue";
+import { Button } from "@/components/ui/button";
 import SettingSheet from "@/components/SettingsSheet.vue";
 import Search from "@/components/Search.vue";
 import ExportUtil from "@/components/ExportUtil.vue";
@@ -20,12 +20,15 @@ import ImportDialog from "@/components/ImportDialog.vue";
 import Logo from "@/components/Logo.vue";
 import I18n from "@/components/I18n.vue";
 import Heatmap from "@/components/Heatmap.vue";
-
+import { useExport } from "@/composables/useExport";
+import { useImport } from "@/composables/useImport";
 
 const mode = useColorMode();
 
+const { isExporting, exportProgress, exportLargeJsonFile } = useExport();
+const { isImporting, importProgress, importData, isImportDialogOpened } = useImport();
+
 const isTruncateDialogOpened = ref(false);
-const isImportDialogOpened = ref(false);
 const redirectToGithub = () => {
     window.open('https://github.com/Heaciy/TabClip', '_blank');
 };
@@ -57,19 +60,25 @@ const redirectToGithub = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-48" align="end">
                     <DropdownMenuLabel>{{ $t("moreOperations.dataOperations.label") }}</DropdownMenuLabel>
-                    <DropdownMenuSeparator/>
+                    <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <ExportUtil></ExportUtil>
-                        <DropdownMenuItem @click="isImportDialogOpened=true">
-                            <span class="mr-auto">{{ $t("moreOperations.dataOperations.importGroups") }}</span>
+                        <ExportUtil :is-exporting="isExporting" :progress="exportProgress"
+                            @export-large-json-file="exportLargeJsonFile"></ExportUtil>
+                        <DropdownMenuItem @click="isImportDialogOpened = true" :disabled="isImporting">
+                            <div class="flex items-center mr-auto gap-2">
+                                <span>{{ $t("moreOperations.dataOperations.importGroups") }}</span>
+                                <span v-if="isImporting" class="text-sm text-muted-foreground">
+                                    {{ importProgress.toFixed(0) }}%
+                                </span>
+                            </div>
                             <Icon icon="radix-icons:upload"></Icon>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator/>
+                    <DropdownMenuSeparator />
                     <DropdownMenuLabel>{{ $t("moreOperations.dangerOperations.label") }}</DropdownMenuLabel>
-                    <DropdownMenuSeparator/>
+                    <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                        <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened=true">
+                        <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened = true">
                             <span class="mr-auto">{{ $t("moreOperations.dangerOperations.truncateGroups") }}</span>
                             <Icon icon="radix-icons:exclamation-triangle"></Icon>
                         </DropdownMenuItem>
@@ -78,10 +87,10 @@ const redirectToGithub = () => {
             </DropdownMenu>
         </div>
         <TruncateDialog v-model="isTruncateDialogOpened"></TruncateDialog>
-        <ImportDialog v-model="isImportDialogOpened"></ImportDialog>
+        <ImportDialog v-model="isImportDialogOpened" :is-importing="isImporting" :progress="importProgress"
+            :import-data="importData">
+        </ImportDialog>
     </header>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
