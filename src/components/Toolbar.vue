@@ -3,12 +3,14 @@ import {ref, watch} from 'vue';
 import {Tabs, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {useSearchStore} from '@/store/search';
 import {useRefreshStore} from "@/store/refreshStore.ts";
+import {useI18n} from "vue-i18n";
 
 enum StarStatus {
     All,
     StarredOnly,
 }
 
+const {locale} = useI18n();
 const starStatus = ref(StarStatus.All);
 const searchStore = useSearchStore();
 const refreshStore = useRefreshStore();
@@ -35,7 +37,7 @@ watch(() => searchStore.passivelyRefreshed, () => {
         <Tabs :default-value="StarStatus.All" v-model:model-value="starStatus" class='my-4'>
             <div class="flex pl-6 pr-4">
                 <div class="flex-auto">
-                    <h2 class="text-foreground font-semibold">
+                    <h2 class="text-foreground font-semibold" :class="locale!=='zh'?'leading-none text-lg':''">
                         {{
                             !searchStore.isEmpty() ? $t('toolBar.searchTitle') :
                                 starStatus === StarStatus.All ? $t('toolBar.allTabsTitle') : $t('toolBar.starredTitle')

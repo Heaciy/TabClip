@@ -42,6 +42,7 @@ const formSchema = toTypedSchema(z.object({
     defaultLockGroup: z.boolean().optional(),
     openGroupInNewWindow: z.boolean().optional(),
     pageSize: z.number().optional(),
+    isStartupPage: z.boolean().optional(),
 }))
 
 const form = useForm({
@@ -127,6 +128,25 @@ const onReset = () => {
                                 </FormLabel>
                                 <FormDescription>
                                     {{ $t('settings.openGroupInNewWindow.desc') }}
+                                </FormDescription>
+                            </div>
+                            <FormControl>
+                                <Switch
+                                    :model-value="value"
+                                    aria-readonly="true"
+                                    @update:model-value="handleChange"
+                                />
+                            </FormControl>
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ value, handleChange }" name="isStartupPage">
+                        <FormItem class="flex flex-row items-center justify-between">
+                            <div class="space-y-0.5">
+                                <FormLabel class="text-base">
+                                    {{ $t('settings.isStartupPage.title') }}
+                                </FormLabel>
+                                <FormDescription>
+                                    {{ $t('settings.isStartupPage.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>

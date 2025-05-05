@@ -13,11 +13,11 @@ const pinTab = (tab: chrome.tabs.Tab) => {
 }
 
 onMounted(() => {
-    const extensionId = chrome.runtime.id;
+    const extensionURL = chrome.runtime.getURL("tabclip.html");
     chrome.tabs.getCurrent(currentTab => {
         chrome.tabs.query({}, (tabs) => {
             if (currentTab) {
-                const extensionTab = tabs.find(tab => tab.url?.includes(`chrome-extension://${extensionId}`) && tab.id !== currentTab?.id);
+                const extensionTab = tabs.find(tab => tab.url?.includes(extensionURL) && tab.id !== currentTab?.id);
                 if (extensionTab) {
                     pinTab(extensionTab);
                     chrome.tabs.remove(currentTab.id!);

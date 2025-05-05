@@ -27,6 +27,10 @@
       "title": "Open Group In New Window",
       "desc": "Open a new window when recover group, default not and open in current window."
     },
+    "isStartupPage": {
+      "title": "As Startup Page",
+      "desc": "Automatically open TabClip as home page every time you start your browser."
+    },
     "pageSize": {
       "title": "Page size",
       "selectLabel": "Page size",

@@ -27,6 +27,10 @@
       "title": "在新的窗口打开标签组",
       "desc": "新建窗口来打开标签组, 默认在当前窗口打开标签组"
     },
+    "isStartupPage": {
+      "title": "作为启动页",
+      "desc": "每次启动浏览器时自动打开 TabClip 作为首页"
+    },
     "pageSize": {
       "title": "页面大小",
       "selectLabel": "页面大小",

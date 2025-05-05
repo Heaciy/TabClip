@@ -7,6 +7,7 @@ interface Settings {
     defaultLockGroup: boolean,
     openGroupInNewWindow: boolean,
     pageSize: number,
+    isStartupPage: boolean,
 }
 
 const defaultSettings: Settings = {
@@ -14,6 +15,7 @@ const defaultSettings: Settings = {
     defaultLockGroup: false,
     openGroupInNewWindow: true,
     pageSize: 10,
+    isStartupPage: true,
 }
 
 async function loadSettings(): Promise<Settings> {

@@ -268,16 +268,30 @@ chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
     await tabGroupManager.sendAllTabsInCurrentWindow(tab);
 });
 
+chrome.runtime.onStartup.addListener(async () => {
+    const settings = await loadSettings();
+    if (settings.isStartupPage) {
+        await redirectToExtensionPage();
+    }
+});
+
+chrome.runtime.onInstalled.addListener(async () => {
+    const settings = await loadSettings();
+    if (settings.isStartupPage) {
+        await redirectToExtensionPage();
+    }
+});
+
 async function redirectToExtensionPage() {
     const tabs = await chrome.tabs.query({});
-    const extensionId = chrome.runtime.id;
-    const extensionTab = tabs.find(tab => tab.url?.includes(`chrome-extension://${extensionId}`));
+    const extensionURL = chrome.runtime.getURL("tabclip.html");
+    const extensionTab = tabs.find(tab => tab.url?.includes(extensionURL));
     if (extensionTab) {
         await chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
         await chrome.tabs.move(extensionTab.id!, {index: 0});
         await chrome.windows.update(extensionTab.windowId, {focused: true});
         await sendRefreshMessage();
     } else {
-        await chrome.tabs.create({url: `tabclip.html`, index: 0, pinned: true});
+        await chrome.tabs.create({url: extensionURL, index: 0, pinned: true});
     }
 }
