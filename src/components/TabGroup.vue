@@ -118,7 +118,7 @@ function highlightedTitle(title: string): string {
                         :style="{ visibility: props.tabGroup.is_locked ? 'hidden' : 'visible' }">
                     <Icon icon="radix-icons:cross-2" class="h-4 w-4"/>
                 </button>
-                <TabIcon :tab-url="tab.url!"></TabIcon>
+                <TabIcon :tab-url="tab.url!" :use-google-icon="settingStore.settings.useGoogleIcon"></TabIcon>
                 <a v-if="!props.searchText" @click.prevent="handleLinkClick(tab.id!)" :href="tab.url"
                    class="text-sm text-nowrap overflow-hidden text-ellipsis">{{ tab.title }}</a>
                 <a v-else @click.prevent="handleLinkClick(tab.id!)" :href="tab.url"

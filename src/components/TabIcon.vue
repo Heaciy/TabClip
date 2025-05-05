@@ -1,27 +1,25 @@
 <script setup lang="ts">
-const props = defineProps<{ tabUrl: string }>()
+import {ref, onMounted} from 'vue';
+import {useTabIcon} from '@/composables/useTabIcon';
 
+const props = withDefaults(defineProps<{ tabUrl: string, useGoogleIcon?: boolean }>(), {useGoogleIcon: false});
 
-function getIconFromChrome(url: string): string | null {
-    const src = new URL(chrome.runtime.getURL("/_favicon/"));
-    src.searchParams.set("pageUrl", url)
-    src.searchParams.set("size", "32")
-    return src.toString()
-}
+const iconUrl = ref<string>('');
 
-function getUncachedIconStyle(url: string, iconSize: number = 16) {
-    return {
-        display: "inline-block",
-        width: `${iconSize}px`,
-        height: `${iconSize}px`,
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundImage: `url(${getIconFromChrome(url)})`,
-    }
-}
+onMounted(async () => {
+    iconUrl.value = await useTabIcon(props.tabUrl, props.useGoogleIcon);
+})
 </script>
 
 <template>
-    <div :style="getUncachedIconStyle(props.tabUrl)"></div>
+    <div v-if="iconUrl"
+         :style="{
+           width: '16px',
+           height: '16px',
+           backgroundImage: `url(${iconUrl})`,
+           backgroundSize: 'cover',
+           backgroundRepeat: 'no-repeat',
+           backgroundPosition: 'center',
+           display: 'inline-block'
+       }"></div>
 </template>

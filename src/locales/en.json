@@ -27,6 +27,10 @@
       "title": "Open Group In New Window",
       "desc": "Open a new window when recover group, default not and open in current window."
     },
+    "useGoogleIcon": {
+      "title": "Load Icon From Google",
+      "desc": "The icon will be loaded from Google only if it is not cached."
+    },
     "isStartupPage": {
       "title": "As Startup Page",
       "desc": "Automatically open TabClip as home page every time you start your browser."

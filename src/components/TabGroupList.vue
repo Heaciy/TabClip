@@ -54,10 +54,16 @@ const fetchTabGroups = async () => {
     })
 }
 
-watch([() => searchStore.searchConditions, () => refreshStore.refreshed, pageSize], async () => {
-    resetTabGroups();
-    await fetchTabGroups();
-})
+watch([
+        () => searchStore.searchConditions,
+        () => refreshStore.refreshed,
+        pageSize,
+        () => settingsStore.settings?.useGoogleIcon,
+    ],
+    async () => {
+        resetTabGroups();
+        await fetchTabGroups();
+    })
 
 watch(pageIndex, async () => {
     await fetchTabGroups();

@@ -7,6 +7,7 @@ interface Settings {
     defaultLockGroup: boolean,
     openGroupInNewWindow: boolean,
     pageSize: number,
+    useGoogleIcon: boolean,
     isStartupPage: boolean,
 }
 
@@ -15,6 +16,7 @@ const defaultSettings: Settings = {
     defaultLockGroup: false,
     openGroupInNewWindow: true,
     pageSize: 10,
+    useGoogleIcon: false,
     isStartupPage: true,
 }
 
