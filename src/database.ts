@@ -121,7 +121,10 @@ class TabGroupDatabase extends Dexie {
         if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
         if (startTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
         if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({days: 1}).toDate(getLocalTimeZone()));
-        if (text) querySet = querySet.filter((tabGroup) => tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()));
+        if (text) querySet = querySet.filter((tabGroup) => {
+            return tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()) ? true :
+                tabGroup.name ? tabGroup.name.toLowerCase().includes(text?.toLowerCase()) : false;
+        });
 
         const groupTotal = await querySet.count();
         let tabTotal = 0;
