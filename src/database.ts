@@ -77,7 +77,7 @@ class TabGroupDatabase extends Dexie {
             await this.addTabGroup({tabs_meta: [tab]});
         } else {
             const tabsMeta = JSON.parse(latestTabGroup.tabs_meta) as Array<Tab>;
-            tabsMeta.unshift(tab);
+            tabsMeta.unshift(this.formatTab(tab));
             await this.tabGroups.update(latestTabGroup.id, {
                 tabs_meta: JSON.stringify(tabsMeta),
                 update_time: new Date(),

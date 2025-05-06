@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { toast } from "vue-sonner";
-import { db } from "@/database.ts";
+import { db, type TabGroup } from "@/database.ts";
 import { i18n } from "@/locales";
 
 
@@ -8,6 +8,11 @@ export function useExport() {
     const isExporting = ref(false);
     const exportProgress = ref(0);
     const t = i18n.global.t;
+
+    const stringify = (tabGroup: TabGroup): string => {
+        const { id, tabs_meta, create_time, update_time, is_locked, is_starred } = tabGroup;
+        return JSON.stringify({ id, tabs_meta, create_time, update_time, is_locked, is_starred });
+    };
 
     const exportLargeJsonFile = async () => {
         isExporting.value = true;
@@ -38,7 +43,7 @@ export function useExport() {
                             // 每次处理一页数据
                             const tabGroups = (await db.getAllTabGroups({ pageSize, pageIndex })).tabGroups;
                             if (tabGroups && tabGroups.length > 0) {
-                                const jsonList = tabGroups.map(tabGroup => JSON.stringify(tabGroup));
+                                const jsonList = tabGroups.map(tabGroup => stringify(tabGroup));
                                 const prefix = pageIndex === 1 ? '' : ',';
                                 controller.enqueue(encoder.encode(prefix + jsonList.join(',')));
                             }
