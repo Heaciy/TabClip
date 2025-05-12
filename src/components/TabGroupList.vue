@@ -159,7 +159,8 @@ const updateGroup = async (groupIndex: number, params: {
 
     if (searchStore.searchConditions.starredOnly && params.is_starred === false) {
         tabGroupRefs.value.delete(group.id!);
-        tabGroups.value.splice(groupIndex, 1);
+        const unstarredGroup = tabGroups.value.splice(groupIndex, 1)[0];
+        refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - unstarredGroup.tabs_meta.length);
     }
 }
 </script>
