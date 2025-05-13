@@ -125,4 +125,8 @@ body {
     body {
         @apply bg-background text-foreground;
     }
+
+    * {
+        scrollbar-color: var(--border) var(--background);
+    }
 }
