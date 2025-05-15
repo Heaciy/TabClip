@@ -1,1 +1,1 @@
-export {i18n, availableLocales} from "./i18n";
+export { availableLocales, i18n } from './i18n';

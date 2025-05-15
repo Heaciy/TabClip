@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { configure, defineRule, useForm } from 'vee-validate';
 
+import Progress from './ui/progress/Progress.vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -12,20 +13,19 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
-import Progress from "./ui/progress/Progress.vue";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const { t } = useI18n();
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
-const isDialogOpen = defineModel({ default: false });
-const props = withDefaults(defineProps<{ isImporting: boolean, progress: number, importData: (file: File) => Promise<void> }>(), { isImporting: false, progress: 0 });
+const isDialogOpen = defineModel<boolean>({ default: false });
+const props = withDefaults(
+    defineProps<{
+        isImporting?: boolean;
+        progress?: number;
+        importData: (_file: File) => Promise<void>;
+    }>(),
+    { isImporting: false, progress: 0 },
+);
 
 function bytesToMB(bytes: number): number {
     const mb = bytes / (1024 * 1024);
@@ -33,15 +33,15 @@ function bytesToMB(bytes: number): number {
 }
 
 defineRule('fileRequired', (value: any) => {
-    return (value instanceof File);
+    return value instanceof File;
 });
 
 defineRule('fileSize', (value: any, [maxSize]: [number]) => {
-    return (value instanceof File) && value.size <= maxSize;
+    return value instanceof File && value.size <= maxSize;
 });
 
 defineRule('fileType', (value: any, [type]: [string]) => {
-    return (value instanceof File) && value.type === type;
+    return value instanceof File && value.type === type;
 });
 
 configure({
@@ -53,7 +53,7 @@ configure({
 
         const params = (rule.params as unknown[]) || [];
         if (rule.name === 'fileSize') {
-            const maxSize = `${bytesToMB((params[0] as number))}MB`;
+            const maxSize = `${bytesToMB(params[0] as number)}MB`;
             return t('veeValidate.fileSize', { maxSize });
         }
         if (rule.name === 'fileType') {
@@ -68,28 +68,28 @@ const formSchema = {
     file: {
         fileRequired: true,
         fileSize: [MAX_FILE_SIZE],
-        fileType: ['application/json']
-    }
-}
+        fileType: ['application/json'],
+    },
+};
 
 const form = useForm({
     validationSchema: formSchema,
-})
+});
 
 const onSubmit = form.handleSubmit(async (values) => {
     const file = values.file as File;
     try {
         await props.importData(file);
     } catch (err) {
-        console.error(t("importGroups.error.parseError"), err);
-        form.setErrors({ file: t("importGroups.error.fileFormatError") });
+        console.error(t('importGroups.error.parseError'), err);
+        form.setErrors({ file: t('importGroups.error.fileFormatError') });
     }
 });
 
 const onReset = () => {
     form.resetForm();
     form.handleReset();
-}
+};
 
 async function handleOpenChange(open: boolean) {
     isDialogOpen.value = open;
@@ -103,24 +103,33 @@ async function handleOpenChange(open: boolean) {
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>{{ $t("importGroups.dialogTitle") }}</DialogTitle>
+                <DialogTitle>{{ $t('importGroups.dialogTitle') }}</DialogTitle>
                 <DialogDescription>
-                    {{ $t("importGroups.dialogDesc") }}
+                    {{ $t('importGroups.dialogDesc') }}
                 </DialogDescription>
             </DialogHeader>
 
             <form v-if="!props.isImporting" id="dialogForm" class="space-y-2" @submit="onSubmit" @reset="onReset">
                 <FormField v-slot="{ handleChange }" name="file">
                     <FormItem>
-                        <FormLabel>{{ $t("importGroups.form.file.label") }}<span class="text-red-500 ml-1">*</span>
+                        <FormLabel
+                            >{{ $t('importGroups.form.file.label') }}<span class="ml-1 text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                            <input type="file" accept=".json" @change="(e: any) => handleChange(e.target.files[0])"
+                            <input
+                                type="file"
+                                accept=".json"
                                 :disabled="props.isImporting"
-                                class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 leading-7">
+                                class="border-input placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm leading-7 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                @change="(e: any) => handleChange(e.target.files[0])"
+                            />
                         </FormControl>
                         <FormDescription>
-                            {{ $t("importGroups.form.file.desc", { maxSize: `${bytesToMB(MAX_FILE_SIZE)}MB` }) }}
+                            {{
+                                $t('importGroups.form.file.desc', {
+                                    maxSize: `${bytesToMB(MAX_FILE_SIZE)}MB`,
+                                })
+                            }}
                         </FormDescription>
                         <FormMessage />
                     </FormItem>
@@ -130,10 +139,10 @@ async function handleOpenChange(open: boolean) {
 
             <DialogFooter>
                 <Button type="reset" form="dialogForm" variant="destructive" :disabled="props.isImporting">
-                    {{ $t("importGroups.buttonReset") }}
+                    {{ $t('importGroups.buttonReset') }}
                 </Button>
                 <Button type="submit" form="dialogForm" :disabled="props.isImporting">
-                    {{ props.isImporting ? $t("importGroups.buttonImporting") : $t("importGroups.buttonImport") }}
+                    {{ props.isImporting ? $t('importGroups.buttonImporting') : $t('importGroups.buttonImport') }}
                 </Button>
             </DialogFooter>
         </DialogContent>

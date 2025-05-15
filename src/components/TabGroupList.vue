@@ -6,17 +6,18 @@ import {
     nextTick,
     onMounted,
     onUnmounted,
-    ref,
     type Ref,
-    watch
-} from "vue";
-import type {Tab, TabGroup} from "@/database.ts";
-import {db} from "@/database.ts";
-import {useSearchStore} from "@/store/search.ts";
-import {useSettingStore} from "@/store/settings.ts";
-import {useRefreshStore} from "@/store/refreshStore.ts";
+    ref,
+    watch,
+} from 'vue';
+
+import BackToTop from './BackToTop.vue';
 import TabGroupComponent from './TabGroup.vue';
-import BackToTop from "./BackToTop.vue";
+import type { Tab, TabGroup } from '@/database.ts';
+import { db } from '@/database.ts';
+import { useRefreshStore } from '@/store/refreshStore.ts';
+import { useSearchStore } from '@/store/search.ts';
+import { useSettingStore } from '@/store/settings.ts';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
@@ -33,17 +34,18 @@ const resetTabGroups = () => {
     pageIndex.value = 1;
     tabGroups.value = [];
     isLoading.value = false;
-}
+};
 
 const fetchTabGroups = async () => {
     if (isLoading.value) return;
 
     isLoading.value = true;
     const data = await db.getAllTabGroups({
-        ...searchStore.searchConditions, ...{
+        ...searchStore.searchConditions,
+        ...{
             pageIndex: pageIndex.value,
             pageSize: pageSize.value,
-        }
+        },
     });
     tabGroups.value.push(...data.tabGroups);
     refreshStore.refreshTotal(data.groupTotal, data.tabTotal);
@@ -51,10 +53,11 @@ const fetchTabGroups = async () => {
     await nextTick(() => {
         observeLastTabGroup();
         isLoading.value = false;
-    })
-}
+    });
+};
 
-watch([
+watch(
+    [
         () => searchStore.searchConditions,
         () => refreshStore.refreshed,
         pageSize,
@@ -63,25 +66,26 @@ watch([
     async () => {
         resetTabGroups();
         await fetchTabGroups();
-    })
+    },
+);
 
 watch(pageIndex, async () => {
     await fetchTabGroups();
-})
+});
 
 onMounted(async () => {
     await fetchTabGroups();
     chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
-        if (message.event === "TabGroupUpdate") {
+        if (message.event === 'TabGroupUpdate') {
             resetTabGroups();
             await fetchTabGroups();
         }
     });
-})
+});
 
 onUnmounted(() => {
     observer.disconnect();
-})
+});
 
 const observer = new IntersectionObserver(
     (entries) => {
@@ -92,14 +96,14 @@ const observer = new IntersectionObserver(
                     pageIndex.value++;
                 }
             }
-        })
+        });
     },
     {
         root: null,
         rootMargin: '0px',
         threshold: 0.1,
-    }
-)
+    },
+);
 
 function observeLastTabGroup() {
     if (tabGroups.value.length) {
@@ -111,16 +115,15 @@ function observeLastTabGroup() {
     }
 }
 
-
 const removeGroup = async (groupIndex: number) => {
     if (tabGroups.value[groupIndex].is_locked) {
         return;
     }
     const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
     tabGroupRefs.value.delete(removedGroup.id!);
-    await db.deleteTabGroup(removedGroup.id!)
+    await db.deleteTabGroup(removedGroup.id!);
     refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
-}
+};
 
 const removeTab = async (groupIndex: number, tabIndex: number) => {
     const group: TabGroup = tabGroups.value[groupIndex];
@@ -134,14 +137,17 @@ const removeTab = async (groupIndex: number, tabIndex: number) => {
         await db.updateTabGroup(group);
     }
     refreshStore.refreshTotal(refreshStore.groupTotal, refreshStore.tabTotal - 1);
-}
+};
 
-const updateGroup = async (groupIndex: number, params: {
-    name?: string,
-    is_starred?: boolean,
-    is_locked?: boolean,
-    tabs_meta?: Array<Tab>,
-}) => {
+const updateGroup = async (
+    groupIndex: number,
+    params: {
+        name?: string;
+        is_starred?: boolean;
+        is_locked?: boolean;
+        tabs_meta?: Array<Tab>;
+    },
+) => {
     const group = tabGroups.value[groupIndex];
     Object.assign(group, {
         is_starred: params.is_starred ?? group.is_starred,
@@ -162,17 +168,27 @@ const updateGroup = async (groupIndex: number, params: {
         const unstarredGroup = tabGroups.value.splice(groupIndex, 1)[0];
         refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - unstarredGroup.tabs_meta.length);
     }
-}
+};
 </script>
 
 <template>
     <div>
-        <TabGroupComponent v-for="(tabGroup, index) in tabGroups" :tab-group="tabGroup" :key="tabGroup.id"
-                           :search-text="searchStore.searchConditions.text"
-                           :ref="(el: ComponentPublicInstance) => { tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance); return tabGroup.id; }"
-                           @remove-group="removeGroup(index)" @remove-tab="removeTab(index, $event)"
-                           @update-group="updateGroup(index, $event)">
+        <TabGroupComponent
+            v-for="(tabGroup, index) in tabGroups"
+            :key="tabGroup.id"
+            :ref="
+                (el: ComponentPublicInstance) => {
+                    tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance);
+                    return tabGroup.id;
+                }
+            "
+            :tab-group="tabGroup"
+            :search-text="searchStore.searchConditions.text"
+            @remove-group="removeGroup(index)"
+            @remove-tab="removeTab(index, $event)"
+            @update-group="updateGroup(index, $event)"
+        >
         </TabGroupComponent>
     </div>
-    <BackToTop/>
+    <BackToTop />
 </template>

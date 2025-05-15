@@ -1,14 +1,14 @@
-import {type Ref, ref} from "vue";
-import {defineStore} from "pinia";
-import {type DateValue} from "@internationalized/date";
+import { type Ref, ref } from 'vue';
+import { type DateValue } from '@internationalized/date';
+import { defineStore } from 'pinia';
 
 export interface SearchConditions {
-    text?: string,
-    startTime?: DateValue,
-    endTime?: DateValue,
-    starredOnly?: boolean,
-    pageSize?: number,
-    pageIndex?: number,
+    text?: string;
+    startTime?: DateValue;
+    endTime?: DateValue;
+    starredOnly?: boolean;
+    pageSize?: number;
+    pageIndex?: number;
 }
 
 export const useSearchStore = defineStore('search', () => {
@@ -16,7 +16,7 @@ export const useSearchStore = defineStore('search', () => {
         text: undefined,
         startTime: undefined,
         endTime: undefined,
-    })
+    });
     const passivelyRefreshed: Ref<number> = ref(0);
 
     function isEmpty(): boolean {
@@ -25,7 +25,7 @@ export const useSearchStore = defineStore('search', () => {
     }
 
     function updateSearchConditions(newConditions: SearchConditions, passivelyRefresh: boolean = false) {
-        searchConditions.value = {...searchConditions.value, ...newConditions};
+        searchConditions.value = { ...searchConditions.value, ...newConditions };
         if (passivelyRefresh) {
             passivelyRefreshed.value++;
         }
@@ -38,8 +38,8 @@ export const useSearchStore = defineStore('search', () => {
                 text: undefined,
                 startTime: undefined,
                 endTime: undefined,
-            }
-        }
+            },
+        };
         if (passivelyRefresh) {
             passivelyRefreshed.value++;
         }
@@ -51,5 +51,5 @@ export const useSearchStore = defineStore('search', () => {
         updateSearchConditions,
         resetSearchConditions,
         isEmpty,
-    }
-})
+    };
+});

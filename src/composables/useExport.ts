@@ -1,8 +1,8 @@
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-import { db, type TabGroup } from "@/database.ts";
-import { i18n } from "@/locales";
+import { ref } from 'vue';
+import { toast } from 'vue-sonner';
 
+import { db, type TabGroup } from '@/database.ts';
+import { i18n } from '@/locales';
 
 export function useExport() {
     const isExporting = ref(false);
@@ -11,7 +11,14 @@ export function useExport() {
 
     const stringify = (tabGroup: TabGroup): string => {
         const { id, tabs_meta, create_time, update_time, is_locked, is_starred } = tabGroup;
-        return JSON.stringify({ id, tabs_meta, create_time, update_time, is_locked, is_starred });
+        return JSON.stringify({
+            id,
+            tabs_meta,
+            create_time,
+            update_time,
+            is_locked,
+            is_starred,
+        });
     };
 
     const exportLargeJsonFile = async () => {
@@ -41,16 +48,21 @@ export function useExport() {
                                 break;
                             }
                             // 每次处理一页数据
-                            const tabGroups = (await db.getAllTabGroups({ pageSize, pageIndex })).tabGroups;
+                            const tabGroups = (
+                                await db.getAllTabGroups({
+                                    pageSize,
+                                    pageIndex,
+                                })
+                            ).tabGroups;
                             if (tabGroups && tabGroups.length > 0) {
-                                const jsonList = tabGroups.map(tabGroup => stringify(tabGroup));
+                                const jsonList = tabGroups.map((tabGroup) => stringify(tabGroup));
                                 const prefix = pageIndex === 1 ? '' : ',';
                                 controller.enqueue(encoder.encode(prefix + jsonList.join(',')));
                             }
                             // 更新进度
-                            exportProgress.value += (100 - exportProgress.value) / (pageCount - pageIndex + 1)
+                            exportProgress.value += (100 - exportProgress.value) / (pageCount - pageIndex + 1);
                             // 允许浏览器进行其他操作
-                            await new Promise(resolve => setTimeout(resolve, 100));
+                            await new Promise((resolve) => setTimeout(resolve, 100));
                         }
 
                         // 如果流未关闭，添加JSON结尾并关闭流
@@ -60,7 +72,7 @@ export function useExport() {
                             streamClosed = true;
                         }
                     } catch (error) {
-                        console.error("流处理过程中出错:", error);
+                        console.error('流处理过程中出错:', error);
                         if (!streamClosed) {
                             controller.error(error);
                             streamClosed = true;
@@ -71,12 +83,12 @@ export function useExport() {
                 cancel() {
                     // 标记流已关闭，避免继续处理
                     streamClosed = true;
-                }
+                },
             });
 
             // 将流转换为Blob
             const response = new Response(readableStream, {
-                headers: { "Content-Type": "application/json" }
+                headers: { 'Content-Type': 'application/json' },
             });
             const blob = await response.blob();
 
@@ -87,24 +99,28 @@ export function useExport() {
                 // 使用chrome.downloads.download触发保存
                 await chrome.downloads.download({
                     url,
-                    filename: "tabGroups_export.json",
+                    filename: 'tabGroups_export.json',
                     saveAs: true,
                 });
-                toast.success(t("exportGroups.success.toastTitle"), {
-                    description: t("exportGroups.success.toastDesc", { total: total })
-                })
+                toast.success(t('exportGroups.success.toastTitle'), {
+                    description: t('exportGroups.success.toastDesc', {
+                        total: total,
+                    }),
+                });
             } catch (downloadError) {
-                console.error("Chrome下载API失败:", downloadError);
+                console.error('Chrome下载API失败:', downloadError);
                 // 回退到传统下载方法
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "tabGroups_export.json";
+                a.download = 'tabGroups_export.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                toast.success(t("exportGroups.success.toastTitle"), {
-                    description: t("exportGroups.success.toastDesc", { total: total })
-                })
+                toast.success(t('exportGroups.success.toastTitle'), {
+                    description: t('exportGroups.success.toastDesc', {
+                        total: total,
+                    }),
+                });
             } finally {
                 // 确保释放Blob URL
                 setTimeout(() => {
@@ -112,11 +128,13 @@ export function useExport() {
                 }, 100);
             }
         } catch (error) {
-            toast.error(t("exportGroups.error.toastTitle"), {
-                description: t("exportGroups.error.toastDesc", { error: error }),
-            })
-            console.error("导出过程出错:", error);
-            throw new Error(`导出JSON文件失败: ${error instanceof Error ? error.message : "未知错误"}`);
+            toast.error(t('exportGroups.error.toastTitle'), {
+                description: t('exportGroups.error.toastDesc', {
+                    error: error,
+                }),
+            });
+            console.error('导出过程出错:', error);
+            throw new Error(`导出JSON文件失败: ${error instanceof Error ? error.message : '未知错误'}`);
         } finally {
             isExporting.value = false;
             exportProgress.value = 0;
@@ -127,5 +145,5 @@ export function useExport() {
         isExporting,
         exportProgress,
         exportLargeJsonFile,
-    }
+    };
 }

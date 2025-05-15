@@ -1,12 +1,8 @@
 /// <reference types="chrome"/>
-import {db} from "./database";
-import {loadSettings, type Settings} from "@/store/settings.ts";
+import { db } from './database';
+import { loadSettings, type Settings } from '@/store/settings.ts';
 
-const i18n = (
-    messageName: string,
-    substitutions?: string | string[],
-    defaultValue?: string
-): string => {
+const i18n = (messageName: string, substitutions?: string | string[], defaultValue?: string): string => {
     const translation = chrome.i18n.getMessage(messageName, substitutions);
     if (translation) return translation;
 
@@ -16,70 +12,70 @@ const i18n = (
 
 const contextMenus: Array<chrome.contextMenus.CreateProperties> = [
     {
-        id: "TabClip",
-        title: "TabClip",
-        contexts: ["all"],
+        id: 'TabClip',
+        title: 'TabClip',
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "displayTabClipMenu",
-        title: i18n("displayTabClip"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'displayTabClipMenu',
+        title: i18n('displayTabClip'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "separator0",
-        type: "separator",
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'separator0',
+        type: 'separator',
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendAllTabsInCurrentWindowMenu",
-        title: i18n("sendAllTabsInCurrentWindow"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'sendAllTabsInCurrentWindowMenu',
+        title: i18n('sendAllTabsInCurrentWindow'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendAllTabsInAllWindowsMenu",
-        title: i18n("sendAllTabsInAllWindows"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'sendAllTabsInAllWindowsMenu',
+        title: i18n('sendAllTabsInAllWindows'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "separator1",
-        type: "separator",
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'separator1',
+        type: 'separator',
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendCurrentTabMenu",
-        title: i18n("sendCurrentTab"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'sendCurrentTabMenu',
+        title: i18n('sendCurrentTab'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendTabsExceptThisMenu",
-        title: i18n("sendTabsExceptThis"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'sendTabsExceptThisMenu',
+        title: i18n('sendTabsExceptThis'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "separator2",
-        type: "separator",
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'separator2',
+        type: 'separator',
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendTabsToTheLeftMenu",
-        title: i18n("sendTabsToTheLeft"),
-        contexts: ["all"],
+        parentId: 'TabClip',
+        id: 'sendTabsToTheLeftMenu',
+        title: i18n('sendTabsToTheLeft'),
+        contexts: ['all'],
     },
     {
-        parentId: "TabClip",
-        id: "sendTabsToTheRightMenu",
-        title: i18n("sendTabsToTheRight"),
-        contexts: ["all"],
-    }
+        parentId: 'TabClip',
+        id: 'sendTabsToTheRightMenu',
+        title: i18n('sendTabsToTheRight'),
+        contexts: ['all'],
+    },
 ];
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -101,11 +97,7 @@ function addTabAndWindowListener(call: () => void) {
         chrome.tabs.onActivated,
     ];
 
-    const windowEvents = [
-        chrome.windows.onFocusChanged,
-        chrome.windows.onCreated,
-        chrome.windows.onRemoved,
-    ];
+    const windowEvents = [chrome.windows.onFocusChanged, chrome.windows.onCreated, chrome.windows.onRemoved];
 
     tabEvents.forEach((event) => {
         event.addListener(() => call());
@@ -118,11 +110,11 @@ function addTabAndWindowListener(call: () => void) {
 
 // @ts-ignore
 function updateContextMenu(menuId: string, enabled: boolean) {
-    chrome.contextMenus.update(menuId, {enabled});
+    chrome.contextMenus.update(menuId, { enabled });
 }
 
 function isExtensionTab(tab: chrome.tabs.Tab): boolean {
-    return (tab.url || tab.pendingUrl)!.includes("tabclip.html");
+    return (tab.url || tab.pendingUrl)!.includes('tabclip.html');
 }
 
 type Pair<T, U> = [T, U];
@@ -140,19 +132,19 @@ function updateAllContextMenu() {
     chrome.windows.getLastFocused((window: chrome.windows.Window) => {
         if (!window) return;
 
-        chrome.tabs.query({windowId: window.id}, (tabs) => {
-            const activeTab = tabs.find(tab => tab.active);
+        chrome.tabs.query({ windowId: window.id }, (tabs) => {
+            const activeTab = tabs.find((tab) => tab.active);
             if (!tabs || !activeTab) return;
 
             loadSettings().then((settings) => {
                 const sendCurrentTabMenuEnabled = !isExtensionTab(activeTab);
-                const sendTabsExceptThisMenuEnabled = tabs.some(tab => {
+                const sendTabsExceptThisMenuEnabled = tabs.some((tab) => {
                     return tab.id !== activeTab.id && isTabAddable(tab, settings);
                 });
-                const sendTabsToTheLeftMenuEnabled = tabs.some(tab => {
+                const sendTabsToTheLeftMenuEnabled = tabs.some((tab) => {
                     return tab.index < activeTab.index && isTabAddable(tab, settings);
                 });
-                const sendTabsToTheRightMenuEnabled = tabs.some(tab => {
+                const sendTabsToTheRightMenuEnabled = tabs.some((tab) => {
                     return tab.index > activeTab.index && isTabAddable(tab, settings);
                 });
                 const sendAllTabsInCurrentWindowMenuEnabled = tabs.some((tab) => {
@@ -160,29 +152,31 @@ function updateAllContextMenu() {
                 });
 
                 chrome.tabs.query({}, (tabs) => {
-                    const sendAllTabsInAllWindowsMenuEnabled = tabs.some(tab => tab.windowId !== activeTab.windowId && isTabAddable(tab, settings));
+                    const sendAllTabsInAllWindowsMenuEnabled = tabs.some(
+                        (tab) => tab.windowId !== activeTab.windowId && isTabAddable(tab, settings),
+                    );
                     const contextMenuStatus: Pair<string, boolean>[] = [
-                        ["sendCurrentTabMenu", sendCurrentTabMenuEnabled],
-                        ["sendAllTabsInAllWindowsMenu", sendAllTabsInAllWindowsMenuEnabled],
-                        ["sendTabsToTheLeftMenu", sendTabsToTheLeftMenuEnabled],
-                        ["sendTabsToTheRightMenu", sendTabsToTheRightMenuEnabled],
-                        ["sendTabsExceptThisMenu", sendTabsExceptThisMenuEnabled],
-                        ["sendAllTabsInCurrentWindowMenu", sendAllTabsInCurrentWindowMenuEnabled],
-                    ]
+                        ['sendCurrentTabMenu', sendCurrentTabMenuEnabled],
+                        ['sendAllTabsInAllWindowsMenu', sendAllTabsInAllWindowsMenuEnabled],
+                        ['sendTabsToTheLeftMenu', sendTabsToTheLeftMenuEnabled],
+                        ['sendTabsToTheRightMenu', sendTabsToTheRightMenuEnabled],
+                        ['sendTabsExceptThisMenu', sendTabsExceptThisMenuEnabled],
+                        ['sendAllTabsInCurrentWindowMenu', sendAllTabsInCurrentWindowMenuEnabled],
+                    ];
                     contextMenuStatus.map(([menuId, status]) => {
                         updateContextMenu(menuId, status);
-                    })
-                })
-            })
-        })
-    })
+                    });
+                });
+            });
+        });
+    });
 }
 
 addTabAndWindowListener(updateAllContextMenu);
 
 async function sendRefreshMessage() {
     try {
-        await chrome.runtime.sendMessage(chrome.runtime.id, {event: "TabGroupUpdate"});
+        await chrome.runtime.sendMessage(chrome.runtime.id, { event: 'TabGroupUpdate' });
     } catch (err) {
         console.log(err);
     }
@@ -193,56 +187,56 @@ class TabGroupManager {
 
     addTabs = async (tabsToAdd: chrome.tabs.Tab[]) => {
         const settings = await loadSettings();
-        const addableTabs = tabsToAdd.filter(tab => isTabAddable(tab, settings));
-        await db.addTabGroup({tabs_meta: addableTabs});
-        await chrome.tabs.remove(addableTabs.map(tab => tab.id!));
+        const addableTabs = tabsToAdd.filter((tab) => isTabAddable(tab, settings));
+        await db.addTabGroup({ tabs_meta: addableTabs });
+        await chrome.tabs.remove(addableTabs.map((tab) => tab.id!));
         await sendRefreshMessage();
     };
 
     displayTabClip = async (_tab: chrome.tabs.Tab) => {
         await redirectToExtensionPage();
-    }
+    };
 
     sendCurrentTab = async (tab: chrome.tabs.Tab) => {
         await db.addTab(tab);
         await chrome.tabs.remove(tab.id!);
         await sendRefreshMessage();
-    }
+    };
 
     sendTabsExceptThis = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
-        const tabsToAdd = allTabs.filter(_tab => _tab.id !== tab.id);
+        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const tabsToAdd = allTabs.filter((_tab) => _tab.id !== tab.id);
         await this.addTabs(tabsToAdd);
-    }
+    };
 
     sendAllTabsInCurrentWindow = async (tab: chrome.tabs.Tab) => {
         await redirectToExtensionPage();
-        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
+        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
         await this.addTabs(allTabs);
-    }
+    };
 
     sendAllTabsInAllWindows = async (_tab: chrome.tabs.Tab) => {
         await redirectToExtensionPage();
         const allTabs = await chrome.tabs.query({});
         await this.addTabs(allTabs);
-    }
+    };
 
     sendTabsToTheLeft = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
-        const tabsToAdd = allTabs.filter(_tab => _tab.index < tab.index);
+        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const tabsToAdd = allTabs.filter((_tab) => _tab.index < tab.index);
         await this.addTabs(tabsToAdd);
-    }
+    };
 
     sendTabsToTheRight = async (tab: chrome.tabs.Tab) => {
-        const allTabs = await chrome.tabs.query({windowId: tab.windowId});
-        const tabsToAdd = allTabs.filter(_tab => _tab.index > tab.index);
+        const allTabs = await chrome.tabs.query({ windowId: tab.windowId });
+        const tabsToAdd = allTabs.filter((_tab) => _tab.index > tab.index);
         await this.addTabs(tabsToAdd);
-    }
+    };
 }
 
 const tabGroupManager = new TabGroupManager();
 
-function createContextMenuHandler(action: (tab: chrome.tabs.Tab) => Promise<void>) {
+function createContextMenuHandler(action: (_tab: chrome.tabs.Tab) => Promise<void>) {
     return async (_info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => {
         await action(tab);
     };
@@ -256,13 +250,15 @@ const contextMenuHandlerMap = {
     sendAllTabsInAllWindowsMenu: createContextMenuHandler(tabGroupManager.sendAllTabsInAllWindows),
     sendTabsToTheLeftMenu: createContextMenuHandler(tabGroupManager.sendTabsToTheLeft),
     sendTabsToTheRightMenu: createContextMenuHandler(tabGroupManager.sendTabsToTheRight),
-}
+};
 
-chrome.contextMenus.onClicked.addListener(async (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
-    const menuId = info.menuItemId;
-    const handler = Object.entries(contextMenuHandlerMap).find(([key]) => key === menuId)?.[1];
-    (handler && tab) ? await handler(info, tab) : console.log(`no action matched for menuItemId: ${menuId}`);
-})
+chrome.contextMenus.onClicked.addListener(
+    async (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab | undefined) => {
+        const menuId = info.menuItemId;
+        const handler = Object.entries(contextMenuHandlerMap).find(([key]) => key === menuId)?.[1];
+        handler && tab ? await handler(info, tab) : console.log(`no action matched for menuItemId: ${menuId}`);
+    },
+);
 
 chrome.action.onClicked.addListener(async (tab: chrome.tabs.Tab) => {
     await tabGroupManager.sendAllTabsInCurrentWindow(tab);
@@ -284,14 +280,14 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 async function redirectToExtensionPage() {
     const tabs = await chrome.tabs.query({});
-    const extensionURL = chrome.runtime.getURL("tabclip.html");
-    const extensionTab = tabs.find(tab => tab.url?.includes(extensionURL));
+    const extensionURL = chrome.runtime.getURL('tabclip.html');
+    const extensionTab = tabs.find((tab) => tab.url?.includes(extensionURL));
     if (extensionTab) {
-        await chrome.tabs.update(extensionTab.id!, {active: true, pinned: true});
-        await chrome.tabs.move(extensionTab.id!, {index: 0});
-        await chrome.windows.update(extensionTab.windowId, {focused: true});
+        await chrome.tabs.update(extensionTab.id!, { active: true, pinned: true });
+        await chrome.tabs.move(extensionTab.id!, { index: 0 });
+        await chrome.windows.update(extensionTab.windowId, { focused: true });
         await sendRefreshMessage();
     } else {
-        await chrome.tabs.create({url: extensionURL, index: 0, pinned: true});
+        await chrome.tabs.create({ url: extensionURL, index: 0, pinned: true });
     }
 }

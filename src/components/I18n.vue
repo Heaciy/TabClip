@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import {ref, watch, onMounted} from 'vue';
-import {useI18n} from 'vue-i18n';
-import {Button} from '@/components/ui/button';
+import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Icon } from '@iconify/vue';
+
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,10 +13,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {Icon} from "@iconify/vue";
-import {availableLocales} from "@/locales";
+import { availableLocales } from '@/locales';
 
-const {locale} = useI18n();
+const { locale } = useI18n();
 const currentLang = ref(locale.value);
 
 onMounted(() => {
@@ -23,12 +24,13 @@ onMounted(() => {
         locale.value = savedLang;
         currentLang.value = savedLang;
     }
-})
+});
 
 watch(currentLang, () => {
     locale.value = currentLang.value;
+
     localStorage.setItem('locale', currentLang.value);
-})
+});
 </script>
 
 <template>
@@ -39,8 +41,8 @@ watch(currentLang, () => {
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">
-            <DropdownMenuLabel>{{ $t("i18n.label") }}</DropdownMenuLabel>
-            <DropdownMenuSeparator/>
+            <DropdownMenuLabel>{{ $t('i18n.label') }}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuRadioGroup v-model="currentLang">
                 <DropdownMenuRadioItem v-for="(label, key) in availableLocales" :key="key" :value="key">
                     {{ label }}

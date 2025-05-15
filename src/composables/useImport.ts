@@ -1,10 +1,10 @@
-import { ref } from "vue";
+import { ref } from 'vue';
+import { toast } from 'vue-sonner';
 import { v5 as uuidv5 } from 'uuid';
-import { toast } from "vue-sonner";
-import { db, type Tab, type TabGroup } from "@/database.ts";
-import { i18n } from "@/locales";
-import { useRefreshStore } from "@/store/refreshStore";
 
+import { db, type Tab, type TabGroup } from '@/database.ts';
+import { i18n } from '@/locales';
+import { useRefreshStore } from '@/store/refreshStore';
 
 export function useImport() {
     const isImporting = ref<boolean>(false);
@@ -14,7 +14,13 @@ export function useImport() {
     const refreshStore = useRefreshStore();
     const t = i18n.global.t;
 
-    function formatOnetabGroup(onetabGroup: { id: string, tabsMeta: Array<Tab>, createDate: number, locked: boolean, starred: boolean }): TabGroup {
+    function formatOnetabGroup(onetabGroup: {
+        id: string;
+        tabsMeta: Array<Tab>;
+        createDate: number;
+        locked: boolean;
+        starred: boolean;
+    }): TabGroup {
         return {
             id: uuidv5(onetabGroup.id, uuidv5.DNS),
             tabs_meta: onetabGroup.tabsMeta.map(({ url, title }) => ({ url, title })),
@@ -23,11 +29,11 @@ export function useImport() {
             total: onetabGroup.tabsMeta.length,
             is_locked: onetabGroup.locked ?? false,
             is_starred: onetabGroup.starred ?? false,
-        }
+        };
     }
 
     function sleep(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     async function importData(file: File) {
@@ -41,10 +47,10 @@ export function useImport() {
             let appType, tabGroups;
 
             if (data.state?.tabGroups) {
-                appType = "Onetab";
+                appType = 'Onetab';
                 tabGroups = data.state.tabGroups;
             } else if (data.tabGroups) {
-                appType = "TabClip";
+                appType = 'TabClip';
                 tabGroups = data.tabGroups;
             } else {
                 throw new Error('File format error');
@@ -54,18 +60,17 @@ export function useImport() {
             const pageCount = Math.ceil(tabGroups.length / pageSize);
             for (let pageIndex = 1; pageIndex <= pageCount; pageIndex++) {
                 const slice = tabGroups.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-                await db.bulkPutGroups(appType === "Onetab" ? slice.map(formatOnetabGroup) : slice);
-                importProgress.value += (100 - importProgress.value) / (pageCount - pageIndex + 1)
+                await db.bulkPutGroups(appType === 'Onetab' ? slice.map(formatOnetabGroup) : slice);
+                importProgress.value += (100 - importProgress.value) / (pageCount - pageIndex + 1);
                 await sleep(200);
             }
 
             isImportDialogOpened.value = false;
             refreshStore.refresh();
-            toast.success(t("importGroups.success.toastTitle"), {
-                description: t("importGroups.success.toastDesc", { total: tabGroups.length }),
-            })
-        }
-        finally {
+            toast.success(t('importGroups.success.toastTitle'), {
+                description: t('importGroups.success.toastDesc', { total: tabGroups.length }),
+            });
+        } finally {
             isImporting.value = false;
             importProgress.value = 0;
         }
@@ -76,5 +81,5 @@ export function useImport() {
         importProgress,
         importData,
         isImportDialogOpened,
-    }
+    };
 }

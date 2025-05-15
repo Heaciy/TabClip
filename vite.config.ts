@@ -1,8 +1,8 @@
-import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
-import tailwindcss from '@tailwindcss/vite'
-import {resolve} from 'path'
-import {viteStaticCopy} from 'vite-plugin-static-copy'
+import tailwindcss from '@tailwindcss/vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
     plugins: [
@@ -10,29 +10,29 @@ export default defineConfig({
         tailwindcss(),
         viteStaticCopy({
             targets: [
-                {src: 'manifest.json', dest: './'},
-                {src: 'src/locales/_locales', dest: './', rename: '_locales'}
-            ]
+                { src: 'manifest.json', dest: './' },
+                { src: 'src/locales/_locales', dest: './', rename: '_locales' },
+            ],
         }),
         {
             name: 'rename',
             enforce: 'post',
             generateBundle(_options, bundle) {
-                bundle['index.html'].fileName = bundle['index.html'].fileName.replace('index.html', 'tabclip.html')
-            }
-        }
+                bundle['index.html'].fileName = bundle['index.html'].fileName.replace('index.html', 'tabclip.html');
+            },
+        },
     ],
     build: {
         rollupOptions: {
             input: {
                 main: resolve(__dirname, 'index.html'),
-                background: resolve(__dirname, 'src/background.ts')
+                background: resolve(__dirname, 'src/background.ts'),
             },
             output: {
                 entryFileNames: '[name].js',
                 chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]'
-            }
+                assetFileNames: '[name].[ext]',
+            },
         },
         outDir: 'dist',
         emptyOutDir: true,
@@ -41,7 +41,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': resolve(__dirname, './src')
-        }
-    }
-})
+            '@': resolve(__dirname, './src'),
+        },
+    },
+});

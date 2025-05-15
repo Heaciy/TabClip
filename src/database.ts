@@ -1,8 +1,9 @@
-import Dexie, {type EntityTable} from "dexie";
-import {loadSettings} from "@/store/settings.ts";
-import {type SearchConditions} from "@/store/search.ts";
-import {getLocalTimeZone} from "@internationalized/date";
-import {eachDayOfInterval, format, parse, addDays} from "date-fns";
+import { getLocalTimeZone } from '@internationalized/date';
+import { addDays, eachDayOfInterval, format, parse } from 'date-fns';
+import Dexie, { type EntityTable } from 'dexie';
+
+import { type SearchConditions } from '@/store/search.ts';
+import { loadSettings } from '@/store/settings.ts';
 
 interface Tab {
     id?: number | string;
@@ -12,7 +13,7 @@ interface Tab {
 }
 
 interface TabGroup {
-    id?: string;  // UUID
+    id?: string; // UUID
     name?: string;
     tabs_meta: Array<Tab>;
     is_starred?: boolean;
@@ -22,36 +23,36 @@ interface TabGroup {
     total?: number;
 }
 
-interface DBTabGroup extends Omit<TabGroup, "tabs_meta"> {
-    tabs_meta: string;  // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
+interface DBTabGroup extends Omit<TabGroup, 'tabs_meta'> {
+    tabs_meta: string; // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
 }
 
 interface HeatmapData {
-    date_list: string[],
-    group_num_list: number[],
-    tab_num_list: number[],
-    group_max: number,
-    group_min: number,
-    tab_max: number,
-    tab_min: number,
-    years: number[]
+    date_list: string[];
+    group_num_list: number[];
+    tab_num_list: number[];
+    group_max: number;
+    group_min: number;
+    tab_max: number;
+    tab_min: number;
+    years: number[];
 }
 
 class TabGroupDatabase extends Dexie {
-    public tabGroups: EntityTable<DBTabGroup, "id">;
+    public tabGroups: EntityTable<DBTabGroup, 'id'>;
 
     constructor() {
-        super("TabClip");
+        super('TabClip');
         this.version(1).stores({
-            tabGroups: "id, tabs_meta, is_starred, is_locked, create_time, total",
+            tabGroups: 'id, tabs_meta, is_starred, is_locked, create_time, total',
         });
 
         // 初始化表
-        this.tabGroups = this.table("tabGroups");
+        this.tabGroups = this.table('tabGroups');
     }
 
-    formatTab({title, url, pinned}: Tab): Tab {
-        return pinned ? {title, url, pinned} : {title, url}
+    formatTab({ title, url, pinned }: Tab): Tab {
+        return pinned ? { title, url, pinned } : { title, url };
     }
 
     /** 添加 TabGroup */
@@ -72,9 +73,9 @@ class TabGroupDatabase extends Dexie {
 
     /** 添加 Tab */
     async addTab(tab: Tab) {
-        let latestTabGroup = await this.tabGroups.orderBy("create_time").reverse().first();
+        let latestTabGroup = await this.tabGroups.orderBy('create_time').reverse().first();
         if (!latestTabGroup) {
-            await this.addTabGroup({tabs_meta: [tab]});
+            await this.addTabGroup({ tabs_meta: [tab] });
         } else {
             const tabsMeta = JSON.parse(latestTabGroup.tabs_meta) as Array<Tab>;
             tabsMeta.unshift(this.formatTab(tab));
@@ -103,36 +104,40 @@ class TabGroupDatabase extends Dexie {
 
     /** 查询所有 TabGroup */
     async getAllTabGroups(searchConditions: SearchConditions = {}): Promise<{
-        tabGroups: TabGroup[],
-        groupTotal: number,
-        tabTotal: number
+        tabGroups: TabGroup[];
+        groupTotal: number;
+        tabTotal: number;
     }> {
         const settings = await loadSettings();
-        let {
-            text,
-            startTime,
-            endTime,
-            starredOnly,
-            pageSize = settings.pageSize,
-            pageIndex = 1,
-        } = searchConditions;
+        let { text, startTime, endTime, starredOnly, pageSize = settings.pageSize, pageIndex = 1 } = searchConditions;
 
-        let querySet = this.tabGroups.orderBy("create_time").reverse();
+        let querySet = this.tabGroups.orderBy('create_time').reverse();
         if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
-        if (startTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
-        if (endTime) querySet = querySet.filter((tabGroup) => tabGroup.create_time! <= endTime.add({days: 1}).toDate(getLocalTimeZone()));
-        if (text) querySet = querySet.filter((tabGroup) => {
-            return tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase()) ? true :
-                tabGroup.name ? tabGroup.name.toLowerCase().includes(text?.toLowerCase()) : false;
-        });
+        if (startTime)
+            querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
+        if (endTime)
+            querySet = querySet.filter(
+                (tabGroup) => tabGroup.create_time! <= endTime.add({ days: 1 }).toDate(getLocalTimeZone()),
+            );
+        if (text)
+            querySet = querySet.filter((tabGroup) => {
+                return tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase())
+                    ? true
+                    : tabGroup.name
+                      ? tabGroup.name.toLowerCase().includes(text?.toLowerCase())
+                      : false;
+            });
 
         const groupTotal = await querySet.count();
         let tabTotal = 0;
-        await querySet.each(tabGroup => {
+        await querySet.each((tabGroup) => {
             tabTotal += tabGroup.total ?? 0;
-        })
+        });
 
-        const rawData = await querySet.offset((pageIndex - 1) * pageSize).limit(pageSize).toArray();
+        const rawData = await querySet
+            .offset((pageIndex - 1) * pageSize)
+            .limit(pageSize)
+            .toArray();
 
         return {
             tabGroups: rawData.map((data) => ({
@@ -144,7 +149,7 @@ class TabGroupDatabase extends Dexie {
             })),
             groupTotal: groupTotal,
             tabTotal: tabTotal,
-        }
+        };
     }
 
     /** 批量更新/插入 TabGroup */
@@ -155,7 +160,7 @@ class TabGroupDatabase extends Dexie {
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
             update_time: new Date(),
             total: tabGroup.tabs_meta.length,
-        }))
+        }));
         await this.tabGroups.bulkPut(data);
     }
 
@@ -165,8 +170,8 @@ class TabGroupDatabase extends Dexie {
             return parse(dateStr, 'yyyy-MM-dd', new Date());
         });
 
-        const dateList = eachDayOfInterval({start: startDate, end: endDate}).map(date =>
-            format(date, 'yyyy-MM-dd')
+        const dateList = eachDayOfInterval({ start: startDate, end: endDate }).map((date) =>
+            format(date, 'yyyy-MM-dd'),
         );
 
         const groupCountMap: Record<string, number> = {};
@@ -176,7 +181,7 @@ class TabGroupDatabase extends Dexie {
             tabCountMap[dateStr] = 0;
         }
 
-        let querySet = this.tabGroups.orderBy("create_time").reverse();
+        let querySet = this.tabGroups.orderBy('create_time').reverse();
 
         const years: Array<number> = [];
         const endYear = new Date().getFullYear();
@@ -185,7 +190,9 @@ class TabGroupDatabase extends Dexie {
             years.unshift(year);
         }
 
-        querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startDate && tabGroup.create_time! < addDays(endDate, 1));
+        querySet = querySet.filter(
+            (tabGroup) => tabGroup.create_time! >= startDate && tabGroup.create_time! < addDays(endDate, 1),
+        );
         await querySet.each((tabGroup) => {
             if (!tabGroup.create_time) return;
             const dateStr = format(tabGroup.create_time, 'yyyy-MM-dd');
@@ -193,8 +200,8 @@ class TabGroupDatabase extends Dexie {
             tabCountMap[dateStr] += tabGroup.total || 0;
         });
 
-        const group_num_list = dateList.map(date => groupCountMap[date]);
-        const tab_num_list = dateList.map(date => tabCountMap[date]);
+        const group_num_list = dateList.map((date) => groupCountMap[date]);
+        const tab_num_list = dateList.map((date) => tabCountMap[date]);
 
         return {
             date_list: dateList,
@@ -222,10 +229,10 @@ const getDateRange = (year?: number): [string, string] => {
         oneYearAgo.setFullYear(today.getFullYear() - 1);
         return [format(oneYearAgo, 'yyyy-MM-dd'), format(today, 'yyyy-MM-dd')];
     }
-}
+};
 
 // 创建数据库实例
 const db = new TabGroupDatabase();
 
-export type {Tab, TabGroup, HeatmapData};
-export {db, getDateRange};
+export type { HeatmapData, Tab, TabGroup };
+export { db, getDateRange };
