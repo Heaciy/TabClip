@@ -1,0 +1,51 @@
+name: build-npm-package
+
+on:
+    release:
+        types: [created]
+
+permissions:
+    contents: write
+
+jobs:
+    build-npm:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20'
+
+            - name: Clean problematic files
+              run: |
+                  rm -rf node_modules package-lock.json
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build project
+              run: npm run build
+
+            - name: Get version from tag
+              id: get_version
+              run: |
+                  echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+            - name: Rename dist folder
+              run: |
+                  mv dist tabclip-${{ steps.get_version.outputs.version }}-chrome
+
+            - name: Zip build output
+              run: |
+                  zip -r tabclip-${{ steps.get_version.outputs.version }}-chrome.zip tabclip-${{ steps.get_version.outputs.version }}-chrome
+
+            - name: Upload release asset
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: tabclip-${{ steps.get_version.outputs.version }}-chrome.zip
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

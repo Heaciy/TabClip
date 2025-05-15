@@ -1,127 +1,127 @@
 {
-  "search": {
-    "startTime": "开始时间",
-    "endTime": "结束时间",
-    "textPlaceholder": "搜索",
-    "timePlaceholder": "选择日期",
-    "popoverTitle": "搜索条件",
-    "popoverDesc": "设置更多搜索条件",
-    "buttonSearch": "搜索",
-    "buttonCancel": "取消"
-  },
-  "i18n": {
-    "label": "选择语言"
-  },
-  "settings": {
-    "sheetTile": "编辑设置",
-    "sheetDesc": "修改你的设置, 点击保存更改来保存设置",
-    "storePinnedTabs": {
-      "title": "允许收起固定的标签页",
-      "desc": "允许收起被固定的标签页, 默认不允许"
+    "search": {
+        "startTime": "开始时间",
+        "endTime": "结束时间",
+        "textPlaceholder": "搜索",
+        "timePlaceholder": "选择日期",
+        "popoverTitle": "搜索条件",
+        "popoverDesc": "设置更多搜索条件",
+        "buttonSearch": "搜索",
+        "buttonCancel": "取消"
     },
-    "defaultLockGroup": {
-      "title": "默认锁定标签组",
-      "desc": "新增标签组时默认锁定标签组以屏蔽修改或删除, 默认不锁定"
+    "i18n": {
+        "label": "选择语言"
     },
-    "openGroupInNewWindow": {
-      "title": "在新的窗口打开标签组",
-      "desc": "新建窗口来打开标签组, 默认在当前窗口打开标签组"
+    "settings": {
+        "sheetTile": "编辑设置",
+        "sheetDesc": "修改你的设置, 点击保存更改来保存设置",
+        "storePinnedTabs": {
+            "title": "允许收起固定的标签页",
+            "desc": "允许收起被固定的标签页, 默认不允许"
+        },
+        "defaultLockGroup": {
+            "title": "默认锁定标签组",
+            "desc": "新增标签组时默认锁定标签组以屏蔽修改或删除, 默认不锁定"
+        },
+        "openGroupInNewWindow": {
+            "title": "在新的窗口打开标签组",
+            "desc": "新建窗口来打开标签组, 默认在当前窗口打开标签组"
+        },
+        "useGoogleIcon": {
+            "title": "从谷歌加载图标",
+            "desc": "当图标没有被缓存时从谷歌在线加载图标"
+        },
+        "isStartupPage": {
+            "title": "作为启动页",
+            "desc": "每次启动浏览器时自动打开 TabClip 作为首页"
+        },
+        "pageSize": {
+            "title": "页面大小",
+            "selectLabel": "页面大小",
+            "desc": "每次加载标签组的数量"
+        },
+        "buttonSave": "保存更改",
+        "buttonDiscard": "取消更改"
     },
-    "useGoogleIcon": {
-      "title": "从谷歌加载图标",
-      "desc": "当图标没有被缓存时从谷歌在线加载图标"
+    "moreOperations": {
+        "dataOperations": {
+            "label": "数据操作",
+            "exportGroups": "导出标签组",
+            "importGroups": "导入标签组"
+        },
+        "dangerOperations": {
+            "label": "危险操作",
+            "truncateGroups": "删除所有标签组"
+        }
     },
-    "isStartupPage": {
-      "title": "作为启动页",
-      "desc": "每次启动浏览器时自动打开 TabClip 作为首页"
+    "truncateGroups": {
+        "title": "删除所有标签组",
+        "descLeft": "该操作会删除所有标签组, 输入",
+        "descRight": "来确认",
+        "buttonDelete": "删除",
+        "buttonCancel": "取消",
+        "success": {
+            "toastTitle": "删除成功",
+            "toastDesc": "删除所有标签组成功"
+        }
     },
-    "pageSize": {
-      "title": "页面大小",
-      "selectLabel": "页面大小",
-      "desc": "每次加载标签组的数量"
+    "importGroups": {
+        "dialogTitle": "导入标签组",
+        "dialogDesc": "导入从 TabClip/Onetab 导出的数据",
+        "success": {
+            "toastTitle": "导入成功",
+            "toastDesc": "成功导入 {total} 个标签组"
+        },
+        "error": {
+            "parseError": "JSON文件解析失败",
+            "fileFormatError": "文件格式错误"
+        },
+        "form": {
+            "file": {
+                "label": "待导入的文件",
+                "desc": "从 TabClip/Onetab 导出的数据文件 (JSON 格式, 最大 {maxSize})"
+            }
+        },
+        "buttonImport": "导入",
+        "buttonImporting": "导入中...",
+        "buttonReset": "重置"
     },
-    "buttonSave": "保存更改",
-    "buttonDiscard": "取消更改"
-  },
-  "moreOperations": {
-    "dataOperations": {
-      "label": "数据操作",
-      "exportGroups": "导出标签组",
-      "importGroups": "导入标签组"
+    "exportGroups": {
+        "success": {
+            "toastTitle": "导出成功",
+            "toastDesc": "成功导出 {total} 个标签组"
+        },
+        "error": {
+            "toastTitle": "导出失败",
+            "toastDesc": "导出失败: {error}"
+        }
     },
-    "dangerOperations": {
-      "label": "危险操作",
-      "truncateGroups": "删除所有标签组"
+    "toolBar": {
+        "searchTitle": "搜索结果",
+        "allTabsTitle": "全部标签组",
+        "starredTitle": "收藏标签组",
+        "allTabsTab": "全部",
+        "starredTab": "收藏",
+        "groupNum": "{groupNum} 标签组",
+        "tabNum": "{tabNum} 标签页"
+    },
+    "tabGroup": {
+        "InputGroupName": "输入名称",
+        "total": "{total} 个标签页"
+    },
+    "veeValidate": {
+        "fileRequired": "请选择一个文件",
+        "fileSize": "文件大小必须小于 {maxSize}",
+        "fileType": "文件必须是 {fileType} 文件"
+    },
+    "heatmap": {
+        "title": "热力图",
+        "desc": "标签数据时间分布",
+        "buttonClose": "关闭",
+        "groupsSelect": "标签组",
+        "tabsSelect": "标签页",
+        "recentYear": "最近一年",
+        "typePlaceholder": "类型",
+        "yearPlaceholder": "年份"
     }
-  },
-  "truncateGroups": {
-    "title": "删除所有标签组",
-    "descLeft": "该操作会删除所有标签组, 输入",
-    "descRight": "来确认",
-    "buttonDelete": "删除",
-    "buttonCancel": "取消",
-    "success": {
-      "toastTitle": "删除成功",
-      "toastDesc": "删除所有标签组成功"
-    }
-  },
-  "importGroups": {
-    "dialogTitle": "导入标签组",
-    "dialogDesc": "导入从 TabClip/Onetab 导出的数据",
-    "success": {
-      "toastTitle": "导入成功",
-      "toastDesc": "成功导入 {total} 个标签组"
-    },
-    "error": {
-      "parseError": "JSON文件解析失败",
-      "fileFormatError": "文件格式错误"
-    },
-    "form": {
-      "file": {
-        "label": "待导入的文件",
-        "desc": "从 TabClip/Onetab 导出的数据文件 (JSON 格式, 最大 {maxSize})"
-      }
-    },
-    "buttonImport": "导入",
-    "buttonImporting": "导入中...",
-    "buttonReset": "重置"
-  },
-  "exportGroups": {
-    "success": {
-      "toastTitle": "导出成功",
-      "toastDesc": "成功导出 {total} 个标签组"
-    },
-    "error": {
-      "toastTitle": "导出失败",
-      "toastDesc": "导出失败: {error}"
-    }
-  },
-  "toolBar": {
-    "searchTitle": "搜索结果",
-    "allTabsTitle": "全部标签组",
-    "starredTitle": "收藏标签组",
-    "allTabsTab": "全部",
-    "starredTab": "收藏",
-    "groupNum": "{groupNum} 标签组",
-    "tabNum": "{tabNum} 标签页"
-  },
-  "tabGroup": {
-    "InputGroupName": "输入名称",
-    "total": "{total} 个标签页"
-  },
-  "veeValidate": {
-    "fileRequired": "请选择一个文件",
-    "fileSize": "文件大小必须小于 {maxSize}",
-    "fileType": "文件必须是 {fileType} 文件"
-  },
-  "heatmap": {
-    "title": "热力图",
-    "desc": "标签数据时间分布",
-    "buttonClose": "关闭",
-    "groupsSelect": "标签组",
-    "tabsSelect": "标签页",
-    "recentYear": "最近一年",
-    "typePlaceholder": "类型",
-    "yearPlaceholder": "年份"
-  }
 }
