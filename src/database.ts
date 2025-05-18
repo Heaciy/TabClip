@@ -23,9 +23,7 @@ interface TabGroup {
     total?: number;
 }
 
-interface DBTabGroup extends Omit<TabGroup, 'tabs_meta'> {
-    tabs_meta: string; // 其实是Array<tab>的字符串形式，为了方便存储故设计为一整个JSON字符串
-}
+interface DBTabGroup extends TabGroup {}
 
 interface HeatmapData {
     date_list: string[];
@@ -44,7 +42,7 @@ class TabGroupDatabase extends Dexie {
     constructor() {
         super('TabClip');
         this.version(1).stores({
-            tabGroups: 'id, tabs_meta, is_starred, is_locked, create_time, total',
+            tabGroups: 'id, is_starred, is_locked, create_time, total',
         });
 
         // 初始化表
@@ -62,7 +60,7 @@ class TabGroupDatabase extends Dexie {
         return this.tabGroups.add({
             ...tabGroup,
             id: tabGroup.id || crypto.randomUUID(),
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
+            tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             is_starred: tabGroup.is_starred || false,
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
             create_time: tabGroup.create_time || new Date(),
@@ -77,10 +75,10 @@ class TabGroupDatabase extends Dexie {
         if (!latestTabGroup) {
             await this.addTabGroup({ tabs_meta: [tab] });
         } else {
-            const tabsMeta = JSON.parse(latestTabGroup.tabs_meta) as Array<Tab>;
+            const tabsMeta = latestTabGroup.tabs_meta;
             tabsMeta.unshift(this.formatTab(tab));
             await this.tabGroups.update(latestTabGroup.id, {
-                tabs_meta: JSON.stringify(tabsMeta),
+                tabs_meta: tabsMeta,
                 update_time: new Date(),
                 total: tabsMeta.length,
             });
@@ -91,7 +89,7 @@ class TabGroupDatabase extends Dexie {
     async updateTabGroup(tabGroup: TabGroup) {
         return this.tabGroups.update(tabGroup.id!, {
             ...tabGroup,
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
+            tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             update_time: new Date(),
             total: tabGroup.tabs_meta.length,
         });
@@ -119,14 +117,16 @@ class TabGroupDatabase extends Dexie {
             querySet = querySet.filter(
                 (tabGroup) => tabGroup.create_time! <= endTime.add({ days: 1 }).toDate(getLocalTimeZone()),
             );
-        if (text)
+
+        if (text) {
+            const textLower = text.toLowerCase();
             querySet = querySet.filter((tabGroup) => {
-                return tabGroup.tabs_meta.toLowerCase().includes(text?.toLowerCase())
-                    ? true
-                    : tabGroup.name
-                      ? tabGroup.name.toLowerCase().includes(text?.toLowerCase())
-                      : false;
+                return (
+                    tabGroup.name?.toLowerCase().includes(textLower) ||
+                    tabGroup.tabs_meta?.some((tab) => tab.title?.toLowerCase().includes(textLower))
+                );
             });
+        }
 
         const groupTotal = await querySet.count();
         let tabTotal = 0;
@@ -142,7 +142,7 @@ class TabGroupDatabase extends Dexie {
         return {
             tabGroups: rawData.map((data) => ({
                 ...data,
-                tabs_meta: JSON.parse(data.tabs_meta).map((tab: Tab) => {
+                tabs_meta: data.tabs_meta.map((tab: Tab) => {
                     tab.id = crypto.randomUUID();
                     return tab;
                 }),
@@ -156,7 +156,7 @@ class TabGroupDatabase extends Dexie {
     async bulkPutGroups(tabGroups: Array<TabGroup>) {
         const data = tabGroups.map((tabGroup) => ({
             ...tabGroup,
-            tabs_meta: JSON.stringify(tabGroup.tabs_meta.map(this.formatTab)),
+            tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
             update_time: new Date(),
             total: tabGroup.tabs_meta.length,
