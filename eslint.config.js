@@ -27,7 +27,7 @@ export default [
                 sourceType: 'module',
                 ecmaVersion: 'latest',
                 extraFileExtensions: ['.vue'],
-                project: ['./tsconfig.json', './tsconfig.app.json'],
+                project: ['./tsconfig.json'],
             },
         },
         plugins: {
@@ -42,7 +42,7 @@ export default [
             parserOptions: {
                 sourceType: 'module',
                 ecmaVersion: 'latest',
-                project: ['./tsconfig.json', './tsconfig.app.json', './tsconfig.node.json'],
+                project: ['./tsconfig.json'],
             },
         },
         plugins: {

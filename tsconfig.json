@@ -1,19 +1,19 @@
 {
-    "files": [],
-    "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
-        {
-            "path": "./tsconfig.node.json"
-        }
-    ],
     "compilerOptions": {
-        "noUnusedLocals": false,
-        "types": ["chrome", "vite/client", "vue"],
-        "baseUrl": ".",
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "noEmit": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "skipLibCheck": true,
         "paths": {
+            "@": ["./src"],
             "@/*": ["./src/*"]
         }
-    }
+    },
+    "include": ["./**/*", "./.wxt/wxt.d.ts", "vite.config.ts", "wxt.config.ts"],
+    "exclude": ["./output"]
 }

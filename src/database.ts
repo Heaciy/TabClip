@@ -2,8 +2,8 @@ import { getLocalTimeZone } from '@internationalized/date';
 import { addDays, eachDayOfInterval, format, parse } from 'date-fns';
 import Dexie, { type EntityTable } from 'dexie';
 
-import { type SearchConditions } from '@/store/search.ts';
-import { loadSettings } from '@/store/settings.ts';
+import { type SearchConditions } from '@/store/search';
+import { loadSettings } from '@/store/settings';
 
 interface Tab {
     id?: number | string;
