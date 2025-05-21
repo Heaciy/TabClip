@@ -14,30 +14,30 @@
     },
     "settings": {
         "sheetTile": "Edit Settings",
-        "sheetDesc": "Make changes to your settings here. Click save when you're done.",
+        "sheetDesc": "Make changes to your settings here. Click Save when you're done.",
         "storePinnedTabs": {
             "title": "Store Pinned Tabs",
-            "desc": "Store pinned tabs when adding group, default not."
+            "desc": "Store pinned tabs when adding a group. Disabled by default."
         },
         "defaultLockGroup": {
             "title": "Default Lock Group",
-            "desc": "Default lock group when adding group, default not."
+            "desc": "Lock a group by default when adding it. Disabled by default."
         },
         "openGroupInNewWindow": {
             "title": "Open Group In New Window",
-            "desc": "Open a new window when recover group, default not and open in current window."
+            "desc": "Open a group in a new window when restoring it. Disabled by default (opens in the current window)."
         },
         "useGoogleIcon": {
             "title": "Load Icon From Google",
-            "desc": "The icon will be loaded from Google only if it is not cached."
+            "desc": "The icon will be loaded from Google only if it is not cached. Disabled by default."
         },
         "isStartupPage": {
-            "title": "As Startup Page",
-            "desc": "Automatically open TabClip as home page every time you start your browser."
+            "title": "Set as Startup Page",
+            "desc": "Automatically open TabClip as the home page every time you start your browser."
         },
         "pageSize": {
-            "title": "Page size",
-            "selectLabel": "Page size",
+            "title": "Page Size",
+            "selectLabel": "Page Size",
             "desc": "The number of TabGroups loaded each time."
         },
         "buttonSave": "Save Changes",
@@ -60,19 +60,19 @@
         "descRight": "to confirm.",
         "buttonDelete": "Delete",
         "buttonCancel": "Cancel",
-        "toastTitle": "Delete successful",
+        "toastTitle": "Deletion Successful",
         "toastDesc": "Successfully deleted all tab groups."
     },
     "importGroups": {
         "dialogTitle": "Import Data",
         "dialogDesc": "Import the data exported from TabClip/Onetab.",
         "success": {
-            "toastTitle": "Import successful",
+            "toastTitle": "Import Successful",
             "toastDesc": "Successfully imported {total} tab groups."
         },
         "error": {
             "parseError": "JSON file parsing failed",
-            "fileFormatError": "File format error"
+            "fileFormatError": "File Format Error"
         },
         "form": {
             "file": {
@@ -86,39 +86,55 @@
     },
     "exportGroups": {
         "success": {
-            "toastTitle": "Export successful",
-            "toastDesc": "Successfully Exported {total} tab groups."
+            "toastTitle": "Export Successful",
+            "toastDesc": "Successfully exported {total} tab groups."
         },
         "error": {
-            "toastTitle": "Export failed",
+            "toastTitle": "Export Failed",
             "toastDesc": "Export failed: {error}"
         }
     },
     "toolBar": {
         "searchTitle": "Search",
-        "allTabsTitle": "All tabs",
+        "allTabsTitle": "All Tabs",
         "starredTitle": "Starred",
-        "allTabsTab": "All tabs",
+        "allTabsTab": "All Tabs",
         "starredTab": "Starred",
         "groupNum": "{groupNum} Groups",
         "tabNum": "{tabNum} Tabs"
     },
     "tabGroup": {
-        "InputGroupName": "Input name",
-        "total": "Total: {total} tabs"
+        "InputGroupName": "Input Name",
+        "total": "Total: {total} tabs",
+        "copyLinks": {
+            "toastTitle": "Links Copied Successfully",
+            "toastDesc": "Successfully copied {total} tab links."
+        },
+        "openTab": {
+            "firefoxNotAllow": {
+                "toastTitle": "Firefox Doesn't Allow Opening This Type of Tab",
+                "toastDesc": "The link has been copied to your clipboard, please paste it manually into the address bar to visit."
+            }
+        },
+        "openTabGroup": {
+            "firefoxNotAllow": {
+                "toastTitle": "Some Tabs Cannot Be Opened in Firefox",
+                "toastDesc": "This tab group contains tabs that Firefox does not allow to open. The group will be preserved."
+            }
+        }
     },
     "veeValidate": {
         "fileRequired": "Please select a file",
         "fileSize": "File size must be less than {maxSize}",
-        "fileType": "File must be {fileType} format"
+        "fileType": "File must be in {fileType} format"
     },
     "heatmap": {
         "title": "Heatmap",
-        "desc": "The heatmap of your data.",
+        "desc": "A heatmap of your data.",
         "buttonClose": "Close",
         "groupsSelect": "Groups",
         "tabsSelect": "Tabs",
-        "recentYear": "Recent year",
+        "recentYear": "Recent Year",
         "typePlaceholder": "Type",
         "yearPlaceholder": "Year"
     }

@@ -96,8 +96,8 @@ export function useExport() {
             const url = URL.createObjectURL(blob);
 
             try {
-                // 使用chrome.downloads.download触发保存
-                await chrome.downloads.download({
+                // 使用browser.downloads.download触发保存
+                await browser.downloads.download({
                     url,
                     filename: 'tabGroups_export.json',
                     saveAs: true,

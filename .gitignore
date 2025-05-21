@@ -22,6 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.output/
+.wxt/
 
 docs/.vitepress/dist
 docs/.vitepress/cache

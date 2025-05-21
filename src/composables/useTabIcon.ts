@@ -56,36 +56,44 @@ const iconCache = new Map<string, string>();
 
 // 主入口
 export async function useTabIcon(url: string, useGoogleIcon: boolean = false): Promise<string> {
-    if (!useGoogleIcon) {
-        return getChromeFaviconUrl(url, true);
-    }
+    // 如果是构建 Firefox 版本，直接返回空字符串
+    if (import.meta.env.FIREFOX) {
+        if (!useGoogleIcon) {
+            return './global.png';
+        }
+        return getFallbackFaviconUrl(url);
+    } else {
+        if (!useGoogleIcon) {
+            return getChromeFaviconUrl(url, true);
+        }
 
-    await preloadDefaultIcon();
+        await preloadDefaultIcon();
 
-    if (iconCache.has(url)) {
-        return iconCache.get(url)!;
-    }
+        if (iconCache.has(url)) {
+            return iconCache.get(url)!;
+        }
 
-    const chromeFaviconUrl = getChromeFaviconUrl(url);
+        const chromeFaviconUrl = getChromeFaviconUrl(url);
 
-    try {
-        const res = await fetch(chromeFaviconUrl);
-        const buf = await res.arrayBuffer();
+        try {
+            const res = await fetch(chromeFaviconUrl);
+            const buf = await res.arrayBuffer();
 
-        if (defaultIconBuffer && isArrayBufferEqual(buf, defaultIconBuffer)) {
-            // 是地球，换用备用 favicon
+            if (defaultIconBuffer && isArrayBufferEqual(buf, defaultIconBuffer)) {
+                // 是地球，换用备用 favicon
+                const fallback = getFallbackFaviconUrl(url);
+                iconCache.set(url, fallback);
+                return fallback;
+            } else {
+                // 正常图标
+                iconCache.set(url, chromeFaviconUrl);
+                return chromeFaviconUrl;
+            }
+        } catch (e) {
+            console.error('Failed to fetch tab icon', e);
             const fallback = getFallbackFaviconUrl(url);
             iconCache.set(url, fallback);
             return fallback;
-        } else {
-            // 正常图标
-            iconCache.set(url, chromeFaviconUrl);
-            return chromeFaviconUrl;
         }
-    } catch (e) {
-        console.error('Failed to fetch tab icon', e);
-        const fallback = getFallbackFaviconUrl(url);
-        iconCache.set(url, fallback);
-        return fallback;
     }
 }

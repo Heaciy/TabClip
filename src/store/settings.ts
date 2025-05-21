@@ -13,7 +13,7 @@ interface Settings {
 const defaultSettings: Settings = {
     storePinnedTabs: false,
     defaultLockGroup: false,
-    openGroupInNewWindow: true,
+    openGroupInNewWindow: false,
     pageSize: 10,
     useGoogleIcon: false,
     isStartupPage: true,
@@ -21,8 +21,8 @@ const defaultSettings: Settings = {
 
 async function loadSettings(): Promise<Settings> {
     return new Promise((resolve) => {
-        // use chrome.storage.local to replace localStorage
-        chrome.storage.local.get('settings', (result) => {
+        // use browser.storage.local to replace localStorage
+        browser.storage.local.get('settings', (result) => {
             const storedSettings = result.settings;
             resolve(storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings);
         });
@@ -41,7 +41,7 @@ export const useSettingStore = defineStore('setting', () => {
     watch(settings, async (_newSettings) => {
         // 只有在加载完成后才保存设置，避免覆盖原始设置
         if (isLoaded.value) {
-            await chrome.storage.local.set({ settings: JSON.stringify(settings.value) });
+            await browser.storage.local.set({ settings: JSON.stringify(settings.value) });
         }
     });
 

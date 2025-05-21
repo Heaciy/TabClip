@@ -8,7 +8,7 @@
 import { db } from '@/database';
 import { loadSettings, type Settings } from '@/store/settings';
 
-const i18n = (messageName: string, substitutions?: string | string[], defaultValue?: string): string => {
+const i18n = (messageName: any, substitutions?: string | string[], defaultValue?: string): string => {
     const translation = browser.i18n.getMessage(messageName, substitutions);
     if (translation) return translation;
 
@@ -112,7 +112,7 @@ export default defineBackground(() => {
     });
 
     function addTabAndWindowListeners(callback: () => void | Promise<void>) {
-        const tabEvents: Array<Browser.events.Event<(arg1?: any, arg2?: any, arg3?: any) => void>> = [
+        const tabEvents: Array<Browser.events.Event<(_arg1?: any, _arg2?: any, _arg3?: any) => void>> = [
             browser.tabs.onCreated,
             browser.tabs.onUpdated,
             browser.tabs.onMoved,
@@ -123,7 +123,7 @@ export default defineBackground(() => {
             browser.tabs.onActivated,
         ];
 
-        const windowEvents: Array<Browser.events.Event<(arg1?: any) => void>> = [
+        const windowEvents: Array<Browser.events.Event<(_arg1?: any) => void>> = [
             browser.windows.onFocusChanged,
             browser.windows.onCreated,
             browser.windows.onRemoved,
@@ -138,7 +138,7 @@ export default defineBackground(() => {
             await browser.contextMenus.update(menuId, { enabled });
         } catch (error) {
             // This can happen if the menu was somehow removed or not created.
-            // console.warn(`Could not update context menu state for "${menuId}":`, error);
+            console.warn(`Could not update context menu state for "${menuId}":`, error);
         }
     }
 
@@ -162,6 +162,7 @@ export default defineBackground(() => {
         let currentWindow: Browser.windows.Window | undefined;
         try {
             currentWindow = await browser.windows.getLastFocused({ populate: true, windowTypes: ['normal', 'popup'] });
+            // eslint-disable-next-line no-unused-vars
         } catch (e) {
             // In Firefox, if no window is focused (e.g., devtools focused), this can throw.
             // Try browser.windows.getCurrent() as a fallback.
@@ -239,7 +240,7 @@ export default defineBackground(() => {
             await browser.runtime.sendMessage({ event: 'TabGroupUpdate' });
         } catch (err) {
             // This error is common if the extension page/popup isn't open to receive.
-            // console.warn('Failed to send TabGroupUpdate message (possibly no listeners):', err);
+            console.warn('Failed to send TabGroupUpdate message (possibly no listeners):', err);
         }
     }
 
@@ -318,8 +319,8 @@ export default defineBackground(() => {
     const tabGroupManager = new TabGroupManager();
 
     type ContextMenuAction = (
-        activeTab: Browser.tabs.Tab,
-        clickData: Browser.contextMenus.OnClickData,
+        _activeTab: Browser.tabs.Tab,
+        _clickData: Browser.contextMenus.OnClickData,
     ) => Promise<void>;
 
     function createContextMenuClickHandler(action: ContextMenuAction) {
@@ -358,24 +359,28 @@ export default defineBackground(() => {
         },
     );
 
-    browser.action.onClicked.addListener(async (tab: Browser.tabs.Tab) => {
-        // 'tab' here is the active tab in the current window when the action icon is clicked.
-        // This might be undefined if clicked in a context without a tab (e.g. Firefox's customize menu view)
-        // However, for a normal click, 'tab' will be populated.
-        if (tab && tab.id !== undefined) {
-            await tabGroupManager.sendAllTabsInCurrentWindow(tab);
-        } else {
-            // Fallback: try to get the current tab if not provided by the event (rare for onClicked)
-            const currentTabs = await browser.tabs.query({ active: true, currentWindow: true });
-            if (currentTabs.length > 0) {
-                await tabGroupManager.sendAllTabsInCurrentWindow(currentTabs[0]);
+    const browserAction = browser.action ?? browser.browserAction;
+    if (browserAction && browserAction.onClicked) {
+        browserAction.onClicked.addListener(async (tab: Browser.tabs.Tab) => {
+            // 'tab' here is the active tab in the current window when the action icon is clicked.
+            // This might be undefined if clicked in a context without a tab (e.g. Firefox's customize menu view)
+            // However, for a normal click, 'tab' will be populated.
+            console.log('Browser action clicked', tab);
+            if (tab && tab.id !== undefined) {
+                await tabGroupManager.sendAllTabsInCurrentWindow(tab);
             } else {
-                console.error('Browser action clicked, but no active tab found.');
-                // Optionally, just open the extension page as a fallback action
-                await redirectToExtensionPage();
+                // Fallback: try to get the current tab if not provided by the event (rare for onClicked)
+                const currentTabs = await browser.tabs.query({ active: true, currentWindow: true });
+                if (currentTabs.length > 0) {
+                    await tabGroupManager.sendAllTabsInCurrentWindow(currentTabs[0]);
+                } else {
+                    console.error('Browser action clicked, but no active tab found.');
+                    // Optionally, just open the extension page as a fallback action
+                    await redirectToExtensionPage();
+                }
             }
-        }
-    });
+        });
+    }
 
     browser.runtime.onStartup.addListener(async () => {
         // Menus should be recreated by onInstalled if needed, but state update is good.

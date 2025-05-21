@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "allowImportingTsExtensions": true,
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "Bundler",
@@ -14,6 +15,6 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["./**/*", "./.wxt/wxt.d.ts", "vite.config.ts", "wxt.config.ts"],
+    "include": ["./**/*", "./.wxt/wxt.d.ts", "docs/.vitepress/config.ts"],
     "exclude": ["./output"]
 }

@@ -31,6 +31,7 @@ const pageIndex = ref(1);
 const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
 
 const resetTabGroups = () => {
+    observer.disconnect();
     pageIndex.value = 1;
     tabGroups.value = [];
     isLoading.value = false;
@@ -75,7 +76,7 @@ watch(pageIndex, async () => {
 
 onMounted(async () => {
     await fetchTabGroups();
-    chrome.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
+    browser.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.event === 'TabGroupUpdate') {
             resetTabGroups();
             await fetchTabGroups();

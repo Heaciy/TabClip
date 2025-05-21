@@ -7,9 +7,11 @@ import vue from 'eslint-plugin-vue';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+import autoImports from './.wxt/eslint-auto-imports.mjs';
+
 export default [
     {
-        ignores: ['.idea/', 'public/', 'dist/', 'node_modules/', 'src/components/ui/'],
+        ignores: ['.idea/', 'public/', 'dist/', 'node_modules/', 'src/components/ui/', '.wxt', '.output'],
     },
 
     js.configs.recommended,
@@ -17,6 +19,8 @@ export default [
     ...vue.configs['flat/recommended'],
 
     prettierRecommended,
+
+    autoImports,
 
     {
         files: ['**/*.vue'],

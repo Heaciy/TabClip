@@ -107,7 +107,23 @@
     },
     "tabGroup": {
         "InputGroupName": "输入名称",
-        "total": "{total} 个标签页"
+        "total": "{total} 个标签页",
+        "copyLinks": {
+            "toastTitle": "复制标签组链接成功",
+            "toastDesc": "成功复制 {total} 个标签链接"
+        },
+        "openTab": {
+            "firefoxNotAllow": {
+                "toastTitle": "Firefox 不允许打开此类标签",
+                "toastDesc": "链接已拷贝至剪切板，请手动粘贴到导航栏访问"
+            }
+        },
+        "openTabGroup": {
+            "firefoxNotAllow": {
+                "toastTitle": "存在 Firefox 不允许打开的标签",
+                "toastDesc": "标签组中存在 Firefox 不允许打开的标签，标签组将会被保留"
+            }
+        }
     },
     "veeValidate": {
         "fileRequired": "请选择一个文件",

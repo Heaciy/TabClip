@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue-sonner';
 import { Icon } from '@iconify/vue';
 import { format } from 'date-fns';
 
@@ -10,10 +12,18 @@ import { Button } from '@/components/ui/button';
 import { type Tab, type TabGroup } from '@/database';
 import { useSettingStore } from '@/store/settings.ts';
 
+const { t } = useI18n();
 const settingStore = useSettingStore();
 const props = defineProps<{ tabGroup: TabGroup; searchText?: string }>();
 const emits = defineEmits(['remove-group', 'remove-tab', 'update-group']);
 const tabs = ref<Array<Tab>>(props.tabGroup.tabs_meta);
+
+function isTabOpenable(tab: Tab): boolean {
+    if (import.meta.env.FIREFOX) {
+        return tab.url?.startsWith('http') ?? false;
+    }
+    return true;
+}
 
 function removeTab(id: number | string) {
     const index = tabs.value.findIndex((tab) => tab.id === id);
@@ -24,10 +34,25 @@ function removeTab(id: number | string) {
     }
 }
 
-function handleLinkClick(id: number | string) {
+async function handleLinkClick(id: number | string) {
+    if (import.meta.env.FIREFOX) {
+        console.log(2);
+        const index = tabs.value.findIndex((tab) => tab.id === id);
+        if (index !== -1) {
+            const tab = tabs.value[index];
+            if (!isTabOpenable(tab)) {
+                await navigator.clipboard.writeText(tab.url!);
+                toast.warning(t('tabGroup.openTab.firefoxNotAllow.toastTitle'), {
+                    description: t('tabGroup.openTab.firefoxNotAllow.toastDesc'),
+                });
+                return;
+            }
+        }
+    }
+
     const tabToOpen = removeTab(id);
     if (tabToOpen) {
-        chrome.tabs.create({ url: tabToOpen.url });
+        browser.tabs.create({ url: tabToOpen.url });
     }
 }
 
@@ -36,15 +61,33 @@ const onTabsMetaUpdate = () => {
 };
 
 async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
-    const window = newWindow ? await chrome.windows.create({ focused: true }) : await chrome.windows.getCurrent();
-    const tabsToClose: Array<chrome.tabs.Tab> = newWindow ? await chrome.tabs.query({ windowId: window.id! }) : [];
+    if (import.meta.env.FIREFOX) {
+        if (tabGroup.tabs_meta.every((tab: Tab) => !isTabOpenable(tab))) {
+            toast.warning(t('tabGroup.openTabGroup.firefoxNotAllow.toastTitle'), {
+                description: t('tabGroup.openTabGroup.firefoxNotAllow.toastDesc'),
+            });
+            return;
+        }
+    }
+
+    const window = newWindow ? await browser.windows.create({ focused: true }) : await browser.windows.getCurrent();
+    const tabsToClose: Array<Browser.tabs.Tab> = newWindow ? await browser.tabs.query({ windowId: window.id! }) : [];
 
     tabGroup.tabs_meta.map(async (tab) => {
-        await chrome.tabs.create({ windowId: window.id, url: tab.url!, pinned: tab.pinned });
+        await browser.tabs.create({ windowId: window.id, url: tab.url!, pinned: tab.pinned });
     });
 
     if (tabsToClose) {
-        await chrome.tabs.remove(tabsToClose.map((tab) => tab.id!));
+        await browser.tabs.remove(tabsToClose.map((tab) => tab.id!));
+    }
+
+    if (import.meta.env.FIREFOX) {
+        if (tabGroup.tabs_meta.some((tab: Tab) => !isTabOpenable(tab))) {
+            toast.warning(t('tabGroup.openTabGroup.firefoxNotAllow.toastTitle'), {
+                description: t('tabGroup.openTabGroup.firefoxNotAllow.toastDesc'),
+            });
+            return;
+        }
     }
 
     emits('remove-group');
@@ -53,6 +96,9 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
 async function copyTabGroup(tabGroup: TabGroup) {
     const text = tabGroup.tabs_meta.map((tab) => `${tab.title}\n${tab.url}`).join('\n\n');
     await navigator.clipboard.writeText(text);
+    toast.success(t('tabGroup.copyLinks.toastTitle'), {
+        description: t('tabGroup.copyLinks.toastDesc', { total: tabGroup.tabs_meta.length }),
+    });
 }
 
 function escapeHtml(text: string): string {

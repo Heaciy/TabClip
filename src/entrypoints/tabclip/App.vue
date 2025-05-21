@@ -6,14 +6,14 @@ import TabGroupList from '@/components/TabGroupList.vue';
 import Toolbar from '@/components/Toolbar.vue';
 import { Toaster } from '@/components/ui/sonner';
 
-const pinTab = (tab: chrome.tabs.Tab) => {
+const pinTab = (tab: browser.tabs.Tab) => {
     browser.tabs.update(tab.id!, { active: true, pinned: true });
     browser.tabs.move(tab.id!, { index: 0 });
     browser.windows.update(tab.windowId, { focused: true });
 };
 
 onMounted(() => {
-    const extensionURL = chrome.runtime.getURL('tabclip.html');
+    const extensionURL = browser.runtime.getURL('tabclip.html');
     browser.tabs.getCurrent((currentTab) => {
         browser.tabs.query({}, (tabs) => {
             if (currentTab) {

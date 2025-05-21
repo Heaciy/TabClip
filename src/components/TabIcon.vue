@@ -14,15 +14,12 @@ onMounted(async () => {
 
 <template>
     <div
-        v-if="iconUrl"
+        class="inline-block h-4 w-4"
         :style="{
-            width: '16px',
-            height: '16px',
             backgroundImage: `url(${iconUrl})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            display: 'inline-block',
         }"
     ></div>
 </template>
