@@ -10,6 +10,7 @@ interface Tab {
     title?: string;
     url?: string;
     pinned?: boolean;
+    pendingUrl?: string;
 }
 
 interface TabGroup {
@@ -20,7 +21,6 @@ interface TabGroup {
     is_locked?: boolean;
     create_time?: Date;
     update_time?: Date;
-    total?: number;
 }
 
 interface DBTabGroup extends TabGroup {}
@@ -42,35 +42,46 @@ class TabGroupDatabase extends Dexie {
     constructor() {
         super('TabClip');
         this.version(1).stores({
-            tabGroups: 'id, is_starred, is_locked, create_time, total',
+            tabGroups: 'id, is_starred, is_locked, create_time',
         });
 
         // 初始化表
         this.tabGroups = this.table('tabGroups');
     }
 
-    formatTab({ title, url, pinned }: Tab): Tab {
-        return pinned ? { title, url, pinned } : { title, url };
+    isTabClipable(tab: Tab) {
+        return !!(tab.url || tab.pendingUrl);
+    }
+
+    formatTab({ title, url, pinned, pendingUrl }: Tab): Tab {
+        const resolvedUrl = url ? url : pendingUrl;
+        const resolvedTitle = title ? title : resolvedUrl;
+        return pinned ? { title: resolvedTitle, url: resolvedUrl, pinned } : { title: resolvedTitle, url: resolvedUrl };
+    }
+
+    formatTabs(tabs: Tab[]): Tab[] {
+        return tabs.filter(this.isTabClipable).map((tab: Tab) => this.formatTab(tab));
     }
 
     /** 添加 TabGroup */
     async addTabGroup(tabGroup: TabGroup) {
         if (!tabGroup.tabs_meta?.length) return;
         const settings = await loadSettings();
+        const tabs_meta = this.formatTabs(tabGroup.tabs_meta);
         return this.tabGroups.add({
             ...tabGroup,
+            tabs_meta,
             id: tabGroup.id || crypto.randomUUID(),
-            tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             is_starred: tabGroup.is_starred || false,
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
-            total: tabGroup.tabs_meta.length,
         });
     }
 
     /** 添加 Tab */
     async addTab(tab: Tab) {
+        if (!this.isTabClipable(tab)) return;
         let latestTabGroup = await this.tabGroups.orderBy('create_time').reverse().first();
         if (!latestTabGroup) {
             await this.addTabGroup({ tabs_meta: [tab] });
@@ -80,18 +91,17 @@ class TabGroupDatabase extends Dexie {
             await this.tabGroups.update(latestTabGroup.id, {
                 tabs_meta: tabsMeta,
                 update_time: new Date(),
-                total: tabsMeta.length,
             });
         }
     }
 
     /** 更新 TabGroup */
     async updateTabGroup(tabGroup: TabGroup) {
+        const tabs_meta = this.formatTabs(tabGroup.tabs_meta);
         return this.tabGroups.update(tabGroup.id!, {
             ...tabGroup,
-            tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
+            tabs_meta,
             update_time: new Date(),
-            total: tabGroup.tabs_meta.length,
         });
     }
 
@@ -131,7 +141,7 @@ class TabGroupDatabase extends Dexie {
         const groupTotal = await querySet.count();
         let tabTotal = 0;
         await querySet.each((tabGroup) => {
-            tabTotal += tabGroup.total ?? 0;
+            tabTotal += tabGroup.tabs_meta.length ?? 0;
         });
 
         const rawData = await querySet
@@ -159,7 +169,6 @@ class TabGroupDatabase extends Dexie {
             tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
             update_time: new Date(),
-            total: tabGroup.tabs_meta.length,
         }));
         await this.tabGroups.bulkPut(data);
     }
@@ -197,7 +206,7 @@ class TabGroupDatabase extends Dexie {
             if (!tabGroup.create_time) return;
             const dateStr = format(tabGroup.create_time, 'yyyy-MM-dd');
             groupCountMap[dateStr] += 1;
-            tabCountMap[dateStr] += tabGroup.total || 0;
+            tabCountMap[dateStr] += tabGroup.tabs_meta.length || 0;
         });
 
         const group_num_list = dateList.map((date) => groupCountMap[date]);
