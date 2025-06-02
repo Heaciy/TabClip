@@ -1,5 +1,5 @@
 <p align="center">
- <img align="center" src="./public/logo.png" height="96" alt="TabClip"/>
+ <img align="center" src="./docs/public/logo.png" height="96" alt="TabClip"/>
  <p align="center">
   <em>你的电子回形针!</em>
  </p>
@@ -45,11 +45,16 @@ cd TabClip
 
 ```bash
 npm install
-npm run build
+# 打包 Chrome 扩展
+npm run zip
+# 打包 Edge 扩展
+npm run zip:edge
+# 打包 Firefox 扩展
+npm run zip:firefox
 ```
 
 ### 3. 在浏览器中安装
 
-- 进入 Chrome/edge 的插件管理界面
+- 进入 Chrome/Edge 的插件管理界面
 - 打开开发者模式，允许自行安装插件
 - 点击加载已解压的扩展程序，选择打包好的目录进行安装

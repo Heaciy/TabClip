@@ -1,5 +1,5 @@
 <p align="center">
- <img align="center" src="./public/logo.png" height="96" />
+ <img align="center" src="./docs/public/logo.png" height="96" />
  <p align="center">
   <em>Clip your tabs together like a paperclip!</em>
  </p>
@@ -51,7 +51,12 @@ cd TabClip
 
 ```bash
 npm install
-npm run build
+# Build Chrome extension
+npm run zip
+# Build Edge extension
+npm run zip:edge
+# Build Firefox extension
+npm run zip:firefox
 ```
 
 ### 3. Install on Your Browser
