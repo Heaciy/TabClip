@@ -24,20 +24,30 @@ async function preloadDefaultIcon() {
 
 // 获取 Chrome 内置 favicon 接口
 function getChromeFaviconUrl(url: string, withPath: boolean = false) {
-    const parsed = new URL(url);
-    const baseUrl = withPath ? parsed.toString() : `${parsed.protocol}//${parsed.hostname}`;
+    try {
+        const parsed = new URL(url);
+        const baseUrl = withPath ? parsed.toString() : `${parsed.protocol}//${parsed.hostname}`;
 
-    const faviconUrl = new URL(chrome.runtime.getURL('/_favicon/'));
-    faviconUrl.searchParams.set('pageUrl', baseUrl);
-    faviconUrl.searchParams.set('size', '32');
-    return faviconUrl.toString();
+        const faviconUrl = new URL(chrome.runtime.getURL('/_favicon/'));
+        faviconUrl.searchParams.set('pageUrl', baseUrl);
+        faviconUrl.searchParams.set('size', '32');
+        return faviconUrl.toString();
+    } catch (e) {
+        console.warn(`Invalid URL passed to getChromeFaviconUrl: "${url}"`, e);
+        return '';
+    }
 }
 
 // 备用的 Google favicon 地址
 function getFallbackFaviconUrl(url: string) {
-    const parsed = new URL(url);
-    const baseUrl = `${parsed.protocol}//${parsed.hostname}`;
-    return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${baseUrl}`;
+    try {
+        const parsed = new URL(url);
+        const baseUrl = `${parsed.protocol}//${parsed.hostname}`;
+        return `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${baseUrl}`;
+    } catch (e) {
+        console.warn(`Invalid URL passed to getFallbackFaviconUrl: "${url}"`, e);
+        return '';
+    }
 }
 
 // 比对两个 ArrayBuffer 是否相等
@@ -74,6 +84,7 @@ export async function useTabIcon(url: string, useGoogleIcon: boolean = false): P
         }
 
         const chromeFaviconUrl = getChromeFaviconUrl(url);
+        if (!chromeFaviconUrl) return '';
 
         try {
             const res = await fetch(chromeFaviconUrl);

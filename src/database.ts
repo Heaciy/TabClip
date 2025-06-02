@@ -11,6 +11,7 @@ interface Tab {
     url?: string;
     pinned?: boolean;
     pendingUrl?: string;
+    status?: string;
 }
 
 interface TabGroup {
@@ -49,19 +50,38 @@ class TabGroupDatabase extends Dexie {
         this.tabGroups = this.table('tabGroups');
     }
 
-    isTabClipable(tab: Tab) {
+    isTabClipable = (tab: Tab) => {
         return !!(tab.url || tab.pendingUrl);
-    }
+    };
 
-    formatTab({ title, url, pinned, pendingUrl }: Tab): Tab {
-        const resolvedUrl = url ? url : pendingUrl;
-        const resolvedTitle = title ? title : resolvedUrl;
-        return pinned ? { title: resolvedTitle, url: resolvedUrl, pinned } : { title: resolvedTitle, url: resolvedUrl };
-    }
+    isBrowserNewTab = (tab: Tab): boolean => {
+        const browserNewTabUrls = ['chrome://newtab', 'edge://newtab', 'about:newtab', 'about:home', 'about:blank'];
+        return browserNewTabUrls.some((url: string) => tab.url?.startsWith(url));
+    };
 
-    formatTabs(tabs: Tab[]): Tab[] {
+    formatTab = (tab: Tab): Tab => {
+        const isLoading = tab.status === 'loading';
+        const isNewTab = this.isBrowserNewTab(tab);
+        const hasUrl = !!tab.url;
+
+        const resolvedUrl = hasUrl ? (isLoading && isNewTab ? tab.pendingUrl : tab.url) : tab.pendingUrl;
+        const resolvedTitle = tab.title && !(isLoading && isNewTab) ? tab.title : resolvedUrl;
+
+        const formattedTab: Tab = {
+            title: resolvedTitle || '',
+            url: resolvedUrl || '',
+        };
+
+        if (tab.pinned) {
+            formattedTab.pinned = true;
+        }
+
+        return formattedTab;
+    };
+
+    formatTabs = (tabs: Tab[]): Tab[] => {
         return tabs.filter(this.isTabClipable).map((tab: Tab) => this.formatTab(tab));
-    }
+    };
 
     /** 添加 TabGroup */
     async addTabGroup(tabGroup: TabGroup) {

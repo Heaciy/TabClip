@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{ tabUrl: string; useGoogleIcon?: boolean
 const iconUrl = ref<string>('');
 
 onMounted(async () => {
-    iconUrl.value = await useTabIcon(props.tabUrl, props.useGoogleIcon);
+    iconUrl.value = (await useTabIcon(props.tabUrl, props.useGoogleIcon)) || '';
 });
 </script>
 

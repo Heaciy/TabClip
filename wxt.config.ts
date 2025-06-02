@@ -1,3 +1,4 @@
+import strip from '@rollup/plugin-strip';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'wxt';
 
@@ -43,9 +44,21 @@ export default defineConfig({
             options_page: 'tabclip.html',
         };
     },
-    vite() {
+    vite({ command }) {
         return {
-            plugins: [tailwindcss()],
+            plugins: [
+                tailwindcss(),
+                ...(command !== 'serve'
+                    ? [
+                          strip({
+                              include: ['**/*.ts', '**/*.js'],
+                              functions: ['console.log', 'console.warn', 'console.debug'],
+                              // 保留 console.error 和 debugger（默认 strip 会移除 debugger）
+                              debugger: false,
+                          }),
+                      ]
+                    : []),
+            ],
         };
     },
 });

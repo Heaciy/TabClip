@@ -117,7 +117,7 @@ export default defineBackground(() => {
             browser.tabs.onUpdated,
             browser.tabs.onMoved,
             browser.tabs.onRemoved,
-            // browser.tabs.onReplaced, // Deprecated in MV3; onUpdated generally covers this.
+            browser.tabs.onReplaced, // Deprecated in MV3; onUpdated generally covers this.
             browser.tabs.onDetached,
             browser.tabs.onAttached,
             browser.tabs.onActivated,
@@ -136,16 +136,16 @@ export default defineBackground(() => {
     async function updateContextMenuState(menuId: string, enabled: boolean) {
         try {
             await browser.contextMenus.update(menuId, { enabled });
-        } catch (error) {
+        } catch (e) {
             // This can happen if the menu was somehow removed or not created.
-            console.warn(`Could not update context menu state for "${menuId}":`, error);
+            console.warn(`Could not update context menu state for "${menuId}":`, e);
         }
     }
 
     function isExtensionPage(tab: Browser.tabs.Tab): boolean {
         const url = tab.url || tab.pendingUrl;
         // Use browser.runtime.getURL to create the base URL for comparison
-        return url ? url.startsWith(browser.runtime.getURL('')) && url.includes('tabclip.html') : false;
+        return url ? url.startsWith(browser.runtime.getURL('/tabclip.html')) : false;
     }
 
     type Pair<T, U> = [T, U];
@@ -238,9 +238,9 @@ export default defineBackground(() => {
     async function sendRefreshMessageToApp() {
         try {
             await browser.runtime.sendMessage({ event: 'TabGroupUpdate' });
-        } catch (err) {
+        } catch (e) {
             // This error is common if the extension page/popup isn't open to receive.
-            console.warn('Failed to send TabGroupUpdate message (possibly no listeners):', err);
+            console.warn('Failed to send TabGroupUpdate message (possibly no listeners):', e);
         }
     }
 
@@ -287,7 +287,7 @@ export default defineBackground(() => {
 
         sendTabsExceptThis = async (activeTab: Browser.tabs.Tab) => {
             const allTabsInWindow = await browser.tabs.query({ windowId: activeTab.windowId });
-            const tabsToClip = allTabsInWindow.filter((_tab) => _tab.id !== activeTab.id);
+            const tabsToClip = allTabsInWindow.filter((tab) => tab.id !== activeTab.id);
             await this.addTabs(tabsToClip);
         };
 
@@ -300,18 +300,32 @@ export default defineBackground(() => {
         sendAllTabsInAllWindows = async (_activeTab?: Browser.tabs.Tab) => {
             await redirectToExtensionPage();
             const allTabsInAllWindow = await browser.tabs.query({});
-            await this.addTabs(allTabsInAllWindow);
+
+            // Group by windowId
+            const tabsByWindow = allTabsInAllWindow.reduce<Record<number, Browser.tabs.Tab[]>>((acc, tab) => {
+                if (tab.windowId != null) {
+                    if (!acc[tab.windowId]) {
+                        acc[tab.windowId] = [];
+                    }
+                    acc[tab.windowId].push(tab);
+                }
+                return acc;
+            }, {});
+
+            for (const windowTabs of Object.values(tabsByWindow)) {
+                await this.addTabs(windowTabs);
+            }
         };
 
         sendTabsToTheLeft = async (activeTab: Browser.tabs.Tab) => {
             const allTabsInWindow = await browser.tabs.query({ windowId: activeTab.windowId });
-            const tabsToClip = allTabsInWindow.filter((_tab) => _tab.index < activeTab.index);
+            const tabsToClip = allTabsInWindow.filter((tab) => tab.index < activeTab.index);
             await this.addTabs(tabsToClip);
         };
 
         sendTabsToTheRight = async (activeTab: Browser.tabs.Tab) => {
             const allTabsInWindow = await browser.tabs.query({ windowId: activeTab.windowId });
-            const tabsToClip = allTabsInWindow.filter((_tab) => _tab.index > activeTab.index);
+            const tabsToClip = allTabsInWindow.filter((tab) => tab.index > activeTab.index);
             await this.addTabs(tabsToClip);
         };
     }
@@ -365,7 +379,6 @@ export default defineBackground(() => {
             // 'tab' here is the active tab in the current window when the action icon is clicked.
             // This might be undefined if clicked in a context without a tab (e.g. Firefox's customize menu view)
             // However, for a normal click, 'tab' will be populated.
-            console.log('Browser action clicked', tab);
             if (tab && tab.id !== undefined) {
                 await tabGroupManager.sendAllTabsInCurrentWindow(tab);
             } else {
@@ -408,8 +421,8 @@ export default defineBackground(() => {
             }
             // No need to call sendRefreshMessageToApp here unless the page itself needs an immediate refresh
             // after being focused or created. The page should handle its own state on load.
-        } catch (error) {
-            console.error('Error redirecting to extension page:', error);
+        } catch (e) {
+            console.error('Error redirecting to extension page:', e);
             // Fallback if pinning/moving fails
             if (!existingExtensionTab) {
                 try {
@@ -426,7 +439,7 @@ export default defineBackground(() => {
     // might also benefit from ensuring menu states are correct.
     if (browser.runtime && typeof browser.runtime.getManifest === 'function') {
         // Check if script is running as an extension
-        updateAllContextMenuStates();
+        void updateAllContextMenuStates();
     }
 
     console.log('TabClip WXT Background Script Loaded.');
