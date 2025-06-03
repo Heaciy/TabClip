@@ -207,7 +207,7 @@ function highlightedTitle(title: string): string {
 
 <style scoped>
 .ghost {
-    opacity: 0.5;
-    background: #c8ebfb;
+    color: var(--color-accent-foreground);
+    background-color: var(--color-accent);
 }
 </style>
