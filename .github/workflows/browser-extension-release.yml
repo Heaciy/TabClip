@@ -1,0 +1,55 @@
+name: build-browser-extension
+
+on:
+    release:
+        types: [created]
+
+permissions:
+    contents: write
+
+jobs:
+    build-npm:
+        name: 📦 Build Browser Extension (${{ github.ref_name }})
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '20'
+
+            - name: Clean problematic files
+              run: |
+                  rm -rf node_modules package-lock.json
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Get version from tag (remove "v" prefix)
+              id: get_version
+              run: |
+                  raw_version="${GITHUB_REF#refs/tags/}"
+                  version="${raw_version#v}"
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+
+            - name: Build Chrome extension
+              run: npm run zip
+
+            - name: Build Edge extension
+              run: npm run zip:edge
+
+            - name: Build Firefox extension
+              run: npm run zip:firefox
+
+            - name: Upload release assets
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: |
+                      .output/tabclip-${{ steps.get_version.outputs.version }}-chrome.zip
+                      .output/tabclip-${{ steps.get_version.outputs.version }}-edge.zip
+                      .output/tabclip-${{ steps.get_version.outputs.version }}-firefox.zip
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
