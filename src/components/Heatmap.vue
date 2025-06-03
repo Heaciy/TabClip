@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, provide, ref, watch } from 'vue';
-import VChart, { THEME_KEY } from 'vue-echarts';
+import VChart, { THEME_KEY } from 'vue-echarts/csp';
 import { useI18n } from 'vue-i18n';
 import { Icon } from '@iconify/vue';
 import { parseDate } from '@internationalized/date';

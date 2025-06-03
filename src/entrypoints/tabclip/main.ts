@@ -5,6 +5,7 @@ import App from './App.vue';
 import { i18n } from '@/locales';
 
 import '@/assets/css/index.css';
+import 'vue-echarts/csp/style.css';
 
 const pinia = createPinia();
 const app = createApp(App);
