@@ -1,6 +1,6 @@
 # Install Extension
 
-Download from the Chrome/Edge extension store or download the compiled extension from Github for manual installation.
+Download from the Chrome/Edge/Firefox extension store or download the compiled extension from Github for manual installation.
 
 ## Chrome
 
@@ -16,12 +16,12 @@ Download from the Chrome/Edge extension store or download the compiled extension
 
 ## Firefox
 
-::: warning
-🙇 We are very sorry, the Firefox version of the extension is currently being adapted. Please stay tuned, and thank you for your support.
+::: tip
+🌟 Click [🔗this link](https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home?hl=en) to go to the Firefox Add-ons store to download. Thank you for your support.
 :::
 
 ## Github
 
 ::: tip
-🚀 Click [🔗this link](https://github.com/Heaciy/TabClip/releases) to go to the releases page to download. You can also follow the "Build Guide" in the [README_en.md](https://github.com/Heaciy/TabClip/blob/main/README.md) (assuming you'll have an English README) to download the source code and compile it yourself.
+🚀 Click [🔗this link](https://github.com/Heaciy/TabClip/releases) to go to the releases page to download. You can also follow the "Build Guide" in the [README.md](https://github.com/Heaciy/TabClip/blob/main/README.md) (assuming you'll have an English README) to download the source code and compile it yourself.
 :::

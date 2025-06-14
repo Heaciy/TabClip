@@ -153,7 +153,10 @@ class TabGroupDatabase extends Dexie {
             querySet = querySet.filter((tabGroup) => {
                 return (
                     tabGroup.name?.toLowerCase().includes(textLower) ||
-                    tabGroup.tabs_meta?.some((tab) => tab.title?.toLowerCase().includes(textLower))
+                    tabGroup.tabs_meta?.some(
+                        (tab) =>
+                            tab.title?.toLowerCase().includes(textLower) || tab.url?.toLowerCase().includes(textLower),
+                    )
                 );
             });
         }

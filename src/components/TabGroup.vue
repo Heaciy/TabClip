@@ -7,6 +7,7 @@ import { Icon } from '@iconify/vue';
 import { format } from 'date-fns';
 
 import GroupName from './GroupName.vue';
+import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
 import { Button } from '@/components/ui/button';
 import { type Tab, type TabGroup } from '@/database';
@@ -100,24 +101,6 @@ async function copyTabGroup(tabGroup: TabGroup) {
         description: t('tabGroup.copyLinks.toastDesc', { total: tabGroup.tabs_meta.length }),
     });
 }
-
-function escapeHtml(text: string): string {
-    return text.replace(
-        /[&<>"']/g,
-        (match) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[match] || match,
-    );
-}
-
-function highlightedTitle(title: string): string {
-    if (!props.searchText) {
-        return escapeHtml(title); // 防止 XSS
-    }
-
-    const escapedSearch = props.searchText.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); // 转义正则关键字符
-    const regex = new RegExp(`(${escapedSearch})`, 'gi');
-
-    return escapeHtml(title).replace(regex, '<span class="text-red-500 font-bold">$1</span>');
-}
 </script>
 
 <template>
@@ -196,10 +179,10 @@ function highlightedTitle(title: string): string {
                     v-else
                     :href="tab.url"
                     class="overflow-hidden text-sm text-nowrap text-ellipsis"
-                    :class="tab.url?.includes(props.searchText) ? 'font-bold text-red-500' : ''"
                     @click.prevent="handleLinkClick(tab.id!)"
-                    v-html="highlightedTitle(tab.title!)"
-                ></a>
+                >
+                    <HighlightText :keyword="props.searchText" :text="tab.title" :url="tab.url"></HighlightText>
+                </a>
             </div>
         </VueDraggable>
     </div>

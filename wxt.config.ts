@@ -32,14 +32,6 @@ export default defineConfig({
             },
             action: {
                 default_title: '__MSG_appName__',
-                default_icon: 'icon.png',
-            },
-            icons: {
-                '128': 'icon.png',
-                '64': 'icon.png',
-                '48': 'icon.png',
-                '32': 'icon.png',
-                '16': 'icon.png',
             },
             options_page: 'tabclip.html',
         };

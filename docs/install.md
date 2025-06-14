@@ -1,6 +1,6 @@
 # 安装插件
 
-从 Chrome/Edge 插件商城下载或是从 Github 下载编译好的插件手动安装。
+从 Chrome/Edge/Firefox 插件商城下载或是从 Github 下载编译好的插件手动安装。
 
 ## Chrome
 
@@ -16,8 +16,8 @@
 
 ## Firefox
 
-::: warning
-🙇 十分抱歉 Firefox 版本的插件正在适配中，敬请期待谢谢您的支持。
+::: tip
+🌟 点击 [🔗此链接](https://addons.mozilla.org/en-US/firefox/extensions/) 跳转 Firefox 插件商城即可下载，感谢您的支持。
 :::
 
 ## Github

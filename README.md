@@ -9,11 +9,11 @@
 
 ## Introduction
 
-- **What it is**: TabClip is a browser extension for managing large numbers of tabs, currently supporting Chrome and
-  Edge (Chromium-based)
+- **What it is**: TabClip is a browser extension for managing large numbers of tabs. It currently supports Chrome,
+  Edge (Chromium-based), and Firefox.
 - **Who it's for**: If you frequently have many tabs open in your browser and don't want to close them all when your
   work is finished (or unfinished), TabClip lets you archive all or some of your tabs (perfect for digital hoarders like
-  me)
+  me).
 - **Why I developed this extension**: Similar extensions already exist, like OneTab which I used previously. However, as
   time passed, my OneTab accumulated massive data—about 2000+ tab groups with 30000+ tabs (my bad habit!). OneTab stores
   all data in a single JSON string, requiring serialization/deserialization for every operation, and renders all data at
@@ -22,7 +22,7 @@
   losing group and timestamp information)... So if you're also troubled by these issues, try TabClip—I hope you'll like
   it.
 - **Reasons to choose TabClip**: Simple interface and functionality, ability to store enormous amounts of data, support
-  for importing data from OneTab
+  for importing data from OneTab.
 
 ## Features
 
