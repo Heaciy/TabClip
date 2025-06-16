@@ -2,7 +2,7 @@
 
 <template>
     <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 385 203">
-        <title>logo</title>
+        <title>TabClip</title>
         <g id="Layer 1">
             <g id="board">
                 <path fill-rule="evenodd" d="m365.6 39.1l-0.1 144-344-0.2v19l363 0.2 0.1-163h-19z" />

@@ -4,8 +4,25 @@ import { defineConfig } from 'vitepress';
 export default defineConfig({
     title: 'TabClip',
     description: 'Clip your tabs together like a paperclip!',
-    head: [['link', { rel: 'icon', type: 'image/svg+xml', href: 'icon.svg' }]],
+    head: [
+        ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
+        ['link', { rel: 'icon', type: 'image/png', href: '/favicon-32x32.png', sizes: '32x32' }],
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' }],
+        // Google Analytics
+        ['script', { async: '', src: `https://www.googletagmanager.com/gtag/js?id=${process.env.GA_ID}` }],
+        [
+            'script',
+            {},
+            `window.dataLayer = window.dataLayer || []; 
+            function gtag(){dataLayer.push(arguments);} 
+            gtag('js', new Date()); 
+            gtag('config', '${process.env.GA_ID}');`,
+        ],
+    ],
     cleanUrls: true,
+    sitemap: {
+        hostname: 'https://tabclip.heaciy.com',
+    },
 
     locales: {
         root: {
@@ -13,12 +30,16 @@ export default defineConfig({
             lang: 'zh-CN',
             themeConfig: {
                 nav: [
-                    { text: '主页', link: '/' },
+                    { text: '安装插件', link: '/install' },
                     { text: '使用文档', link: '/settings' },
                     { text: '隐私策略', link: '/privacy' },
                     { text: '开源许可', link: '/license' },
                 ],
                 sidebar: [
+                    {
+                        text: '插件截图',
+                        items: [{ text: '插件截图', link: '/screenshots' }],
+                    },
                     {
                         text: '使用手册',
                         items: [
@@ -44,8 +65,12 @@ export default defineConfig({
                     prev: '上一页',
                     next: '下一页',
                 },
-                outlineTitle: '本页目录',
-                lastUpdatedText: '最后更新于',
+                outline: {
+                    label: '本页目录',
+                },
+                lastUpdated: {
+                    text: '最后更新于',
+                },
             },
         },
         en: {
@@ -54,12 +79,16 @@ export default defineConfig({
             link: '/en/',
             themeConfig: {
                 nav: [
-                    { text: 'Home', link: '/en/' },
+                    { text: 'Installation', link: '/en/install' },
                     { text: 'User Guide', link: '/en/settings' },
                     { text: 'Privacy Policy', link: '/en/privacy' },
                     { text: 'License', link: '/en/license' },
                 ],
                 sidebar: [
+                    {
+                        text: 'Screenshots',
+                        items: [{ text: 'Screenshots', link: '/en/screenshots' }],
+                    },
                     {
                         text: 'User Manual',
                         items: [
@@ -85,14 +114,18 @@ export default defineConfig({
                     prev: 'Previous page',
                     next: 'Next page',
                 },
-                outlineTitle: 'On this page',
-                lastUpdatedText: 'Last Updated',
+                outline: {
+                    label: 'On this page',
+                },
+                lastUpdated: {
+                    text: 'Last Updated',
+                },
             },
         },
     },
 
     themeConfig: {
-        logo: 'icon.svg',
+        logo: '/icon.svg',
         socialLinks: [{ icon: 'github', link: 'https://github.com/Heaciy/TabClip' }],
     },
 });

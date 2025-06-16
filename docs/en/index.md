@@ -7,14 +7,18 @@ hero:
     text: 'Your Digital Paperclip'
     tagline: 'A browser extension for tab management, built with Vue3 + Shadcn.'
     image:
-        src: /logo.png
+        light: /logo.png
+        dark: /logo-dark.png
     actions:
         - theme: brand
-          text: User Guide
-          link: /en/settings # Assuming you will have an /en/settings later
-        - theme: alt
           text: Install Extension
-          link: /en/install # Assuming you will have an /en/install later
+          link: /en/install
+        - theme: alt
+          text: User Guide
+          link: /en/settings
+        - theme: brand
+          text: Screenshots
+          link: /en/screenshots
 
 features:
     - icon: 👌

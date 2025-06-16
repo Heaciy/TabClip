@@ -7,6 +7,14 @@
  <h4 align="center"><strong>简体中文</strong> | <a href="https://github.com/Heaciy/TabClip/blob/main/README.md">English</a></h4>
 </p>
 
+## 安装
+
+- 谷歌 Chrome
+  应用商店: [Chrome Web Store](https://chromewebstore.google.com/detail/tabclip-tab-manager/hncnlhjjpjcdohgcgbjoeogibifmfchf)
+- 微软 Edge
+  加载项: [Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/decldfllagpggbilmhhccehcmcafmmmh)
+- Firefox 附加组件: [Firefox Browser Addons](https://addons.mozilla.org/en-GB/firefox/addon/tabclip-tab-manager/)
+
 ## 介绍
 
 - **是什么**: TabClip 是用来管理大量标签页的浏览器扩展程序，目前支持 Chrome、Edge(Chromium 内核)和 Firefox
@@ -58,3 +66,21 @@ npm run zip:firefox
 - 进入 Chrome/Edge 的插件管理界面
 - 打开开发者模式，允许自行安装插件
 - 点击加载已解压的扩展程序，选择打包好的目录进行安装
+
+## 插件截图
+
+### 亮色模式
+
+![亮色模式](./docs/public/screenshots/light-mode.png)
+
+### 暗色模式
+
+![暗色模式](./docs/public/screenshots/dark-mode.png)
+
+### 热力图
+
+![热力图](./docs/public/screenshots/heatmap.png)
+
+### 设置
+
+![设置](./docs/public/screenshots/settings.png)

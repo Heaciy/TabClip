@@ -7,14 +7,18 @@ hero:
     text: '你的数字回形针'
     tagline: '使用 Vue3 + Shadcn 构建的用于标签页管理的浏览器扩展'
     image:
-        src: /logo.png
+        light: /logo.png
+        dark: /logo-dark.png
     actions:
         - theme: brand
-          text: 使用文档
-          link: /settings
-        - theme: alt
           text: 安装插件
           link: /install
+        - theme: alt
+          text: 使用文档
+          link: /settings
+        - theme: brand
+          text: 插件截图
+          link: /screenshots
 
 features:
     - icon: 👌

@@ -7,6 +7,14 @@
  <h4 align="center"><strong>English</strong> | <a href="https://github.com/Heaciy/TabClip/blob/main/README_zh.md">简体中文</a></h4>
 </p>
 
+## Installation
+
+- Google Chrome Web
+  Store: [Chrome Web Store](https://chromewebstore.google.com/detail/tabclip-tab-manager/hncnlhjjpjcdohgcgbjoeogibifmfchf)
+- Microsoft Edge
+  Add-ons: [Microsoft Edge Addons](https://microsoftedge.microsoft.com/addons/detail/decldfllagpggbilmhhccehcmcafmmmh)
+- Firefox Browser Add-ons: [Firefox Browser Addons](https://addons.mozilla.org/en-GB/firefox/addon/tabclip-tab-manager/)
+
 ## Introduction
 
 - **What it is**: TabClip is a browser extension for managing large numbers of tabs. It currently supports Chrome,
@@ -64,3 +72,21 @@ npm run zip:firefox
 - Enter the Chrome/Edge extension management page
 - Open the developer mode
 - Click to load the unzipped extension
+
+## Screenshots
+
+### Light Mode
+
+![Light Mode](./docs/public/screenshots/light-mode.png)
+
+### Dark Mode
+
+![Dark Mode](./docs/public/screenshots/dark-mode.png)
+
+### Heatmap
+
+![Heatmap](./docs/public/screenshots/heatmap.png)
+
+### Settings
+
+![Settings](./docs/public/screenshots/settings.png)
