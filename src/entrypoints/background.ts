@@ -111,6 +111,16 @@ export default defineBackground(() => {
         }
     });
 
+    browser.runtime.onStartup.addListener(async () => {
+        await setupContextMenus();
+        await updateAllContextMenuStates();
+
+        const settings = await loadSettings();
+        if (settings.isStartupPage) {
+            await redirectToExtensionPage();
+        }
+    });
+
     function addTabAndWindowListeners(callback: () => void | Promise<void>) {
         const tabEvents: Array<Browser.events.Event<(_arg1?: any, _arg2?: any, _arg3?: any) => void>> = [
             browser.tabs.onCreated,
@@ -394,15 +404,6 @@ export default defineBackground(() => {
             }
         });
     }
-
-    browser.runtime.onStartup.addListener(async () => {
-        // Menus should be recreated by onInstalled if needed, but state update is good.
-        await updateAllContextMenuStates();
-        const settings = await loadSettings();
-        if (settings.isStartupPage) {
-            await redirectToExtensionPage();
-        }
-    });
 
     async function redirectToExtensionPage() {
         const extensionPageUrl = browser.runtime.getURL('/tabclip.html');
