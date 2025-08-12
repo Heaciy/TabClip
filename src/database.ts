@@ -20,6 +20,7 @@ interface TabGroup {
     tabs_meta: Array<Tab>;
     is_starred?: boolean;
     is_locked?: boolean;
+    is_browser_group?: boolean; // is_raw_group
     create_time?: Date;
     update_time?: Date;
 }
@@ -94,6 +95,7 @@ class TabGroupDatabase extends Dexie {
             id: tabGroup.id || crypto.randomUUID(),
             is_starred: tabGroup.is_starred || false,
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
+            is_browser_group: tabGroup.is_browser_group,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
         });

@@ -40,6 +40,7 @@ const formSchema = toTypedSchema(
         useGoogleIcon: z.boolean().optional(),
         pageSize: z.number().optional(),
         isStartupPage: z.boolean().optional(),
+        storeBrowserGroup: z.boolean().optional(),
     }),
 );
 
@@ -89,6 +90,21 @@ const onReset = () => {
                                 </FormLabel>
                                 <FormDescription>
                                     {{ $t('settings.storePinnedTabs.desc') }}
+                                </FormDescription>
+                            </div>
+                            <FormControl>
+                                <Switch :model-value="value" @update:model-value="handleChange" />
+                            </FormControl>
+                        </FormItem>
+                    </FormField>
+                    <FormField v-slot="{ value, handleChange }" name="storeBrowserGroup">
+                        <FormItem class="flex flex-row items-center justify-between">
+                            <div class="space-y-0.5">
+                                <FormLabel class="text-base">
+                                    {{ $t('settings.storeBrowserGroup.title') }}
+                                </FormLabel>
+                                <FormDescription>
+                                    {{ $t('settings.storeBrowserGroup.desc') }}
                                 </FormDescription>
                             </div>
                             <FormControl>

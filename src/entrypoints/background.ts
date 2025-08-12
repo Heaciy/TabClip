@@ -5,7 +5,7 @@
 
 // Adjust import paths based on your WXT project structure
 // e.g., if 'database' and 'store/settings' are in a 'shared' or 'utils' folder
-import { db } from '@/database';
+import { db, TabGroup } from '@/database';
 import { loadSettings, type Settings } from '@/store/settings';
 
 const i18n = (messageName: any, substitutions?: string | string[], defaultValue?: string): string => {
@@ -164,8 +164,12 @@ export default defineBackground(() => {
         return !tab.pinned || settings.storePinnedTabs;
     }
 
+    function checkBrowserGroup(tab: Browser.tabs.Tab, settings: Settings): boolean {
+        return tab.groupId === browser.tabGroups.TAB_GROUP_ID_NONE || settings.storeBrowserGroup;
+    }
+
     function isTabClipable(tab: Browser.tabs.Tab, settings: Settings): boolean {
-        return !isExtensionPage(tab) && checkPinTabStatus(tab, settings);
+        return !isExtensionPage(tab) && checkPinTabStatus(tab, settings) && checkBrowserGroup(tab, settings);
     }
 
     async function updateAllContextMenuStates() {
@@ -255,28 +259,70 @@ export default defineBackground(() => {
     }
 
     class TabGroupManager {
-        private async clipAndCloseTabs(tabsToClip: Browser.tabs.Tab[]) {
-            if (tabsToClip.length === 0) return;
-
+        private async clipAndCloseTabs(tabsToClip: Browser.tabs.Tab | Browser.tabs.Tab[], isBrowserGroup?: boolean) {
             // Assuming db.addTabGroup is for multiple tabs and db.addTab for single.
             // If db.addTabGroup can handle a single tab in an array, this can be simplified.
-            if (tabsToClip.length > 1) {
-                await db.addTabGroup({ tabs_meta: tabsToClip });
-            } else if (tabsToClip.length === 1) {
-                await db.addTab(tabsToClip[0]); // Or adjust db.addTabGroup to handle this.
-            }
 
-            const tabIdsToRemove = tabsToClip.map((tab) => tab.id).filter((id) => id !== undefined) as number[];
-            if (tabIdsToRemove.length > 0) {
-                await browser.tabs.remove(tabIdsToRemove);
+            if (!Array.isArray(tabsToClip)) {
+                await db.addTab(tabsToClip);
+                await browser.tabs.remove(tabsToClip.id!);
+                await sendRefreshMessageToApp();
+            } else if (tabsToClip.length > 0) {
+                let group: TabGroup = { tabs_meta: tabsToClip };
+                if (isBrowserGroup) {
+                    const extraInfo = await browser.tabGroups.get(tabsToClip[0].groupId);
+                    group = { ...group, is_browser_group: isBrowserGroup, name: extraInfo.title };
+                }
+                await db.addTabGroup(group);
+
+                const tabIdsToRemove = tabsToClip.map((tab) => tab.id).filter((id) => id !== undefined);
+                if (tabIdsToRemove.length > 0) {
+                    await browser.tabs.remove(tabIdsToRemove);
+                }
+                await sendRefreshMessageToApp();
             }
-            await sendRefreshMessageToApp();
         }
 
         addTabs = async (tabsToAdd: Browser.tabs.Tab[]) => {
             const settings = await loadSettings();
+
+            // 过滤可 clip 的 tab
             const clipableTabs = tabsToAdd.filter((tab) => isTabClipable(tab, settings));
-            await this.clipAndCloseTabs(clipableTabs);
+
+            // 按 groupId 分组
+            const groupMap = new Map<number, Browser.tabs.Tab[]>();
+            for (const tab of clipableTabs) {
+                const groupId = tab.groupId ?? browser.tabGroups.TAB_GROUP_ID_NONE;
+                if (!groupMap.has(groupId)) {
+                    groupMap.set(groupId, []);
+                }
+                groupMap.get(groupId)!.push(tab);
+            }
+
+            // 用于存放默认组的 tabs（非浏览器分组 & 不完整浏览器分组）
+            const defaultGroupTabs: Browser.tabs.Tab[] = [];
+
+            for (const [groupId, groupTabs] of groupMap.entries()) {
+                if (groupId === browser.tabGroups.TAB_GROUP_ID_NONE) {
+                    // 非分组 tab 直接并入默认组
+                    defaultGroupTabs.push(...groupTabs);
+                } else {
+                    // 查询当前浏览器分组的所有 tab
+                    const allTabsInGroup = await browser.tabs.query({ groupId });
+                    if (allTabsInGroup.length === groupTabs.length) {
+                        // 完整的浏览器分组 → 单独 clip
+                        await this.clipAndCloseTabs(groupTabs, true);
+                    } else {
+                        // 不完整的分组 → 并入默认组
+                        defaultGroupTabs.push(...groupTabs);
+                    }
+                }
+            }
+
+            // 最后处理默认组（如果有）
+            if (defaultGroupTabs.length > 0) {
+                await this.clipAndCloseTabs(defaultGroupTabs);
+            }
         };
 
         displayTabClip = async (_activeTab?: Browser.tabs.Tab) => {
@@ -286,7 +332,7 @@ export default defineBackground(() => {
         sendCurrentTab = async (activeTab: Browser.tabs.Tab) => {
             const settings = await loadSettings();
             if (isTabClipable(activeTab, settings)) {
-                await this.clipAndCloseTabs([activeTab]);
+                await this.clipAndCloseTabs(activeTab);
             } else {
                 // If current tab isn't clipable (e.g., it's the extension page itself, or a pinned tab not allowed)
                 // still redirect to the page to show the UI.

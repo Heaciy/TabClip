@@ -8,6 +8,7 @@ interface Settings {
     pageSize: number;
     useGoogleIcon: boolean;
     isStartupPage: boolean;
+    storeBrowserGroup: boolean;
 }
 
 const defaultSettings: Settings = {
@@ -17,16 +18,13 @@ const defaultSettings: Settings = {
     pageSize: 10,
     useGoogleIcon: false,
     isStartupPage: true,
+    storeBrowserGroup: false,
 };
 
 async function loadSettings(): Promise<Settings> {
-    return new Promise((resolve) => {
-        // use browser.storage.local to replace localStorage
-        browser.storage.local.get('settings', (result) => {
-            const storedSettings = result.settings;
-            resolve(storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings);
-        });
-    });
+    const result = await browser.storage.local.get('settings');
+    const storedSettings = result.settings;
+    return storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings;
 }
 
 export const useSettingStore = defineStore('setting', () => {

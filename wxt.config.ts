@@ -1,5 +1,6 @@
 import strip from '@rollup/plugin-strip';
 import tailwindcss from '@tailwindcss/vite';
+// import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'wxt';
 
 // See https://wxt.dev/api/config.html
@@ -8,7 +9,7 @@ export default defineConfig({
     modules: ['@wxt-dev/module-vue'],
     // entrypointsDir: 'src/entrypoints',
     manifest: ({ browser }) => {
-        const permissions = ['storage', 'tabs', 'contextMenus', 'downloads'];
+        const permissions = ['storage', 'tabs', 'contextMenus', 'downloads', 'tabGroups'];
         const hostPermissions = [];
 
         if (browser === 'firefox') {
@@ -21,7 +22,7 @@ export default defineConfig({
 
         return {
             name: '__MSG_appName__',
-            version: '0.1.0',
+            version: '0.1.1',
             description: '__MSG_appDesc__',
             default_locale: 'en',
             permissions,
@@ -40,6 +41,12 @@ export default defineConfig({
         return {
             plugins: [
                 tailwindcss(),
+                // visualizer({
+                //     open: true, // 构建后自动打开浏览器
+                //     gzipSize: true,
+                //     brotliSize: true,
+                //     filename: 'dist/stats.html', // 生成的图表路径
+                // }),
                 ...(command !== 'serve'
                     ? [
                           strip({

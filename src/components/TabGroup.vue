@@ -74,9 +74,18 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
     const window = newWindow ? await browser.windows.create({ focused: true }) : await browser.windows.getCurrent();
     const tabsToClose: Array<Browser.tabs.Tab> = newWindow ? await browser.tabs.query({ windowId: window.id! }) : [];
 
-    tabGroup.tabs_meta.map(async (tab) => {
-        await browser.tabs.create({ windowId: window.id, url: tab.url!, pinned: tab.pinned });
-    });
+    const createdTabs: Browser.tabs.Tab[] = await Promise.all(
+        tabGroup.tabs_meta.map((tab) =>
+            browser.tabs.create({ windowId: window.id, url: tab.url!, pinned: tab.pinned }),
+        ),
+    );
+    if (tabGroup.is_browser_group) {
+        const tabIds = createdTabs.map((tab) => tab.id!).filter(Boolean);
+        const groupId = await browser.tabs.group({ tabIds });
+        if (tabGroup.name) {
+            await browser.tabGroups.update(groupId, { title: tabGroup.name });
+        }
+    }
 
     if (tabsToClose) {
         await browser.tabs.remove(tabsToClose.map((tab) => tab.id!));

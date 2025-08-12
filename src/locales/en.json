@@ -19,6 +19,10 @@
             "title": "Store Pinned Tabs",
             "desc": "Store pinned tabs when adding a group. Disabled by default."
         },
+        "storeBrowserGroup": {
+            "title": "Store Browser Tab Group",
+            "desc": "Store browser tab groups as separate new groups. Disabled by default."
+        },
         "defaultLockGroup": {
             "title": "Default Lock Group",
             "desc": "Lock a group by default when adding it. Disabled by default."
