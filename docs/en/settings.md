@@ -7,6 +7,11 @@ This page will explain the settings items in the extension.
 - Default/Recommended Value: Off ❎
 - Configuration Description: Whether to allow collapsing pinned tabs. By default, it is not allowed. If configured to allow, pinned pages in the navigation bar will also be collapsed when TabClip collapses tabs. Recommended to keep off.
 
+## Allow Collapsing Browser Tab Groups
+
+- Default/Recommended Value: Off ❎
+- Configuration Description: Whether to allow collapsing browser tab groups. By default, this is not allowed. If enabled, when TabClip collapses tabs, the pages within browser tab groups will also be collapsed. Each browser tab group will be stored as a separate group. Off by default.
+
 ## Default Lock Tab Groups
 
 - Default/Recommended Value: Off ❎
