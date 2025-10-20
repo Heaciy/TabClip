@@ -9,6 +9,7 @@ export interface SearchConditions {
     starredOnly?: boolean;
     pageSize?: number;
     pageIndex?: number;
+    categoryId?: string;
 }
 
 export const useSearchStore = defineStore('search', () => {
@@ -16,12 +17,13 @@ export const useSearchStore = defineStore('search', () => {
         text: undefined,
         startTime: undefined,
         endTime: undefined,
+        categoryId: undefined,
     });
     const passivelyRefreshed: Ref<number> = ref(0);
 
     function isEmpty(): boolean {
         const conditions = searchConditions.value;
-        return !conditions.text && !conditions.startTime && !conditions.endTime;
+        return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId;
     }
 
     function updateSearchConditions(newConditions: SearchConditions, passivelyRefresh: boolean = false) {
@@ -38,6 +40,7 @@ export const useSearchStore = defineStore('search', () => {
                 text: undefined,
                 startTime: undefined,
                 endTime: undefined,
+                categoryId: undefined,
             },
         };
         if (passivelyRefresh) {

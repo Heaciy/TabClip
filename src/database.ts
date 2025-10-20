@@ -23,9 +23,17 @@ interface TabGroup {
     is_browser_group?: boolean; // is_raw_group
     create_time?: Date;
     update_time?: Date;
+    category_id?: string;
+}
+
+interface Category {
+    id?: string; // UUID
+    name: string;
 }
 
 interface DBTabGroup extends TabGroup {}
+
+interface DBCategory extends Category {}
 
 interface HeatmapData {
     date_list: string[];
@@ -40,15 +48,18 @@ interface HeatmapData {
 
 class TabGroupDatabase extends Dexie {
     public tabGroups: EntityTable<DBTabGroup, 'id'>;
+    public categories: EntityTable<DBCategory, 'id'>; // 新增 categories 表
 
     constructor() {
         super('TabClip');
-        this.version(1).stores({
-            tabGroups: 'id, is_starred, is_locked, create_time',
+        this.version(2).stores({
+            tabGroups: 'id, is_starred, is_locked, create_time, category_id',
+            categories: 'id, name', // categories 表
         });
 
         // 初始化表
         this.tabGroups = this.table('tabGroups');
+        this.categories = this.table('categories');
     }
 
     isTabClipable = (tab: Tab) => {
@@ -98,6 +109,7 @@ class TabGroupDatabase extends Dexie {
             is_browser_group: tabGroup.is_browser_group,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
+            category_id: tabGroup.category_id,
         });
     }
 
@@ -139,7 +151,15 @@ class TabGroupDatabase extends Dexie {
         tabTotal: number;
     }> {
         const settings = await loadSettings();
-        let { text, startTime, endTime, starredOnly, pageSize = settings.pageSize, pageIndex = 1 } = searchConditions;
+        let {
+            text,
+            startTime,
+            endTime,
+            starredOnly,
+            pageSize = settings.pageSize,
+            pageIndex = 1,
+            categoryId,
+        } = searchConditions;
 
         let querySet = this.tabGroups.orderBy('create_time').reverse();
         if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
@@ -149,6 +169,7 @@ class TabGroupDatabase extends Dexie {
             querySet = querySet.filter(
                 (tabGroup) => tabGroup.create_time! <= endTime.add({ days: 1 }).toDate(getLocalTimeZone()),
             );
+        if (categoryId) querySet = querySet.filter((tabGroup) => tabGroup.category_id === categoryId);
 
         if (text) {
             const textLower = text.toLowerCase();
@@ -248,6 +269,46 @@ class TabGroupDatabase extends Dexie {
             tab_min: Math.min(...tab_num_list),
         };
     }
+
+    /** 通过 ID 获取分类 */
+    async getCategoryById(id: string): Promise<Category | undefined> {
+        return this.categories.get(id);
+    }
+
+    /** 添加分类 */
+    async addCategory(category: Category) {
+        return this.categories.add({
+            id: category.id || crypto.randomUUID(),
+            name: category.name,
+        });
+    }
+
+    /** 获取所有分类 */
+    async getAllCategories(): Promise<Category[]> {
+        return this.categories.toArray();
+    }
+
+    /** 更新分类 */
+    async updateCategory(category: Category) {
+        return this.categories.update(category.id!, { name: category.name });
+    }
+
+    /** 删除分类 */
+    async deleteCategory(categoryId: string) {
+        await this.tabGroups.where('category_id').equals(categoryId).modify({
+            category_id: undefined, // 解除关联
+            update_time: new Date(),
+        });
+        await this.categories.delete(categoryId);
+    }
+
+    /** 删除分类和关联的 TabGroup 数据 */
+    async deleteCategoryAndAssociatedGroups(categoryId: string) {
+        return this.transaction('rw', this.categories, this.tabGroups, async () => {
+            await this.categories.delete(categoryId);
+            await this.tabGroups.where('category_id').equals(categoryId).delete();
+        });
+    }
 }
 
 const getDateRange = (year?: number): [string, string] => {
@@ -268,5 +329,5 @@ const getDateRange = (year?: number): [string, string] => {
 // 创建数据库实例
 const db = new TabGroupDatabase();
 
-export type { HeatmapData, Tab, TabGroup };
+export type { Category, HeatmapData, Tab, TabGroup };
 export { db, getDateRange };

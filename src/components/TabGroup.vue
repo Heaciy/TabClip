@@ -5,12 +5,16 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue-sonner';
 import { Icon } from '@iconify/vue';
 import { format } from 'date-fns';
+import { Folder } from 'lucide-vue-next';
+import { AcceptableValue, SelectTrigger } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
 import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
 import { type Tab, type TabGroup } from '@/database';
+import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
 
 const { t } = useI18n();
@@ -110,6 +114,19 @@ async function copyTabGroup(tabGroup: TabGroup) {
         description: t('tabGroup.copyLinks.toastDesc', { total: tabGroup.tabs_meta.length }),
     });
 }
+
+// TODO: 改为使用v-model传递Group数据，方便在子组件内直接更新
+const categoryStore = useCategoryStore();
+const selectedValue = ref<AcceptableValue>(props.tabGroup.category_id || null);
+let previousValue: AcceptableValue = selectedValue.value;
+
+const handleSelectChange = (val: AcceptableValue) => {
+    if (val === previousValue) {
+        selectedValue.value = null;
+    }
+    previousValue = selectedValue.value;
+    emits('update-group', { category_id: selectedValue.value });
+};
 </script>
 
 <template>
@@ -157,6 +174,26 @@ async function copyTabGroup(tabGroup: TabGroup) {
             <Button variant="ghost" size="icon" @click="copyTabGroup(tabGroup)">
                 <Icon icon="radix-icons:copy"></Icon>
             </Button>
+            <Select v-model="selectedValue" @update:model-value="handleSelectChange">
+                <SelectTrigger as-child>
+                    <Button variant="ghost" class="focus-visible:ring-0" :class="selectedValue ? 'gap-2' : 'gap-0'">
+                        <Folder />
+                        <SelectValue />
+                    </Button>
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                        <SelectLabel>Categories</SelectLabel>
+                        <SelectItem
+                            v-for="category in categoryStore.categories"
+                            :key="category.id"
+                            :value="category.id!"
+                        >
+                            {{ category.name }}
+                        </SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+            </Select>
         </div>
         <VueDraggable
             v-model="tabs"
@@ -176,7 +213,11 @@ async function copyTabGroup(tabGroup: TabGroup) {
                 >
                     <Icon icon="radix-icons:cross-2" class="h-4 w-4" />
                 </button>
-                <TabIcon :tab-url="tab.url!" :use-google-icon="settingStore.settings.useGoogleIcon"></TabIcon>
+                <TabIcon
+                    :tab-url="tab.url!"
+                    :use-google-icon="settingStore.settings.useGoogleIcon"
+                    class="flex-shrink-0"
+                ></TabIcon>
                 <a
                     v-if="!props.searchText"
                     :href="tab.url"

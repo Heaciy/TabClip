@@ -21,6 +21,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useExport } from '@/composables/useExport';
 import { useImport } from '@/composables/useImport';
 
@@ -41,6 +43,8 @@ const redirectToGithub = () => {
         <div class="flex flex-1 items-center space-x-4">
             <Logo class="h-11 -translate-y-0.5 fill-[#1e1e1e] dark:fill-[#f3f3f3]"></Logo>
             <Search></Search>
+            <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-6" />
+            <SidebarTrigger></SidebarTrigger>
         </div>
         <!--right-->
         <div class="flex items-center space-x-0.5">
@@ -60,7 +64,7 @@ const redirectToGithub = () => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-48" align="end">
-                    <DropdownMenuLabel>{{ $t('moreOperations.dataOperations.label') }} </DropdownMenuLabel>
+                    <DropdownMenuLabel>{{ $t('moreOperations.dataOperations.label') }}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <ExportUtil
@@ -79,7 +83,7 @@ const redirectToGithub = () => {
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuLabel>{{ $t('moreOperations.dangerOperations.label') }} </DropdownMenuLabel>
+                    <DropdownMenuLabel>{{ $t('moreOperations.dangerOperations.label') }}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened = true">

@@ -147,15 +147,12 @@ const updateGroup = async (
         is_starred?: boolean;
         is_locked?: boolean;
         tabs_meta?: Array<Tab>;
+        category_id?: string | null;
     },
 ) => {
     const group = tabGroups.value[groupIndex];
-    Object.assign(group, {
-        is_starred: params.is_starred ?? group.is_starred,
-        is_locked: params.is_locked ?? group.is_locked,
-        tabs_meta: params.tabs_meta ?? group.tabs_meta,
-        name: params.name ?? group.name,
-    });
+    const updates = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined));
+    Object.assign(group, updates);
 
     if (group.tabs_meta.length < 1) {
         await removeGroup(groupIndex);
@@ -164,10 +161,13 @@ const updateGroup = async (
 
     await db.updateTabGroup(group);
 
-    if (searchStore.searchConditions.starredOnly && params.is_starred === false) {
-        tabGroupRefs.value.delete(group.id!);
-        const unstarredGroup = tabGroups.value.splice(groupIndex, 1)[0];
-        refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - unstarredGroup.tabs_meta.length);
+    if (
+        (searchStore.searchConditions.starredOnly && params.is_starred === false) ||
+        (searchStore.searchConditions.categoryId && params.category_id !== searchStore.searchConditions.categoryId)
+    ) {
+        const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
+        tabGroupRefs.value.delete(removedGroup.id!);
+        refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
     }
 };
 </script>
@@ -178,9 +178,12 @@ const updateGroup = async (
             v-for="(tabGroup, index) in tabGroups"
             :key="tabGroup.id"
             :ref="
-                (el: ComponentPublicInstance) => {
-                    tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance);
-                    return tabGroup.id;
+                (el) => {
+                    if (el) {
+                        tabGroupRefs.set(tabGroup.id!, el as ComponentPublicInstance);
+                    } else {
+                        tabGroupRefs.delete(tabGroup.id!);
+                    }
                 }
             "
             :tab-group="tabGroup"

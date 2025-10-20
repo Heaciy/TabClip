@@ -5,23 +5,30 @@ import { Icon } from '@iconify/vue';
 import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
 import { CalendarIcon } from '@radix-icons/vue';
 import { format } from 'date-fns';
+import { Folder } from 'lucide-vue-next';
+import { SelectTrigger } from 'reka-ui';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
+import { Category } from '@/database.ts';
 import { cn } from '@/lib/utils.ts';
+import { useCategoryStore } from '@/store/category.ts';
 import { type SearchConditions, useSearchStore } from '@/store/search.ts';
 
 const { t, locale } = useI18n();
 const df = computed(() => new DateFormatter(locale.value, { dateStyle: 'long' }));
 const searched = ref(false);
 const searchStore = useSearchStore();
+const categoryStore = useCategoryStore();
 
 const searchConditions: Ref<SearchConditions> = ref({
     text: undefined,
     startTime: undefined,
     endTime: undefined,
+    categoryId: undefined,
 });
 
 function resetSearchConditions() {
@@ -29,6 +36,7 @@ function resetSearchConditions() {
         text: undefined,
         startTime: undefined,
         endTime: undefined,
+        categoryId: undefined,
     };
 }
 
@@ -51,29 +59,36 @@ function formatDateValue(dateValue?: DateValue, formatStr?: string): string | un
     return format(jsDate, formatStr || 'yyyy-MM-dd');
 }
 
+const selectedCategory = ref<Category | undefined>(undefined);
+
 const inputPlaceholder = computed(() => {
     const defaultPlaceholder = t('search.textPlaceholder');
     const conditions = searchConditions.value;
     if (!conditions.text && !popoverConditionsIsEmpty.value) {
         const formatStr = 'yyyy/MM/dd';
-        if (!conditions.endTime) {
-            return `${formatDateValue(conditions.startTime, formatStr)}-`;
-        } else if (!conditions.startTime) {
-            return `-${formatDateValue(conditions.endTime, formatStr)}`;
-        }
-        return `${formatDateValue(conditions.startTime, formatStr)}-${formatDateValue(conditions.endTime, formatStr)}`;
+        const categoryName = selectedCategory.value?.name ?? null;
+        const startTimeStr = conditions.startTime ? formatDateValue(conditions.startTime, formatStr) : null;
+        const endTimeStr = conditions.endTime ? formatDateValue(conditions.endTime, formatStr) : null;
+        const placeholders = [
+            categoryName,
+            categoryName && (startTimeStr || endTimeStr) ? ',' : '',
+            startTimeStr,
+            startTimeStr || endTimeStr ? '-' : '',
+            endTimeStr,
+        ];
+        return placeholders.join('');
     }
     return defaultPlaceholder;
 });
 
 const searchConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
-    return !conditions.text && !conditions.startTime && !conditions.endTime;
+    return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId;
 });
 
 const popoverConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
-    return !conditions.startTime && !conditions.endTime;
+    return !conditions.startTime && !conditions.endTime && !conditions.categoryId;
 });
 
 const isPassivelyRefreshing = ref(false);
@@ -98,10 +113,23 @@ watch(
             text: searchStore.searchConditions.text,
             startTime: searchStore.searchConditions.startTime,
             endTime: searchStore.searchConditions.endTime,
+            categoryId: searchStore.searchConditions.categoryId,
         };
         searched.value = true;
     },
 );
+
+watch([() => searchConditions.value.categoryId, () => categoryStore.categories], async () => {
+    if (searchConditions.value.categoryId) {
+        selectedCategory.value = await categoryStore.getCategoryById(searchConditions.value.categoryId);
+        if (!selectedCategory.value && searchStore.searchConditions.categoryId) {
+            searchStore.updateSearchConditions({ categoryId: undefined });
+            searched.value = !searchStore.isEmpty();
+        }
+    } else {
+        selectedCategory.value = undefined;
+    }
+});
 </script>
 
 <template>
@@ -251,6 +279,57 @@ watch(
                                         @click="
                                             () => {
                                                 searchConditions.endTime = undefined;
+                                            }
+                                        "
+                                    >
+                                        <Icon icon="radix-icons:trash"></Icon>
+                                    </Button>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="mr-auto">
+                                    <label>Category</label>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="min-w-48">
+                                        <div class="min-w-48">
+                                            <Select v-model="searchConditions.categoryId">
+                                                <SelectTrigger class="w-full">
+                                                    <Button
+                                                        variant="outline"
+                                                        :class="
+                                                            cn(
+                                                                'w-full justify-start text-left font-normal',
+                                                                !searchConditions.categoryId && 'text-muted-foreground',
+                                                            )
+                                                        "
+                                                    >
+                                                        <Folder class="mr-2 h-4 w-4"></Folder>
+                                                        <SelectValue placeholder="Select a category" />
+                                                    </Button>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Categories</SelectLabel>
+                                                        <SelectItem
+                                                            v-for="category in categoryStore.categories"
+                                                            :key="category.id"
+                                                            :value="category.id!"
+                                                        >
+                                                            {{ category.name }}
+                                                        </SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        class="px-2 text-gray-500 hover:text-gray-700"
+                                        @click="
+                                            () => {
+                                                searchConditions.categoryId = undefined;
                                             }
                                         "
                                     >

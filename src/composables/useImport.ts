@@ -26,7 +26,6 @@ export function useImport() {
             tabs_meta: onetabGroup.tabsMeta.map(({ url, title }) => ({ url, title })),
             create_time: new Date(onetabGroup.createDate),
             update_time: new Date(),
-            total: onetabGroup.tabsMeta.length,
             is_locked: onetabGroup.locked ?? false,
             is_starred: onetabGroup.starred ?? false,
         };

@@ -2,8 +2,10 @@
 import { onMounted } from 'vue';
 
 import Navbar from '@/components/Navbar.vue';
+import { Sidebar } from '@/components/sidebar';
 import TabGroupList from '@/components/TabGroupList.vue';
 import Toolbar from '@/components/Toolbar.vue';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
 
 const pinTab = (tab: Browser.tabs.Tab) => {
@@ -31,10 +33,19 @@ onMounted(() => {
 </script>
 
 <template>
-    <Navbar></Navbar>
-    <Toolbar></Toolbar>
-    <TabGroupList></TabGroupList>
-    <Toaster rich-colors />
+    <SidebarProvider>
+        <Sidebar />
+        <SidebarInset class="min-w-0">
+            <Navbar></Navbar>
+            <Toolbar></Toolbar>
+            <TabGroupList></TabGroupList>
+            <Toaster rich-colors />
+        </SidebarInset>
+    </SidebarProvider>
 </template>
 
-<style scoped></style>
+<style scoped>
+.flex > * {
+    min-width: 0;
+}
+</style>
