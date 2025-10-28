@@ -129,10 +129,47 @@
             }
         }
     },
+    "category": {
+        "edit": {
+            "formLabel": "名称",
+            "formDesc": "分类名称",
+            "add": {
+                "dialogTitle": "新增分类",
+                "dialogDesc": "新增一个分类，完成后点击保存"
+            },
+            "update": {
+                "dialogTitle": "更新分类",
+                "dialogDesc": "更新分类信息，完成后点击保存"
+            },
+            "buttonSave": "保存",
+            "duplicateError": "分类名称不允许重复"
+        },
+        "delete": {
+            "buttonCancel": "取消",
+            "buttonDelete": "删除",
+            "deleteCategory": {
+                "dialogTitle": "删除分类'{categoryName}'?",
+                "dialogDesc": "仅删除分类，关联的标签组不会删除"
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "删除分类'{categoryName}'及关联标签组?",
+                "dialogDesc": "删除分类及其关联的标签组，即使是锁定的标签组也会被删除"
+            }
+        },
+        "dropdownMenu": {
+            "rename": "重命名分类",
+            "deleteCategory": "删除分类",
+            "deleteCategoryAndGroups": "删除分类及标签组"
+        }
+    },
     "veeValidate": {
         "fileRequired": "请选择一个文件",
         "fileSize": "文件大小必须小于 {maxSize}",
-        "fileType": "文件必须是 {fileType} 文件"
+        "fileType": "文件必须是 {fileType} 文件",
+        "required": "{field}为必填项。",
+        "strMin": "{field}长度不能少于{min}个字符",
+        "strMax": "{field}长度不能超过{max}个字符",
+        "default": "{field}输入不合法"
     },
     "heatmap": {
         "title": "热力图",

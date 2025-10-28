@@ -105,17 +105,17 @@ async function handleDeleteCategory(category: Category, deleteGroup = false) {
                             <DropdownMenuContent class="rounded-lg" side="right" align="start">
                                 <DropdownMenuItem @click="handleEditCategory(category)">
                                     <Edit class="text-muted-foreground" />
-                                    <span>Rename Category</span>
+                                    <span>{{ $t('category.dropdownMenu.rename') }}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem @click="handleDeleteCategory(category)">
                                     <Trash2 class="text-muted-foreground" />
-                                    <span>Delete Category</span>
+                                    <span>{{ $t('category.dropdownMenu.deleteCategory') }}</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem variant="destructive" @click="handleDeleteCategory(category, true)">
                                     <Trash2 class="text-muted-foreground" />
-                                    <span>Delete Category & Groups</span>
+                                    <span>{{ $t('category.dropdownMenu.deleteCategoryAndGroups') }}</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

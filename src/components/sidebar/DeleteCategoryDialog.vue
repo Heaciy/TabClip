@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,11 +23,23 @@ interface Props {
     deleteTabGroup?: boolean;
 }
 
+const { t } = useI18n();
 const props = defineProps<Props>();
 const isDialogOpened = defineModel<boolean>({ default: false });
 const categoryStore = useCategoryStore();
 const refreshStore = useRefreshStore();
 const searchStore = useSearchStore();
+
+const dialogTitle = computed(() => {
+    return props.deleteTabGroup
+        ? t('category.delete.deleteCategory.dialogTitle', { categoryName: props.categoryToDelete?.name })
+        : t('category.delete.deleteCategoryAndGroups.dialogTitle', { categoryName: props.categoryToDelete?.name });
+});
+const dialogDesc = computed(() => {
+    return props.deleteTabGroup
+        ? t('category.delete.deleteCategory.dialogDesc', {})
+        : t('category.delete.deleteCategoryAndGroups.dialogDesc');
+});
 
 const handleDeleteCategory = async () => {
     if (props.categoryToDelete) {
@@ -42,15 +56,17 @@ const handleDeleteCategory = async () => {
     <AlertDialog :open="isDialogOpened">
         <AlertDialogContent>
             <AlertDialogHeader>
-                <AlertDialogTitle>{{ `Delete Category ${props.categoryToDelete?.name}?` }}</AlertDialogTitle>
+                <AlertDialogTitle>{{ dialogTitle }}</AlertDialogTitle>
                 <AlertDialogDescription>
-                    Only the category will be deleted — the tag group data associated with it will not be removed.
+                    {{ dialogDesc }}
                 </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-                <AlertDialogCancel @click="isDialogOpened = !isDialogOpened">Cancel</AlertDialogCancel>
+                <AlertDialogCancel @click="isDialogOpened = !isDialogOpened"
+                    >{{ $t('category.delete.buttonCancel') }}
+                </AlertDialogCancel>
                 <AlertDialogAction :class="cn(buttonVariants({ variant: 'destructive' }))" @click="handleDeleteCategory"
-                    >Delete
+                    >{{ $t('category.delete.buttonDelete') }}
                 </AlertDialogAction>
             </AlertDialogFooter>
         </AlertDialogContent>

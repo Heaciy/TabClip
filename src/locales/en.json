@@ -127,10 +127,47 @@
             }
         }
     },
+    "category": {
+        "edit": {
+            "formLabel": "Name",
+            "formDesc": "This is category name.",
+            "add": {
+                "dialogTitle": "Add Category",
+                "dialogDesc": "Add a category. Click save when you're done."
+            },
+            "update": {
+                "dialogTitle": "Update Category",
+                "dialogDesc": "Update the category. Click save when you're done."
+            },
+            "buttonSave": "Save",
+            "duplicateError": "Duplicate category names are not allowed."
+        },
+        "delete": {
+            "buttonCancel": "Cancel",
+            "buttonDelete": "Delete",
+            "deleteCategory": {
+                "dialogTitle": "Delete Category '{categoryName}'?",
+                "dialogDesc": "Only the category will be deleted — the tab group data associated with it will not be removed."
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "Delete Category '{categoryName}' and Its Associated Tab Groups?",
+                "dialogDesc": "This will delete the category and all its associated tab groups, including any that are locked."
+            }
+        },
+        "dropdownMenu": {
+            "rename": "Rename Category",
+            "deleteCategory": "Delete Category",
+            "deleteCategoryAndGroups": "Delete Category & Groups"
+        }
+    },
     "veeValidate": {
         "fileRequired": "Please select a file",
         "fileSize": "File size must be less than {maxSize}",
-        "fileType": "File must be in {fileType} format"
+        "fileType": "File must be in {fileType} format",
+        "required": "{field} is required.",
+        "strMin": "{field} must be at least {min} characters.",
+        "strMax": "{field} must be at most {max} characters.",
+        "default": "Invalid input for {field}."
     },
     "heatmap": {
         "title": "Heatmap",

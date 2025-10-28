@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import * as z from 'zod';
@@ -19,21 +21,34 @@ import { Category } from '@/database.ts';
 import { useCategoryStore } from '@/store/category';
 import { useRefreshStore } from '@/store/refreshStore.ts';
 
+const { t } = useI18n();
 const props = defineProps<{ categoryToEdit?: Category | null }>();
 const isDialogOpen = defineModel<boolean>({ default: false });
 const categoryStore = useCategoryStore();
 const refreshStore = useRefreshStore();
 
+const dialogTitle = computed(() => {
+    return props.categoryToEdit ? t('category.edit.update.dialogTitle') : t('category.edit.add.dialogTitle');
+});
+const dialogDesc = computed(() => {
+    return props.categoryToEdit ? t('category.edit.update.dialogDesc') : t('category.edit.add.dialogDesc');
+});
+
 async function handleOpenChange(open: boolean) {
     isDialogOpen.value = open;
 }
 
-const formSchema = toTypedSchema(
-    z.object({
-        id: z.string().optional(),
-        name: z.string().min(2).max(50),
-    }),
-);
+const formSchema = computed(() => {
+    return toTypedSchema(
+        z.object({
+            id: z.string().optional(),
+            name: z
+                .string()
+                .min(2, { message: t('veeValidate.strMin', { field: t('category.edit.formLabel'), min: 2 }) })
+                .max(50, { message: t('veeValidate.strMax', { field: t('category.edit.formLabel'), max: 50 }) }),
+        }),
+    );
+});
 
 const { isFieldDirty, handleSubmit, setErrors, setValues } = useForm({
     validationSchema: formSchema,
@@ -51,7 +66,7 @@ const onSubmit = handleSubmit(async (values) => {
     const isDuplicate = allCategories.some((category) => category.name === values.name && category.id !== values.id);
 
     if (isDuplicate) {
-        setErrors({ name: '分类名不允许重复' });
+        setErrors({ name: t('category.edit.duplicateError') });
         return;
     }
 
@@ -81,23 +96,23 @@ const onSubmit = handleSubmit(async (values) => {
         </DialogTrigger>
         <DialogContent class="sm:max-w-[425px]">
             <DialogHeader>
-                <DialogTitle>Edit Category</DialogTitle>
-                <DialogDescription>Edit your category info. Click save when you're done.</DialogDescription>
+                <DialogTitle>{{ dialogTitle }}</DialogTitle>
+                <DialogDescription>{{ dialogDesc }}</DialogDescription>
             </DialogHeader>
             <form id="category" class="space-y-6" @submit="onSubmit">
                 <FormField v-slot="{ componentField }" name="name" :validate-on-blur="!isFieldDirty">
                     <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>{{ $t('category.edit.formLabel') }}</FormLabel>
                         <FormControl>
                             <Input type="text" placeholder="name" v-bind="componentField" />
                         </FormControl>
-                        <FormDescription>This is category name.</FormDescription>
+                        <FormDescription>{{ $t('category.edit.formDesc') }}</FormDescription>
                         <FormMessage />
                     </FormItem>
                 </FormField>
             </form>
             <DialogFooter>
-                <Button type="submit" form="category">Save changes</Button>
+                <Button type="submit" form="category">{{ $t('category.edit.buttonSave') }}</Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
