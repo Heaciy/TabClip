@@ -32,13 +32,13 @@ const searchStore = useSearchStore();
 
 const dialogTitle = computed(() => {
     return props.deleteTabGroup
-        ? t('category.delete.deleteCategory.dialogTitle', { categoryName: props.categoryToDelete?.name })
-        : t('category.delete.deleteCategoryAndGroups.dialogTitle', { categoryName: props.categoryToDelete?.name });
+        ? t('category.delete.deleteCategoryAndGroups.dialogTitle', { categoryName: props.categoryToDelete?.name })
+        : t('category.delete.deleteCategory.dialogTitle', { categoryName: props.categoryToDelete?.name });
 });
 const dialogDesc = computed(() => {
     return props.deleteTabGroup
-        ? t('category.delete.deleteCategory.dialogDesc', {})
-        : t('category.delete.deleteCategoryAndGroups.dialogDesc');
+        ? t('category.delete.deleteCategoryAndGroups.dialogDesc')
+        : t('category.delete.deleteCategory.dialogDesc', {});
 });
 
 const handleDeleteCategory = async () => {
@@ -55,9 +55,9 @@ const handleDeleteCategory = async () => {
 <template>
     <AlertDialog :open="isDialogOpened">
         <AlertDialogContent>
-            <AlertDialogHeader>
+            <AlertDialogHeader :class="props.deleteTabGroup ? 'text-red-500' : ''">
                 <AlertDialogTitle>{{ dialogTitle }}</AlertDialogTitle>
-                <AlertDialogDescription>
+                <AlertDialogDescription :class="props.deleteTabGroup ? 'text-red-500' : ''">
                     {{ dialogDesc }}
                 </AlertDialogDescription>
             </AlertDialogHeader>

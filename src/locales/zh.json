@@ -2,8 +2,10 @@
     "search": {
         "startTime": "开始时间",
         "endTime": "结束时间",
+        "category": "分类",
         "textPlaceholder": "搜索",
         "timePlaceholder": "选择日期",
+        "categoryPlaceholder": "选择分类",
         "popoverTitle": "搜索条件",
         "popoverDesc": "设置更多搜索条件",
         "buttonSearch": "搜索",
@@ -130,6 +132,8 @@
         }
     },
     "category": {
+        "label": "分类",
+        "loading": "加载中...",
         "edit": {
             "formLabel": "名称",
             "formDesc": "分类名称",
@@ -148,11 +152,11 @@
             "buttonCancel": "取消",
             "buttonDelete": "删除",
             "deleteCategory": {
-                "dialogTitle": "删除分类'{categoryName}'?",
+                "dialogTitle": "删除分类 '{categoryName}'?",
                 "dialogDesc": "仅删除分类，关联的标签组不会删除"
             },
             "deleteCategoryAndGroups": {
-                "dialogTitle": "删除分类'{categoryName}'及关联标签组?",
+                "dialogTitle": "删除分类 '{categoryName}' 及关联标签组?",
                 "dialogDesc": "删除分类及其关联的标签组，即使是锁定的标签组也会被删除"
             }
         },

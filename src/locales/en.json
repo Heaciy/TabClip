@@ -2,8 +2,10 @@
     "search": {
         "startTime": "Start Time",
         "endTime": "End Time",
+        "category": "Categoty",
         "textPlaceholder": "Search",
         "timePlaceholder": "Pick a date",
+        "categoryPlaceholder":"Select a category",
         "popoverTitle": "Search",
         "popoverDesc": "Set more query conditions.",
         "buttonSearch": "Search",
@@ -128,6 +130,8 @@
         }
     },
     "category": {
+        "label": "Categories",
+        "loading": "Loading...",
         "edit": {
             "formLabel": "Name",
             "formDesc": "This is category name.",

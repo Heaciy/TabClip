@@ -116,13 +116,18 @@ function observeLastTabGroup() {
     }
 }
 
-const removeGroup = async (groupIndex: number) => {
-    if (tabGroups.value[groupIndex].is_locked) {
+const removeGroup = async (groupIndex: number, removeFromDB: boolean = true) => {
+    if (removeFromDB && tabGroups.value[groupIndex].is_locked) {
         return;
     }
+
     const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
     tabGroupRefs.value.delete(removedGroup.id!);
-    await db.deleteTabGroup(removedGroup.id!);
+
+    if (removeFromDB) {
+        await db.deleteTabGroup(removedGroup.id!);
+    }
+
     refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
 };
 
@@ -161,13 +166,12 @@ const updateGroup = async (
 
     await db.updateTabGroup(group);
 
+    // Unstar the group or clear its category, then remove it from the current list
     if (
         (searchStore.searchConditions.starredOnly && params.is_starred === false) ||
         (searchStore.searchConditions.categoryId && params.category_id !== searchStore.searchConditions.categoryId)
     ) {
-        const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
-        tabGroupRefs.value.delete(removedGroup.id!);
-        refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
+        removeGroup(groupIndex, false);
     }
 };
 </script>

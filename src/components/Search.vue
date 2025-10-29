@@ -288,7 +288,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                             </div>
                             <div class="flex items-center gap-4">
                                 <div class="mr-auto">
-                                    <label>Category</label>
+                                    <label>{{ $t('search.category') }}</label>
                                 </div>
                                 <div class="flex gap-4">
                                     <div class="min-w-48">
@@ -305,14 +305,14 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                                         "
                                                     >
                                                         <Folder class="mr-2 h-4 w-4"></Folder>
-                                                        <SelectValue placeholder="Select a category" />
+                                                        <SelectValue :placeholder="t('search.categoryPlaceholder')" />
                                                     </Button>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
-                                                        <SelectLabel>Categories</SelectLabel>
+                                                        <SelectLabel>{{ $t('search.category') }}</SelectLabel>
                                                         <SelectItem
-                                                            v-for="category in categoryStore.categories"
+                                                            v-for="category in categoryStore.orderedCategories"
                                                             :key="category.id"
                                                             :value="category.id!"
                                                         >

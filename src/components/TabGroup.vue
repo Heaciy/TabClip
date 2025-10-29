@@ -185,7 +185,7 @@ const handleSelectChange = (val: AcceptableValue) => {
                     <SelectGroup>
                         <SelectLabel>Categories</SelectLabel>
                         <SelectItem
-                            v-for="category in categoryStore.categories"
+                            v-for="category in categoryStore.orderedCategories"
                             :key="category.id"
                             :value="category.id!"
                         >

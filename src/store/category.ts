@@ -1,74 +1,120 @@
+import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
-import { type Category, db } from '@/database'; // 导入数据库实例和Category类型
+import { type Category, db } from '@/database';
 
-export const useCategoryStore = defineStore('category', {
-    state: () => ({
-        categories: [] as Category[],
-        isLoading: false,
-        error: null as string | null,
-    }),
-    actions: {
-        async loadCategories() {
-            this.isLoading = true;
-            this.error = null;
-            try {
-                this.categories = await db.getAllCategories();
-            } catch (error: any) {
-                this.error = '加载分类失败: ' + error.message;
-                console.error('Pinia - 加载分类失败:', error);
-            } finally {
-                this.isLoading = false;
-            }
-        },
+const ORDERED_CATEGORIES = 'ordered_categories';
 
-        async getCategoryById(id: string) {
-            return await db.getCategoryById(id);
-        },
+export const useCategoryStore = defineStore('category', () => {
+    const categories = ref<Category[]>([]);
+    const isLoading = ref(false);
+    const error = ref<string | null>(null);
 
-        async addCategory(newCategory: { name: string }) {
-            this.isLoading = true;
-            this.error = null;
-            try {
-                await db.addCategory(newCategory);
-                await this.loadCategories();
-            } catch (error: any) {
-                this.error = '添加分类失败: ' + error.message;
-                console.error('Pinia - 添加分类失败:', error);
-                throw error;
-            } finally {
-                this.isLoading = false;
-            }
-        },
+    const orderedCategories = ref<Category[]>([]);
 
-        async updateCategory(updatedCategory: Category) {
-            this.isLoading = true;
-            this.error = null;
-            try {
-                await db.updateCategory(updatedCategory);
-                await this.loadCategories();
-            } catch (error: any) {
-                this.error = '更新分类失败: ' + error.message;
-                console.error('Pinia - 更新分类失败:', error);
-                throw error;
-            } finally {
-                this.isLoading = false;
-            }
-        },
+    async function loadCategories() {
+        isLoading.value = true;
+        error.value = null;
 
-        async deleteCategory(id: string, deleteTabGroup: boolean = false) {
-            this.isLoading = true;
-            this.error = null;
-            try {
-                deleteTabGroup ? await db.deleteCategoryAndAssociatedGroups(id) : await db.deleteCategory(id);
-                await this.loadCategories();
-            } catch (error: any) {
-                this.error = '删除分类失败: ' + error.message;
-                console.error('Pinia - 删除分类失败:', error);
-                throw error;
-            } finally {
-                this.isLoading = false;
-            }
-        },
-    },
+        try {
+            const dbCategories = await db.getAllCategories();
+            categories.value = dbCategories;
+
+            const ordered_categories: Category[] = JSON.parse(localStorage.getItem(ORDERED_CATEGORIES) || '[]');
+            const dbMap = new Map(dbCategories.map((c) => [c.id, c]));
+
+            // 保留已存在的顺序，但更新为数据库中的最新对象
+            const syncedOrder: Category[] = ordered_categories
+                .filter((c) => dbMap.has(c.id))
+                .map((c) => dbMap.get(c.id)!);
+
+            // 找出数据库中新增的分类（本地未记录）
+            const syncedIds = new Set(syncedOrder.map((c) => c.id));
+            const newCategories = dbCategories.filter((c) => !syncedIds.has(c.id));
+
+            // 追加到排序列表的开头（或尾部）
+            const finalOrder = [...newCategories, ...syncedOrder];
+
+            // 保存和更新
+            orderedCategories.value = finalOrder;
+            localStorage.setItem(ORDERED_CATEGORIES, JSON.stringify(finalOrder));
+        } catch (e: any) {
+            error.value = 'Load categories failed: ' + e.message;
+            console.error('Load categories failed: ', e);
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    function saveOrderedCategories(newOrder: Category[]) {
+        try {
+            orderedCategories.value = newOrder;
+            localStorage.setItem(ORDERED_CATEGORIES, JSON.stringify(newOrder));
+        } catch (e: any) {
+            error.value = 'Save ordered categories failed: ' + e.message;
+            console.error('Save ordered categories failed: ', e);
+        }
+    }
+
+    async function getCategoryById(id: string) {
+        return await db.getCategoryById(id);
+    }
+
+    async function addCategory(newCategory: { name: string }) {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            await db.addCategory(newCategory);
+            await loadCategories();
+        } catch (e: any) {
+            error.value = 'Add category failed: ' + e.message;
+            console.error('Add category failed: ', e);
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    async function updateCategory(updatedCategory: Category) {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            await db.updateCategory(updatedCategory);
+            await loadCategories();
+        } catch (e: any) {
+            error.value = 'Update category failed: ' + e.message;
+            console.error('Update category failed: ', e);
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    async function deleteCategory(id: string, deleteTabGroup = false) {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            deleteTabGroup ? await db.deleteCategoryAndAssociatedGroups(id) : await db.deleteCategory(id);
+            await loadCategories();
+        } catch (e: any) {
+            error.value = 'Delete category failed: ' + e.message;
+            console.error('Delete category failed: ', e);
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
+    return {
+        categories,
+        isLoading,
+        error,
+        loadCategories,
+        getCategoryById,
+        addCategory,
+        updateCategory,
+        deleteCategory,
+        saveOrderedCategories,
+        orderedCategories,
+    };
 });

@@ -43,7 +43,7 @@ const handleOpenChange = (open: boolean) => {
         <DialogContent>
             <DialogHeader>
                 <DialogTitle class="text-red-500">{{ $t('truncateGroups.title') }}</DialogTitle>
-                <DialogDescription class="text-red-400">
+                <DialogDescription class="text-red-500">
                     {{ $t('truncateGroups.descLeft') }}
                     <span class="mx-1 font-bold">{{ CONFIRM_TEXT }}</span>
                     {{ $t('truncateGroups.descRight') }}

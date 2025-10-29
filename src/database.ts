@@ -29,6 +29,7 @@ interface TabGroup {
 interface Category {
     id?: string; // UUID
     name: string;
+    create_time?: Date;
 }
 
 interface DBTabGroup extends TabGroup {}
@@ -48,13 +49,13 @@ interface HeatmapData {
 
 class TabGroupDatabase extends Dexie {
     public tabGroups: EntityTable<DBTabGroup, 'id'>;
-    public categories: EntityTable<DBCategory, 'id'>; // 新增 categories 表
+    public categories: EntityTable<DBCategory, 'id'>;
 
     constructor() {
         super('TabClip');
         this.version(2).stores({
             tabGroups: 'id, is_starred, is_locked, create_time, category_id',
-            categories: 'id, name', // categories 表
+            categories: 'id, name, create_time',
         });
 
         // 初始化表
@@ -280,12 +281,17 @@ class TabGroupDatabase extends Dexie {
         return this.categories.add({
             id: category.id || crypto.randomUUID(),
             name: category.name,
+            create_time: category.create_time || new Date(),
         });
     }
 
     /** 获取所有分类 */
-    async getAllCategories(): Promise<Category[]> {
-        return this.categories.toArray();
+    async getAllCategories(desc: boolean = false): Promise<Category[]> {
+        let query = this.categories.orderBy('create_time');
+        if (desc) {
+            query = query.reverse();
+        }
+        return query.toArray();
     }
 
     /** 更新分类 */
