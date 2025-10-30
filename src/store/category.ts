@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 
 import { type Category, db } from '@/database';
 
-const ORDERED_CATEGORIES = 'ordered_categories';
+export const ORDERED_CATEGORIES = 'ordered_categories';
 
 export const useCategoryStore = defineStore('category', () => {
     const categories = ref<Category[]>([]);

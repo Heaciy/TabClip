@@ -299,6 +299,11 @@ class TabGroupDatabase extends Dexie {
         return this.categories.update(category.id!, { name: category.name });
     }
 
+    /** 批量更新/插入分类 */
+    async bulkPutCategories(categories: Array<Category>) {
+        await this.categories.bulkPut(categories);
+    }
+
     /** 删除分类 */
     async deleteCategory(categoryId: string) {
         await this.tabGroups.where('category_id').equals(categoryId).modify({

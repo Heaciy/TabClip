@@ -61,9 +61,9 @@ watch(isDialogOpen, (opened) => {
 });
 
 const onSubmit = handleSubmit(async (values) => {
-    await categoryStore.loadCategories();
-    const allCategories = categoryStore.categories;
-    const isDuplicate = allCategories.some((category) => category.name === values.name && category.id !== values.id);
+    const isDuplicate = categoryStore.categories.some(
+        (category) => category.name === values.name && category.id !== values.id,
+    );
 
     if (isDuplicate) {
         setErrors({ name: t('category.edit.duplicateError') });

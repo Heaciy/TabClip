@@ -4,6 +4,7 @@ import { v5 as uuidv5 } from 'uuid';
 
 import { db, type Tab, type TabGroup } from '@/database.ts';
 import { i18n } from '@/locales';
+import { useCategoryStore } from '@/store/category';
 import { useRefreshStore } from '@/store/refreshStore';
 
 export function useImport() {
@@ -12,6 +13,7 @@ export function useImport() {
     const isImportDialogOpened = ref<boolean>(false);
 
     const refreshStore = useRefreshStore();
+    const categoryStore = useCategoryStore();
     const t = i18n.global.t;
 
     function formatOnetabGroup(onetabGroup: {
@@ -31,6 +33,11 @@ export function useImport() {
         };
     }
 
+    function formatGroup(tabGroup: TabGroup, categoryIds: Set<string | undefined> | null = null): TabGroup {
+        tabGroup.category_id = categoryIds?.has(tabGroup.category_id) ? tabGroup.category_id : undefined;
+        return tabGroup;
+    }
+
     function sleep(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -43,7 +50,7 @@ export function useImport() {
             const data = JSON.parse(jsonStr);
             importProgress.value = 10;
 
-            let appType, tabGroups;
+            let appType, tabGroups, categories;
 
             if (data.state?.tabGroups) {
                 appType = 'Onetab';
@@ -51,20 +58,29 @@ export function useImport() {
             } else if (data.tabGroups) {
                 appType = 'TabClip';
                 tabGroups = data.tabGroups;
+                categories = data.categories || [];
             } else {
                 throw new Error('File format error');
             }
+
+            await db.bulkPutCategories(categories);
+            const categoryIds = new Set((await db.getAllCategories()).map((category) => category.id));
 
             const pageSize = 100;
             const pageCount = Math.ceil(tabGroups.length / pageSize);
             for (let pageIndex = 1; pageIndex <= pageCount; pageIndex++) {
                 const slice = tabGroups.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-                await db.bulkPutGroups(appType === 'Onetab' ? slice.map(formatOnetabGroup) : slice);
+                await db.bulkPutGroups(
+                    appType === 'Onetab'
+                        ? slice.map(formatOnetabGroup)
+                        : slice.map((group: TabGroup) => formatGroup(group, categoryIds)),
+                );
                 importProgress.value += (100 - importProgress.value) / (pageCount - pageIndex + 1);
                 await sleep(200);
             }
 
             isImportDialogOpened.value = false;
+            categoryStore.loadCategories();
             refreshStore.refresh();
             toast.success(t('importGroups.success.toastTitle'), {
                 description: t('importGroups.success.toastDesc', { total: tabGroups.length }),
