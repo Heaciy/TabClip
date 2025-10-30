@@ -105,6 +105,21 @@ export const useCategoryStore = defineStore('category', () => {
         }
     }
 
+    async function mergeCategory(category: Category, categoryTo: Category) {
+        isLoading.value = true;
+        error.value = null;
+        try {
+            await db.mergeCategory(category, categoryTo);
+            await loadCategories();
+        } catch (e: any) {
+            error.value = 'Merge category failed: ' + e.message;
+            console.error('Merge category failed: ', e);
+            throw e;
+        } finally {
+            isLoading.value = false;
+        }
+    }
+
     return {
         categories,
         isLoading,
@@ -114,6 +129,7 @@ export const useCategoryStore = defineStore('category', () => {
         addCategory,
         updateCategory,
         deleteCategory,
+        mergeCategory,
         saveOrderedCategories,
         orderedCategories,
     };

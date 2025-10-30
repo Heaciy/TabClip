@@ -35,6 +35,7 @@ const doTruncate = async () => {
 
 const handleOpenChange = (open: boolean) => {
     isDialogOpened.value = open;
+    confirmInput.value = '';
 };
 </script>
 

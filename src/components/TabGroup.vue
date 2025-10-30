@@ -183,7 +183,7 @@ const handleSelectChange = (val: AcceptableValue) => {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectLabel>Categories</SelectLabel>
+                        <SelectLabel>{{ $t('category.label') }}</SelectLabel>
                         <SelectItem
                             v-for="category in categoryStore.orderedCategories"
                             :key="category.id"

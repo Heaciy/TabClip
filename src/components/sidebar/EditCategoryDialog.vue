@@ -56,7 +56,7 @@ const { isFieldDirty, handleSubmit, setErrors, setValues } = useForm({
 
 watch(isDialogOpen, (opened) => {
     if (opened) {
-        setValues({ ...props.categoryToEdit });
+        setValues({ id: undefined, ...props.categoryToEdit });
     }
 });
 

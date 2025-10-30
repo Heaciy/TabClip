@@ -2,10 +2,10 @@
     "search": {
         "startTime": "Start Time",
         "endTime": "End Time",
-        "category": "Categoty",
+        "category": "Category",
         "textPlaceholder": "Search",
         "timePlaceholder": "Pick a date",
-        "categoryPlaceholder":"Select a category",
+        "categoryPlaceholder": "Select a category",
         "popoverTitle": "Search",
         "popoverDesc": "Set more query conditions.",
         "buttonSearch": "Search",
@@ -111,7 +111,7 @@
     },
     "tabGroup": {
         "InputGroupName": "Input Name",
-        "total": "Total: {total} tabs",
+        "total": "{total} Tabs",
         "copyLinks": {
             "toastTitle": "Links Copied Successfully",
             "toastDesc": "Successfully copied {total} tab links."
@@ -140,8 +140,8 @@
                 "dialogDesc": "Add a category. Click save when you're done."
             },
             "update": {
-                "dialogTitle": "Update Category",
-                "dialogDesc": "Update the category. Click save when you're done."
+                "dialogTitle": "Edit Category",
+                "dialogDesc": "Edit the category. Click save when you're done."
             },
             "buttonSave": "Save",
             "duplicateError": "Duplicate category names are not allowed."
@@ -158,8 +158,15 @@
                 "dialogDesc": "This will delete the category and all its associated tab groups, including any that are locked."
             }
         },
+        "merge": {
+            "buttonCancel": "Cancel",
+            "buttonMerge": "Merge",
+            "dialogTitle": "Merge Category '{categoryName}' into '{categoryToName}'?",
+            "dialogDesc": "Merge the original category into the new one. All tab groups from '{categoryName}' will be moved into '{categoryToName}' and '{categoryName}' will be removed."
+        },
         "dropdownMenu": {
-            "rename": "Rename Category",
+            "edit": "Edit Category",
+            "mergeTo": "Merge into",
             "deleteCategory": "Delete Category",
             "deleteCategoryAndGroups": "Delete Category & Groups"
         }

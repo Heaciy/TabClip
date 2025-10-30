@@ -320,6 +320,24 @@ class TabGroupDatabase extends Dexie {
             await this.tabGroups.where('category_id').equals(categoryId).delete();
         });
     }
+
+    async mergeCategory(category: Category, categoryTo: Category) {
+        return this.transaction('rw', this.categories, this.tabGroups, async () => {
+            // 检查 ID 是否有效且不相同
+            if (!category.id || !categoryTo.id || category.id === categoryTo.id) {
+                console.warn('Merge categories failed: Invalid or identical IDs.');
+                return;
+            }
+            // 批量更新所有关联的 TabGroup，将其指向 categoryTo
+            await this.tabGroups.where('category_id').equals(category.id).modify({
+                category_id: categoryTo.id,
+                update_time: new Date(),
+            });
+
+            // 删除原始的 category
+            await this.categories.delete(category.id);
+        });
+    }
 }
 
 const getDateRange = (year?: number): [string, string] => {

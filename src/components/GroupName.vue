@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue';
-import { Icon } from '@iconify/vue';
+import { TextCursorInput } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 
@@ -89,7 +89,7 @@ onMounted(updateWidth);
                 :class="isEditing || inputValue ? 'over:bg-transparent hover:bg-transparent active:bg-transparent' : ''"
                 @click="focusInput"
             >
-                <Icon icon="radix-icons:input"></Icon>
+                <TextCursorInput />
             </Button>
         </span>
     </div>

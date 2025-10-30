@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { onBeforeMount } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { Edit, Folder, Loader, MoreHorizontal, Plus, Trash2 } from 'lucide-vue-next';
+import { Edit, Folder, Loader, Merge, MoreHorizontal, Plus, Trash2 } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 
 import DeleteDialog from '@/components/sidebar/DeleteCategoryDialog.vue';
 import EditDialog from '@/components/sidebar/EditCategoryDialog.vue';
+import MergeDialog from '@/components/sidebar/MergeCategoryDialog.vue';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuPortal,
     DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -43,6 +48,10 @@ const categoryToDelete = ref<Category | null>(null);
 const deleteTabGroup = ref<boolean>(false);
 const isDeleteDialogOpened = ref(false);
 
+type Pair<T1, T2> = [T1, T2];
+const categoryToMerge = ref<Pair<Category, Category> | null>(null);
+const isMergeDialogOpened = ref(false);
+
 function handleAddCategory() {
     categoryToEdit.value = null;
     isEditDialogOpened.value = true;
@@ -63,6 +72,12 @@ async function handleDeleteCategory(category: Category, deleteGroup = false) {
     }
 }
 
+async function handleMergeCategory(category: Category, categoryTo: Category) {
+    if (category.id == categoryTo.id) return;
+    categoryToMerge.value = [category, categoryTo];
+    isMergeDialogOpened.value = true;
+}
+
 function handleDragEnd() {
     categoryStore.saveOrderedCategories(orderedCategories.value);
 }
@@ -78,6 +93,7 @@ function handleDragEnd() {
                     :category-to-delete="categoryToDelete"
                     :delete-tab-group="deleteTabGroup"
                 ></DeleteDialog>
+                <MergeDialog v-model="isMergeDialogOpened" :category-to-merge="categoryToMerge"></MergeDialog>
                 <SidebarGroupLabel>
                     <span>{{ $t('category.label') }}</span>
                     <Button variant="ghost" size="icon-sm" class="-mr-2.5 ml-auto" @click="handleAddCategory">
@@ -113,22 +129,54 @@ function handleDragEnd() {
                                         <span class="sr-only">More</span>
                                     </SidebarMenuAction>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent class="rounded-lg" side="right" align="start">
-                                    <DropdownMenuItem @click="handleEditCategory(category)">
-                                        <Edit class="text-muted-foreground" />
-                                        <span>{{ $t('category.dropdownMenu.rename') }}</span>
+                                <DropdownMenuContent
+                                    class="rounded-lg [&_svg]:transition-colors [&_svg]:duration-200"
+                                    side="right"
+                                    align="start"
+                                >
+                                    <DropdownMenuItem
+                                        class="hover:[&_svg:not([class*='text-'])]:text-inherit"
+                                        @click="handleEditCategory(category)"
+                                    >
+                                        <Edit />
+                                        <span>{{ $t('category.dropdownMenu.edit') }}</span>
                                     </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger
+                                            class="[&_svg]:text-muted-foreground gap-2 hover:[&_svg]:text-inherit"
+                                        >
+                                            <Merge class="size-4" />
+                                            <span>{{ $t('category.dropdownMenu.mergeTo') }}</span>
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent>
+                                                <DropdownMenuItem
+                                                    v-for="categoryTo in categoryStore.orderedCategories.filter(
+                                                        (c) => c.id !== category.id,
+                                                    )"
+                                                    :key="categoryTo.id"
+                                                    @click="handleMergeCategory(category, categoryTo)"
+                                                >
+                                                    <span>{{ categoryTo.name }}</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem @click="handleDeleteCategory(category)">
-                                        <Trash2 class="text-muted-foreground" />
+                                    <DropdownMenuItem
+                                        class="hover:[&_svg:not([class*='text-'])]:text-inherit"
+                                        @click="handleDeleteCategory(category)"
+                                    >
+                                        <Trash2 />
                                         <span>{{ $t('category.dropdownMenu.deleteCategory') }}</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
+                                        class="hover:[&_svg:not([class*='text-'])]:text-inherit"
                                         variant="destructive"
                                         @click="handleDeleteCategory(category, true)"
                                     >
-                                        <Trash2 class="text-muted-foreground" />
+                                        <Trash2 />
                                         <span>{{ $t('category.dropdownMenu.deleteCategoryAndGroups') }}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

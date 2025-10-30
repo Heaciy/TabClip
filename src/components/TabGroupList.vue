@@ -171,7 +171,7 @@ const updateGroup = async (
         (searchStore.searchConditions.starredOnly && params.is_starred === false) ||
         (searchStore.searchConditions.categoryId && params.category_id !== searchStore.searchConditions.categoryId)
     ) {
-        removeGroup(groupIndex, false);
+        await removeGroup(groupIndex, false);
     }
 };
 </script>

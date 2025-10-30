@@ -132,7 +132,7 @@
         }
     },
     "category": {
-        "label": "分类",
+        "label": "所有分类",
         "loading": "加载中...",
         "edit": {
             "formLabel": "名称",
@@ -142,8 +142,8 @@
                 "dialogDesc": "新增一个分类，完成后点击保存"
             },
             "update": {
-                "dialogTitle": "更新分类",
-                "dialogDesc": "更新分类信息，完成后点击保存"
+                "dialogTitle": "编辑分类",
+                "dialogDesc": "编辑分类信息，完成后点击保存"
             },
             "buttonSave": "保存",
             "duplicateError": "分类名称不允许重复"
@@ -160,8 +160,15 @@
                 "dialogDesc": "删除分类及其关联的标签组，即使是锁定的标签组也会被删除"
             }
         },
+        "merge": {
+            "buttonCancel": "取消",
+            "buttonMerge": "合并",
+            "dialogTitle": "合并分类 '{categoryName}' 至 '{categoryToName}'?",
+            "dialogDesc": "原分类 '{categoryName}' 的标签组将合入新分类 '{categoryToName}' 的标签组中，且原分类 '{categoryName}' 将被删除"
+        },
         "dropdownMenu": {
-            "rename": "重命名分类",
+            "edit": "编辑分类",
+            "mergeTo": "合并分类至",
             "deleteCategory": "删除分类",
             "deleteCategoryAndGroups": "删除分类及标签组"
         }
