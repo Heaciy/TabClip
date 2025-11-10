@@ -110,7 +110,8 @@
         "tabNum": "{tabNum} Tabs"
     },
     "tabGroup": {
-        "InputGroupName": "Input Name",
+        "unnamedGroup": "Unnamed Group",
+        "inputGroupName": "Input Name",
         "total": "{total} Tabs",
         "copyLinks": {
             "toastTitle": "Links Copied Successfully",

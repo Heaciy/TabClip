@@ -1,96 +1,107 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { TextCursorInput } from 'lucide-vue-next';
 
-import { Button } from '@/components/ui/button';
-
+const { t, locale } = useI18n();
 const props = defineProps<{ name: string | undefined }>();
 const emits = defineEmits(['updateName']);
+
+const showInput = ref(false);
 const inputValue = ref(props.name);
-const isEditing = ref(false);
+const isLocaleChanging = ref(false);
 const inputRef = ref<HTMLInputElement | null>(null);
-const sizerRef = ref<HTMLElement | null>(null);
-const inputWidth = ref(0);
+const sizerRef = ref<HTMLSpanElement | null>(null); // 用于计算文本宽度的隐藏元素
 
-const focusInput = () => {
-    isEditing.value = true;
+const inputMinWidth = 118;
+const inputMaxWidth = 38 * 4;
+const contentWidth = ref(0);
 
-    if (inputValue.value) {
-        inputRef.value?.focus();
-    } else {
-        nextTick(() => {
-            setTimeout(() => {
-                inputRef.value?.focus();
-            }, 200);
-        });
+const currentWidth = computed(() => {
+    // 确保组件挂载后才计算宽度，避免首次渲染闪烁
+    if (!contentWidth.value) return 'auto';
+
+    // 编辑时保证输入框的最小宽度
+    if (showInput.value) {
+        return Math.max(contentWidth.value, inputMinWidth) + 'px';
     }
-};
+    return contentWidth.value + 'px';
+});
 
-const handleEnter = () => {
-    isEditing.value = false;
-    inputRef.value?.blur();
-};
-
-const handleFocus = () => {
-    isEditing.value = true;
-};
-
-const handleBlur = () => {
-    isEditing.value = false;
-    emits('updateName', inputValue.value);
-};
-
+// 计算文本实际渲染宽度
 const updateWidth = () => {
     nextTick(() => {
         if (sizerRef.value) {
-            inputWidth.value = sizerRef.value.offsetWidth;
+            contentWidth.value = sizerRef.value.offsetWidth;
         }
     });
 };
 
-watch([inputValue, isEditing], updateWidth);
-onMounted(updateWidth);
+const handleEnter = () => {
+    inputRef.value?.blur();
+};
+
+const handleBlur = () => {
+    emits('updateName', inputValue.value);
+    showInput.value = false;
+};
+
+const handleClick = () => {
+    showInput.value = true;
+    nextTick(() => {
+        setTimeout(() => {
+            inputRef.value?.focus();
+        }, 10);
+    });
+};
+
+onMounted(() => {
+    updateWidth();
+});
+
+watch([inputValue, showInput], updateWidth);
+
+watch(locale, () => {
+    isLocaleChanging.value = true;
+    updateWidth();
+    nextTick(() => {
+        setTimeout(() => {
+            isLocaleChanging.value = false;
+        }, 200);
+    });
+});
 </script>
+
 <template>
-    <div class="relative min-w-9 items-center">
-        <span
-            ref="sizerRef"
-            class="invisible absolute max-w-56 min-w-9 whitespace-pre"
-            :class="isEditing ? 'min-w-36 pr-2 pl-9' : inputValue ? 'pr-2 pl-9' : ''"
+    <div class="flex items-center gap-2">
+        <TextCursorInput class="size-4 shrink-0" />
+        <div
+            class="group flex max-w-38 items-center"
+            :style="{ width: currentWidth }"
+            :class="isLocaleChanging ? '' : 'transition-all duration-200 ease-in-out'"
         >
-            {{ inputValue }}
-        </span>
+            <span ref="sizerRef" class="invisible absolute whitespace-pre" :class="{ truncate: !showInput }">
+                {{ inputValue || t('tabGroup.unnamedGroup') }}
+            </span>
 
-        <input
-            ref="inputRef"
-            v-model="inputValue"
-            type="text"
-            :placeholder="$t('tabGroup.InputGroupName')"
-            class="focus:placeholder:text-muted-foreground dark:bg-input/30 border-input md:text-sm,focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px],aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex h-9 min-w-9 rounded-md border bg-transparent py-1 text-base leading-9 shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-            :class="[
-                'transition-all duration-200 ease-in-out',
-                'truncate overflow-hidden whitespace-nowrap',
-                isEditing
-                    ? 'visible min-w-36 pr-2 pl-9'
-                    : inputValue
-                      ? 'border-0 pl-9 !shadow-none dark:bg-transparent'
-                      : 'invisible placeholder-transparent',
-            ]"
-            :style="{ width: inputWidth + 'px' }"
-            @blur="handleBlur"
-            @focus="handleFocus"
-            @keyup.enter="handleEnter"
-        />
-
-        <span class="absolute inset-y-0 start-0 flex items-center justify-center">
-            <Button
-                variant="ghost"
-                size="icon"
-                :class="isEditing || inputValue ? 'over:bg-transparent hover:bg-transparent active:bg-transparent' : ''"
-                @click="focusInput"
+            <input
+                v-if="showInput"
+                ref="inputRef"
+                v-model="inputValue"
+                name="groupName"
+                :placeholder="t('tabGroup.inputGroupName')"
+                class="text-muted-foreground placeholder-muted-foreground focus:border-b-foreground hover:border-b-foreground focus:placeholder-muted-foreground w-full items-center border-y border-transparent transition-colors duration-200 focus:outline-none"
+                @keyup.enter="handleEnter"
+                @blur="handleBlur"
+            />
+            <span
+                v-else
+                class="block w-full whitespace-nowrap"
+                :class="{ truncate: !showInput && contentWidth > inputMaxWidth }"
+                @click="handleClick"
             >
-                <TextCursorInput />
-            </Button>
-        </span>
+                {{ inputValue || t('tabGroup.unnamedGroup') }}
+            </span>
+        </div>
     </div>
 </template>

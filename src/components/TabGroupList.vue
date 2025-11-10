@@ -167,10 +167,21 @@ const updateGroup = async (
     await db.updateTabGroup(group);
 
     // Unstar the group or clear its category, then remove it from the current list
-    if (
-        (searchStore.searchConditions.starredOnly && params.is_starred === false) ||
-        (searchStore.searchConditions.categoryId && params.category_id !== searchStore.searchConditions.categoryId)
-    ) {
+    const { starredOnly, categoryId, text } = searchStore.searchConditions;
+    const loweredText = text?.toLowerCase();
+
+    const isStarredMismatch = starredOnly && params.is_starred === false;
+    const isCategoryMismatch = categoryId && 'category_id' in updates && updates.category_id !== categoryId;
+    const isTextMismatch =
+        loweredText &&
+        'name' in updates &&
+        !(
+            group.name?.toLowerCase().includes(loweredText) ||
+            group.tabs_meta?.some(
+                (tab) => tab.title?.toLowerCase().includes(loweredText) || tab.url?.toLowerCase().includes(loweredText),
+            )
+        );
+    if (isStarredMismatch || isCategoryMismatch || isTextMismatch) {
         await removeGroup(groupIndex, false);
     }
 };
