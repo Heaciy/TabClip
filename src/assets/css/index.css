@@ -132,3 +132,8 @@ body {
         scrollbar-color: var(--border) var(--background);
     }
 }
+
+
+.lucide {
+  stroke-width: 1.75;
+}

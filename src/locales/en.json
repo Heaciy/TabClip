@@ -38,7 +38,7 @@
             "desc": "The icon will be loaded from Google only if it is not cached. Disabled by default."
         },
         "isStartupPage": {
-            "title": "Set as Startup Page",
+            "title": "Set As Startup Page",
             "desc": "Automatically open TabClip as the home page every time you start your browser."
         },
         "pageSize": {
@@ -167,7 +167,7 @@
         },
         "dropdownMenu": {
             "edit": "Edit Category",
-            "mergeTo": "Merge into",
+            "mergeTo": "Merge Into",
             "deleteCategory": "Delete Category",
             "deleteCategoryAndGroups": "Delete Category & Groups"
         }

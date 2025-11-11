@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Icon } from '@iconify/vue';
+import {
+    DotsVerticalIcon,
+    ExclamationTriangleIcon,
+    GithubLogoIcon,
+    MoonIcon,
+    SunIcon,
+    UploadIcon,
+} from '@radix-icons/vue';
 import { useColorMode } from '@vueuse/core';
 
 import ExportUtil from '@/components/ExportUtil.vue';
@@ -41,26 +48,27 @@ const redirectToGithub = () => {
     <header class="border-border flex border-b px-2 py-2 md:px-4">
         <!--left-->
         <div class="flex flex-1 items-center space-x-4">
-            <Logo class="h-11 -translate-y-0.5 fill-[#1e1e1e] dark:fill-[#f3f3f3]"></Logo>
+            <Logo class="h-11 shrink-0 -translate-y-0.5 fill-[#1e1e1e] dark:fill-[#f3f3f3]"></Logo>
             <Search></Search>
-            <Separator orientation="vertical" class="mx-2 data-[orientation=vertical]:h-6" />
+            <Separator orientation="vertical" class="mr-1.5 data-[orientation=vertical]:h-6" />
             <SidebarTrigger></SidebarTrigger>
         </div>
         <!--right-->
-        <div class="flex items-center space-x-0.5">
+        <div class="flex items-center space-x-1">
             <I18n></I18n>
             <Button variant="ghost" size="icon" @click="mode === 'light' ? (mode = 'dark') : (mode = 'light')">
-                <Icon :icon="`radix-icons:${mode === 'light' ? 'moon' : 'sun'}`" :class="'size-4'"></Icon>
+                <MoonIcon v-if="mode === 'light'" />
+                <SunIcon v-if="mode === 'dark'" />
             </Button>
             <Heatmap></Heatmap>
             <SettingSheet></SettingSheet>
             <Button variant="ghost" size="icon" @click="redirectToGithub">
-                <Icon icon="radix-icons:github-logo"></Icon>
+                <GithubLogoIcon />
             </Button>
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                     <Button variant="ghost" size="icon">
-                        <Icon icon="radix-icons:dots-vertical" class="size-4"></Icon>
+                        <DotsVerticalIcon />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-48" align="end">
@@ -79,7 +87,7 @@ const redirectToGithub = () => {
                                     {{ importProgress.toFixed(0) }}%
                                 </span>
                             </div>
-                            <Icon icon="radix-icons:upload"></Icon>
+                            <UploadIcon />
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
@@ -88,7 +96,7 @@ const redirectToGithub = () => {
                     <DropdownMenuGroup>
                         <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened = true">
                             <span class="mr-auto">{{ $t('moreOperations.dangerOperations.truncateGroups') }}</span>
-                            <Icon icon="radix-icons:exclamation-triangle"></Icon>
+                            <ExclamationTriangleIcon />
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Icon } from '@iconify/vue';
+import { LanguagesIcon } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +37,7 @@ watch(currentLang, () => {
     <DropdownMenu>
         <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon">
-                <Icon icon="lucide:languages" :class="'size-4'"></Icon>
+                <LanguagesIcon />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent class="w-56">

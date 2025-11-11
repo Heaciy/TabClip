@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { Edit, Folder, Loader, Merge, MoreHorizontal, Plus, Trash2 } from 'lucide-vue-next';
+import { EditIcon, FolderIcon, LoaderIcon, MergeIcon, MoreHorizontalIcon, PlusIcon, TrashIcon } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 
 import DeleteDialog from '@/components/sidebar/DeleteCategoryDialog.vue';
@@ -97,13 +97,13 @@ function handleDragEnd() {
                 <SidebarGroupLabel>
                     <span>{{ $t('category.label') }}</span>
                     <Button variant="ghost" size="icon-sm" class="-mr-2.5 ml-auto" @click="handleAddCategory">
-                        <Plus></Plus>
+                        <PlusIcon />
                     </Button>
                 </SidebarGroupLabel>
                 <SidebarMenu>
                     <SidebarMenuItem v-if="isLoadingCategories">
                         <SidebarMenuButton class="text-sidebar-foreground/70">
-                            <Loader />
+                            <LoaderIcon />
                             <span>{{ $t('category.loading') }}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -118,14 +118,14 @@ function handleDragEnd() {
                                 "
                             >
                                 <div class="flex">
-                                    <Folder />
+                                    <FolderIcon />
                                     <span>{{ category.name }}</span>
                                 </div>
                             </SidebarMenuButton>
                             <DropdownMenu>
                                 <DropdownMenuTrigger as-child>
                                     <SidebarMenuAction show-on-hover>
-                                        <MoreHorizontal />
+                                        <MoreHorizontalIcon />
                                         <span class="sr-only">More</span>
                                     </SidebarMenuAction>
                                 </DropdownMenuTrigger>
@@ -138,14 +138,14 @@ function handleDragEnd() {
                                         class="hover:[&_svg:not([class*='text-'])]:text-inherit"
                                         @click="handleEditCategory(category)"
                                     >
-                                        <Edit />
+                                        <EditIcon />
                                         <span>{{ $t('category.dropdownMenu.edit') }}</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuSub>
                                         <DropdownMenuSubTrigger
                                             class="[&_svg]:text-muted-foreground gap-2 hover:[&_svg]:text-inherit"
                                         >
-                                            <Merge class="size-4" />
+                                            <MergeIcon class="size-4" />
                                             <span>{{ $t('category.dropdownMenu.mergeTo') }}</span>
                                         </DropdownMenuSubTrigger>
                                         <DropdownMenuPortal>
@@ -167,7 +167,7 @@ function handleDragEnd() {
                                         class="hover:[&_svg:not([class*='text-'])]:text-inherit"
                                         @click="handleDeleteCategory(category)"
                                     >
-                                        <Trash2 />
+                                        <TrashIcon />
                                         <span>{{ $t('category.dropdownMenu.deleteCategory') }}</span>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
@@ -176,7 +176,7 @@ function handleDragEnd() {
                                         variant="destructive"
                                         @click="handleDeleteCategory(category, true)"
                                     >
-                                        <Trash2 />
+                                        <TrashIcon />
                                         <span>{{ $t('category.dropdownMenu.deleteCategoryAndGroups') }}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

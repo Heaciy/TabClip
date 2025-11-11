@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Icon } from '@iconify/vue';
+import { GearIcon } from '@radix-icons/vue';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import * as z from 'zod';
@@ -70,7 +70,7 @@ const onReset = () => {
     <Sheet :open="opened" @update:open="handleOpenChange">
         <SheetTrigger as-child>
             <Button variant="ghost" size="icon">
-                <Icon icon="radix-icons:gear" :class="'size-4'"></Icon>
+                <GearIcon class="size-4" />
             </Button>
         </SheetTrigger>
         <SheetContent>

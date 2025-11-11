@@ -40,8 +40,8 @@ watch(
 </script>
 <template>
     <div>
-        <Tabs v-model:model-value="starStatus" :default-value="StarStatus.All" class="my-4">
-            <div class="flex pr-4 pl-6">
+        <Tabs v-model:model-value="starStatus" :default-value="StarStatus.All" class="mt-4 mb-1">
+            <div class="flex px-5">
                 <div class="flex-auto">
                     <h2 class="text-foreground font-semibold" :class="locale !== 'zh' ? 'text-lg leading-none' : ''">
                         {{
@@ -52,7 +52,7 @@ watch(
                                   : $t('toolBar.starredTitle')
                         }}
                     </h2>
-                    <div class="text-muted-foreground space-x-3 text-sm">
+                    <div class="text-muted-foreground gap-2 space-x-3 text-sm">
                         <span>{{ $t('toolBar.groupNum', { groupNum: refreshStore.groupTotal }) }}</span>
                         <span>{{ $t('toolBar.tabNum', { tabNum: refreshStore.tabTotal }) }}</span>
                     </div>

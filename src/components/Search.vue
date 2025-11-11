@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed, type Ref, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Icon } from '@iconify/vue';
 import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
-import { CalendarIcon } from '@radix-icons/vue';
+import { MixIcon } from '@radix-icons/vue';
 import { format } from 'date-fns';
-import { Folder } from 'lucide-vue-next';
+import { CalendarSearchIcon, CircleXIcon, FolderSearchIcon, Trash2Icon } from 'lucide-vue-next';
 import { SelectTrigger } from 'reka-ui';
 
 import { Button } from '@/components/ui/button';
@@ -152,14 +151,14 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                         :class="cn(searchConditionsIsEmpty ? 'pointer-events-none opacity-0' : 'opacity-100')"
                         @click="resetSearchConditions"
                     >
-                        <Icon icon="radix-icons:cross-circled"></Icon>
+                        <CircleXIcon />
                     </Button>
                     <PopoverTrigger as-child>
                         <Button
                             variant="icon"
                             :class="cn('px-2.5', !popoverConditionsIsEmpty && 'text-muted-foreground')"
                         >
-                            <Icon icon="radix-icons:mix"></Icon>
+                            <MixIcon />
                         </Button>
                     </PopoverTrigger>
                 </div>
@@ -191,7 +190,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                                         )
                                                     "
                                                 >
-                                                    <CalendarIcon class="mr-2 h-4 w-4" />
+                                                    <CalendarSearchIcon class="mr-2 h-4 w-4" />
                                                     {{
                                                         searchConditions.startTime
                                                             ? df.format(
@@ -223,7 +222,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                             }
                                         "
                                     >
-                                        <Icon icon="radix-icons:trash"></Icon>
+                                        <Trash2Icon />
                                     </Button>
                                 </div>
                             </div>
@@ -245,7 +244,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                                             )
                                                         "
                                                     >
-                                                        <CalendarIcon class="mr-2 h-4 w-4" />
+                                                        <CalendarSearchIcon class="mr-2 h-4 w-4" />
                                                         {{
                                                             searchConditions.endTime
                                                                 ? df.format(
@@ -282,7 +281,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                             }
                                         "
                                     >
-                                        <Icon icon="radix-icons:trash"></Icon>
+                                        <Trash2Icon />
                                     </Button>
                                 </div>
                             </div>
@@ -304,7 +303,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                                             )
                                                         "
                                                     >
-                                                        <Folder class="mr-2 h-4 w-4"></Folder>
+                                                        <FolderSearchIcon class="mr-2 h-4 w-4"></FolderSearchIcon>
                                                         <SelectValue :placeholder="t('search.categoryPlaceholder')" />
                                                     </Button>
                                                 </SelectTrigger>
@@ -333,7 +332,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                             }
                                         "
                                     >
-                                        <Icon icon="radix-icons:trash"></Icon>
+                                        <Trash2Icon />
                                     </Button>
                                 </div>
                             </div>

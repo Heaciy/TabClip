@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { Icon } from '@iconify/vue';
+import { ArrowUpIcon } from '@radix-icons/vue';
 
 import { Button } from '@/components/ui/button';
 
@@ -31,6 +31,6 @@ onBeforeUnmount(() => {
         :class="visible ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
         @click="scrollToTop"
     >
-        <Icon icon="radix-icons:arrow-up"></Icon>
+        <ArrowUpIcon />
     </Button>
 </template>

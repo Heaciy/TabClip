@@ -3,9 +3,16 @@ import { ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useI18n } from 'vue-i18n';
 import { toast } from 'vue-sonner';
-import { Icon } from '@iconify/vue';
+import {
+    CopyIcon,
+    LockClosedIcon,
+    LockOpen1Icon,
+    OpenInNewWindowIcon,
+    StarFilledIcon,
+    StarIcon,
+} from '@radix-icons/vue';
 import { format } from 'date-fns';
-import { Folder } from 'lucide-vue-next';
+import { CalendarClockIcon, ChartBarBigIcon, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
 import { AcceptableValue, SelectTrigger } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
@@ -75,7 +82,9 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
         }
     }
 
-    const window = newWindow ? await browser.windows.create({ focused: true }) : await browser.windows.getCurrent();
+    const window = (
+        newWindow ? await browser.windows.create({ focused: true }) : await browser.windows.getCurrent()
+    ) as Browser.windows.Window;
     const tabsToClose: Array<Browser.tabs.Tab> = newWindow ? await browser.tabs.query({ windowId: window.id! }) : [];
 
     const createdTabs: Browser.tabs.Tab[] = await Promise.all(
@@ -84,7 +93,7 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
         ),
     );
     if (tabGroup.is_browser_group) {
-        const tabIds = createdTabs.map((tab) => tab.id!).filter(Boolean);
+        const tabIds = createdTabs.map((tab) => tab.id!).filter(Boolean) as [number, ...number[]];
         const groupId = await browser.tabs.group({ tabIds });
         if (tabGroup.name) {
             await browser.tabGroups.update(groupId, { title: tabGroup.name });
@@ -131,69 +140,89 @@ const handleSelectChange = (val: AcceptableValue) => {
 
 <template>
     <div class="m-5">
-        <div class="mb-2 flex flex-row gap-3 align-middle">
-            <GroupName
-                :name="props.tabGroup.name"
-                @update-name="
-                    (name) => {
-                        $emit('update-group', { name: name });
-                    }
-                "
-            >
-            </GroupName>
-            <span class="inline-flex items-center">
-                {{ $t('tabGroup.total', { total: props.tabGroup.tabs_meta.length }) }}
-            </span>
-            <span class="inline-flex items-center">
-                {{ format(props.tabGroup.create_time!, 'yyyy-MM-dd HH:mm:ss') }}</span
-            >
-            <Button :disabled="props.tabGroup.is_locked" variant="ghost" size="icon" @click="$emit('remove-group')">
-                <Icon icon="radix-icons:trash"></Icon>
-            </Button>
-            <Button
-                variant="ghost"
-                size="icon"
-                @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })"
-            >
-                <Icon :icon="props.tabGroup.is_starred ? 'radix-icons:star-filled' : 'radix-icons:star'"></Icon>
-            </Button>
-            <Button
-                variant="ghost"
-                size="icon"
-                @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })"
-            >
-                <Icon :icon="props.tabGroup.is_locked ? 'radix-icons:lock-closed' : 'radix-icons:lock-open-1'"></Icon>
-            </Button>
-            <Button
-                variant="ghost"
-                size="icon"
-                @click="openTabGroup(tabGroup, settingStore.settings.openGroupInNewWindow)"
-            >
-                <Icon icon="radix-icons:open-in-new-window"></Icon>
-            </Button>
-            <Button variant="ghost" size="icon" @click="copyTabGroup(tabGroup)">
-                <Icon icon="radix-icons:copy"></Icon>
-            </Button>
-            <Select v-model="selectedValue" @update:model-value="handleSelectChange">
-                <SelectTrigger as-child>
-                    <Button variant="ghost" class="focus-visible:ring-0" :class="selectedValue ? 'gap-2' : 'gap-0'">
-                        <Folder />
-                        <SelectValue />
-                    </Button>
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                        <SelectLabel>{{ $t('category.label') }}</SelectLabel>
-                        <SelectItem
-                            v-for="category in categoryStore.orderedCategories"
-                            :key="category.id"
-                            :value="category.id!"
+        <div class="mb-2 flex flex-row gap-5.5 align-middle">
+            <div class="flex items-center gap-8">
+                <GroupName
+                    :name="props.tabGroup.name"
+                    @update-name="
+                        (name) => {
+                            $emit('update-group', { name: name });
+                        }
+                    "
+                >
+                </GroupName>
+
+                <div class="text-muted-foreground flex items-center gap-2">
+                    <CalendarClockIcon class="size-4 shrink-0" />
+                    <span class="text-muted-foreground inline-flex items-center whitespace-nowrap">
+                        {{ format(props.tabGroup.create_time!, 'yyyy/MM/dd HH:mm:ss') }}</span
+                    >
+                </div>
+
+                <div class="text-muted-foreground flex items-center gap-2">
+                    <ChartBarBigIcon class="size-4 shrink-0" />
+                    <span class="text-muted-foreground inline-flex items-center whitespace-nowrap">
+                        {{ $t('tabGroup.total', { total: props.tabGroup.tabs_meta.length }) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- buttons -->
+            <div class="flex gap-3">
+                <Button :disabled="props.tabGroup.is_locked" variant="ghost" size="icon" @click="$emit('remove-group')">
+                    <TrashIcon class="shrink-0" />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })"
+                >
+                    <StarFilledIcon v-if="props.tabGroup.is_starred" />
+                    <StarIcon v-else />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })"
+                >
+                    <LockClosedIcon v-if="props.tabGroup.is_locked" />
+                    <LockOpen1Icon v-else />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    @click="openTabGroup(tabGroup, settingStore.settings.openGroupInNewWindow)"
+                >
+                    <OpenInNewWindowIcon />
+                </Button>
+                <Button variant="ghost" size="icon" @click="copyTabGroup(tabGroup)">
+                    <CopyIcon />
+                </Button>
+                <Select v-model="selectedValue" @update:model-value="handleSelectChange">
+                    <SelectTrigger as-child>
+                        <Button
+                            variant="ghost"
+                            class="group font-normal focus-visible:ring-0"
+                            :class="selectedValue ? 'gap-2' : 'gap-0'"
                         >
-                            {{ category.name }}
-                        </SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-            </Select>
+                            <Folder />
+                            <SelectValue class="text-muted-foreground group-hover:text-inherit" />
+                        </Button>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>{{ $t('category.label') }}</SelectLabel>
+                            <SelectItem
+                                v-for="category in categoryStore.orderedCategories"
+                                :key="category.id"
+                                :value="category.id!"
+                            >
+                                {{ category.name }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
         </div>
         <VueDraggable
             v-model="tabs"
@@ -201,17 +230,18 @@ const handleSelectChange = (val: AcceptableValue) => {
             :animation="150"
             group="tabGroup"
             ghost-class="ghost"
+            class="space-y-2"
             @update="onTabsMetaUpdate"
             @add="onTabsMetaUpdate"
             @remove="onTabsMetaUpdate"
         >
             <div v-for="tab in tabs" :key="tab.id" class="group flex items-center gap-2">
                 <button
-                    class="invisible hidden items-center opacity-0 transition-opacity duration-500 ease-in-out group-hover:visible group-hover:opacity-100 md:flex"
+                    class="text-muted-foreground hover:text-foreground invisible hidden items-center opacity-0 transition-[opacity,colors] duration-200 ease-in-out group-hover:visible group-hover:opacity-100 md:flex"
                     :style="{ visibility: props.tabGroup.is_locked ? 'hidden' : 'visible' }"
                     @click="removeTab(tab.id!)"
                 >
-                    <Icon icon="radix-icons:cross-2" class="h-4 w-4" />
+                    <XIcon class="size-4" />
                 </button>
                 <TabIcon
                     :tab-url="tab.url!"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { DownloadIcon } from '@radix-icons/vue';
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{ isExporting?: boolean; progress?: numbe
             <span>{{ $t('moreOperations.dataOperations.exportGroups') }}</span>
             <span v-if="props.isExporting" class="text-muted-foreground text-sm">{{ props.progress.toFixed(0) }}%</span>
         </div>
-        <Icon icon="radix-icons:download"></Icon>
+        <DownloadIcon />
     </DropdownMenuItem>
 </template>
 

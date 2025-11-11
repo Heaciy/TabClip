@@ -2,13 +2,13 @@
 import { computed, onBeforeMount, provide, ref, watch } from 'vue';
 import VChart, { THEME_KEY } from 'vue-echarts/csp';
 import { useI18n } from 'vue-i18n';
-import { Icon } from '@iconify/vue';
 import { parseDate } from '@internationalized/date';
 import { useColorMode } from '@vueuse/core';
 import { HeatmapChart } from 'echarts/charts';
 import { CalendarComponent, TitleComponent, TooltipComponent, VisualMapComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { ChartColumnIcon } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -146,7 +146,7 @@ const handleOpenChange = async (open: boolean) => {
     <Drawer @update:open="handleOpenChange">
         <DrawerTrigger as-child>
             <Button variant="ghost" size="icon">
-                <Icon icon="lucide:chart-column"></Icon>
+                <ChartColumnIcon />
             </Button>
         </DrawerTrigger>
         <DrawerContent>

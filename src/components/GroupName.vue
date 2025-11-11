@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TextCursorInput } from 'lucide-vue-next';
+import { TextCursorInputIcon } from 'lucide-vue-next';
 
 const { t, locale } = useI18n();
 const props = defineProps<{ name: string | undefined }>();
@@ -74,7 +74,7 @@ watch(locale, () => {
 
 <template>
     <div class="flex items-center gap-2">
-        <TextCursorInput class="size-4 shrink-0" />
+        <TextCursorInputIcon class="size-4 shrink-0" />
         <div
             class="group flex max-w-38 items-center"
             :style="{ width: currentWidth }"
