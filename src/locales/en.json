@@ -44,7 +44,7 @@
         "pageSize": {
             "title": "Page Size",
             "selectLabel": "Page Size",
-            "desc": "The number of TabGroups loaded each time."
+            "desc": "The number of tab groups loaded each time."
         },
         "buttonSave": "Save Changes",
         "buttonDiscard": "Discard"

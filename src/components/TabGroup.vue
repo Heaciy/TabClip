@@ -144,6 +144,7 @@ const handleSelectChange = (val: AcceptableValue) => {
             <div class="flex items-center gap-8">
                 <GroupName
                     :name="props.tabGroup.name"
+                    :search-text="props.searchText"
                     @update-name="
                         (name) => {
                             $emit('update-group', { name: name });

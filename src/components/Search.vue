@@ -215,7 +215,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                     <Button
                                         variant="outline"
                                         size="icon"
-                                        class="px-2 text-gray-500 hover:text-gray-700"
+                                        class="text-muted-foreground hover:text-accent-foreground"
                                         @click="
                                             () => {
                                                 searchConditions.startTime = undefined;
@@ -274,7 +274,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                     <Button
                                         variant="outline"
                                         size="icon"
-                                        class="px-2 text-gray-500 hover:text-gray-700"
+                                        class="text-muted-foreground hover:text-accent-foreground"
                                         @click="
                                             () => {
                                                 searchConditions.endTime = undefined;
@@ -325,7 +325,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                     <Button
                                         variant="outline"
                                         size="icon"
-                                        class="px-2 text-gray-500 hover:text-gray-700"
+                                        class="text-muted-foreground hover:text-accent-foreground"
                                         @click="
                                             () => {
                                                 searchConditions.categoryId = undefined;

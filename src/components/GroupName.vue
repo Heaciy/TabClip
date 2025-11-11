@@ -3,8 +3,10 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { TextCursorInputIcon } from 'lucide-vue-next';
 
+import HighlightText from '@/components/HighlightText.vue';
+
 const { t, locale } = useI18n();
-const props = defineProps<{ name: string | undefined }>();
+const props = defineProps<{ name: string | undefined; searchText: string | undefined }>();
 const emits = defineEmits(['updateName']);
 
 const showInput = ref(false);
@@ -16,6 +18,9 @@ const sizerRef = ref<HTMLSpanElement | null>(null); // 用于计算文本宽度�
 const inputMinWidth = 118;
 const inputMaxWidth = 38 * 4;
 const contentWidth = ref(0);
+const truncateText = computed(() => {
+    return !showInput.value && contentWidth.value > inputMaxWidth;
+});
 
 const currentWidth = computed(() => {
     // 确保组件挂载后才计算宽度，避免首次渲染闪烁
@@ -94,14 +99,17 @@ watch(locale, () => {
                 @keyup.enter="handleEnter"
                 @blur="handleBlur"
             />
-            <span
-                v-else
-                class="block w-full whitespace-nowrap"
-                :class="{ truncate: !showInput && contentWidth > inputMaxWidth }"
-                @click="handleClick"
-            >
-                {{ inputValue || t('tabGroup.unnamedGroup') }}
-            </span>
+            <div v-else class="block w-full whitespace-nowrap" :class="{ truncate: truncateText }" @click="handleClick">
+                <HighlightText
+                    v-if="props.searchText && props.name?.toLocaleLowerCase().includes(props.searchText.toLowerCase())"
+                    :keyword="props.searchText"
+                    :text="props.name"
+                    :class="{ truncate: truncateText }"
+                />
+                <template v-else>
+                    {{ inputValue || t('tabGroup.unnamedGroup') }}
+                </template>
+            </div>
         </div>
     </div>
 </template>
