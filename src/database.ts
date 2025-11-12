@@ -278,11 +278,12 @@ class TabGroupDatabase extends Dexie {
 
     /** 添加分类 */
     async addCategory(category: Category) {
-        return this.categories.add({
+        const categoryId = await this.categories.add({
             id: category.id || crypto.randomUUID(),
             name: category.name,
             create_time: category.create_time || new Date(),
         });
+        return this.categories.get(categoryId);
     }
 
     /** 获取所有分类 */
@@ -296,7 +297,8 @@ class TabGroupDatabase extends Dexie {
 
     /** 更新分类 */
     async updateCategory(category: Category) {
-        return this.categories.update(category.id!, { name: category.name });
+        await this.categories.update(category.id!, { name: category.name });
+        return this.categories.get(category.id!);
     }
 
     /** 批量更新/插入分类 */

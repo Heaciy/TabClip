@@ -133,6 +133,10 @@
     "category": {
         "label": "Categories",
         "loading": "Loading...",
+        "quickActions": {
+            "label": "Quick Actions",
+            "add": "Add Category"
+        },
         "edit": {
             "formLabel": "Name",
             "formDesc": "This is category name.",

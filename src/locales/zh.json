@@ -135,6 +135,10 @@
     "category": {
         "label": "所有分类",
         "loading": "加载中...",
+        "quickActions": {
+            "label": "快捷操作",
+            "add": "新增分类"
+        },
         "edit": {
             "formLabel": "名称",
             "formDesc": "分类名称",

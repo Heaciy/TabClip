@@ -64,8 +64,9 @@ export const useCategoryStore = defineStore('category', () => {
         isLoading.value = true;
         error.value = null;
         try {
-            await db.addCategory(newCategory);
+            const category = await db.addCategory(newCategory);
             await loadCategories();
+            return category;
         } catch (e: any) {
             error.value = 'Add category failed: ' + e.message;
             console.error('Add category failed: ', e);
@@ -79,8 +80,9 @@ export const useCategoryStore = defineStore('category', () => {
         isLoading.value = true;
         error.value = null;
         try {
-            await db.updateCategory(updatedCategory);
+            const category = await db.updateCategory(updatedCategory);
             await loadCategories();
+            return category;
         } catch (e: any) {
             error.value = 'Update category failed: ' + e.message;
             console.error('Update category failed: ', e);

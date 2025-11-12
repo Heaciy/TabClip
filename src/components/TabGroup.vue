@@ -14,12 +14,22 @@ import {
 import { format } from 'date-fns';
 import { CalendarClockIcon, ChartBarBigIcon, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
 import { AcceptableValue, SelectTrigger } from 'reka-ui';
+import { SelectItem as SelectItemReka, SelectItemText } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
 import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
+import EditDialog from '@/components/sidebar/EditCategoryDialog.vue';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectSeparator,
+    SelectValue,
+} from '@/components/ui/select';
 import { type Tab, type TabGroup } from '@/database';
 import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
@@ -128,18 +138,34 @@ async function copyTabGroup(tabGroup: TabGroup) {
 const categoryStore = useCategoryStore();
 const selectedValue = ref<AcceptableValue>(props.tabGroup.category_id || null);
 let previousValue: AcceptableValue = selectedValue.value;
+const isEditDialogOpened = ref(false);
 
 const handleSelectChange = (val: AcceptableValue) => {
     if (val === previousValue) {
         selectedValue.value = null;
+    } else if (val === 'ADD_NEW_CATEGORY') {
+        selectedValue.value = previousValue; // 保持值不变
+        isEditDialogOpened.value = true;
+        return;
     }
     previousValue = selectedValue.value;
     emits('update-group', { category_id: selectedValue.value });
+};
+
+const bindNewCategoryToGroup = (category: { id: string }) => {
+    emits('update-group', { category_id: category.id });
+    selectedValue.value = category.id;
+    previousValue = selectedValue.value;
 };
 </script>
 
 <template>
     <div class="m-5">
+        <EditDialog
+            v-if="isEditDialogOpened"
+            v-model="isEditDialogOpened"
+            @callback="bindNewCategoryToGroup"
+        ></EditDialog>
         <div class="mb-2 flex flex-row gap-5.5 align-middle">
             <div class="flex items-center gap-8">
                 <GroupName
@@ -220,6 +246,17 @@ const handleSelectChange = (val: AcceptableValue) => {
                             >
                                 {{ category.name }}
                             </SelectItem>
+                        </SelectGroup>
+                        <SelectSeparator></SelectSeparator>
+                        <SelectGroup>
+                            <SelectLabel>{{ $t('category.quickActions.label') }}</SelectLabel>
+                            <SelectItemReka
+                                key="ADD_NEW_CATEGORY"
+                                value="ADD_NEW_CATEGORY"
+                                :class="`focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2`"
+                            >
+                                <SelectItemText>{{ $t('category.quickActions.add') }}</SelectItemText>
+                            </SelectItemReka>
                         </SelectGroup>
                     </SelectContent>
                 </Select>

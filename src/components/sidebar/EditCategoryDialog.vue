@@ -23,6 +23,7 @@ import { useRefreshStore } from '@/store/refreshStore.ts';
 
 const { t } = useI18n();
 const props = defineProps<{ categoryToEdit?: Category | null }>();
+const emits = defineEmits(['callback']);
 const isDialogOpen = defineModel<boolean>({ default: false });
 const categoryStore = useCategoryStore();
 const refreshStore = useRefreshStore();
@@ -71,17 +72,19 @@ const onSubmit = handleSubmit(async (values) => {
     }
 
     try {
+        let category: Category | undefined;
         if (values.id) {
             // 编辑现有分类
-            await categoryStore.updateCategory({ id: values.id, name: values.name.trim() });
+            category = await categoryStore.updateCategory({ id: values.id, name: values.name.trim() });
             refreshStore.refresh();
             console.debug('更新分类成功:', values.name);
         } else {
             // 添加新分类
-            await categoryStore.addCategory({ name: values.name.trim() });
+            category = await categoryStore.addCategory({ name: values.name.trim() });
             console.debug('新增分类成功:', values.name);
         }
         isDialogOpen.value = false;
+        emits('callback', category);
     } catch (error) {
         console.error('新增分类失败:', error);
         setErrors({ name: '新增分类失败' });
