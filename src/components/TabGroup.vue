@@ -13,13 +13,11 @@ import {
 } from '@radix-icons/vue';
 import { format } from 'date-fns';
 import { CalendarClockIcon, ChartBarBigIcon, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
-import { AcceptableValue, SelectTrigger } from 'reka-ui';
-import { SelectItem as SelectItemReka, SelectItemText } from 'reka-ui';
+import { AcceptableValue, SelectItem as SelectItemReka, SelectItemText, SelectTrigger } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
 import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
-import EditDialog from '@/components/sidebar/EditCategoryDialog.vue';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -30,7 +28,8 @@ import {
     SelectSeparator,
     SelectValue,
 } from '@/components/ui/select';
-import { type Tab, type TabGroup } from '@/database';
+import { useAddCategoryDialog } from '@/composables/useAddCategoryDialog';
+import { Category, type Tab, type TabGroup } from '@/database';
 import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
 
@@ -138,34 +137,29 @@ async function copyTabGroup(tabGroup: TabGroup) {
 const categoryStore = useCategoryStore();
 const selectedValue = ref<AcceptableValue>(props.tabGroup.category_id || null);
 let previousValue: AcceptableValue = selectedValue.value;
-const isEditDialogOpened = ref(false);
+const { openDialog } = useAddCategoryDialog();
 
 const handleSelectChange = (val: AcceptableValue) => {
     if (val === previousValue) {
         selectedValue.value = null;
     } else if (val === 'ADD_NEW_CATEGORY') {
         selectedValue.value = previousValue; // 保持值不变
-        isEditDialogOpened.value = true;
+        openDialog(bindNewCategoryToGroup);
         return;
     }
     previousValue = selectedValue.value;
     emits('update-group', { category_id: selectedValue.value });
 };
 
-const bindNewCategoryToGroup = (category: { id: string }) => {
+const bindNewCategoryToGroup = (category: Category) => {
     emits('update-group', { category_id: category.id });
-    selectedValue.value = category.id;
+    selectedValue.value = category.id!;
     previousValue = selectedValue.value;
 };
 </script>
 
 <template>
     <div class="m-5">
-        <EditDialog
-            v-if="isEditDialogOpened"
-            v-model="isEditDialogOpened"
-            @callback="bindNewCategoryToGroup"
-        ></EditDialog>
         <div class="mb-2 flex flex-row gap-5.5 align-middle">
             <div class="flex items-center gap-8">
                 <GroupName

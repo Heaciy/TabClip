@@ -12,7 +12,9 @@ import {
 } from 'vue';
 
 import BackToTop from './BackToTop.vue';
+import EditCategoryDialog from './sidebar/EditCategoryDialog.vue';
 import TabGroupComponent from './TabGroup.vue';
+import { useAddCategoryDialog } from '@/composables/useAddCategoryDialog';
 import type { Tab, TabGroup } from '@/database.ts';
 import { db } from '@/database.ts';
 import { useRefreshStore } from '@/store/refreshStore.ts';
@@ -26,6 +28,7 @@ const isLoading = ref(false);
 const searchStore = useSearchStore();
 const settingsStore = useSettingStore();
 const refreshStore = useRefreshStore();
+const { isAddCategoryDialogOpen, callback } = useAddCategoryDialog();
 
 const pageIndex = ref(1);
 const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
@@ -208,6 +211,7 @@ const updateGroup = async (
             @update-group="updateGroup(index, $event)"
         >
         </TabGroupComponent>
+        <EditCategoryDialog v-model="isAddCategoryDialogOpen" @callback="callback" />
     </div>
     <BackToTop />
 </template>
