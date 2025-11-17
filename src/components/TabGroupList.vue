@@ -14,6 +14,7 @@ import {
 import BackToTop from './BackToTop.vue';
 import EditCategoryDialog from './sidebar/EditCategoryDialog.vue';
 import TabGroupComponent from './TabGroup.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { useAddCategoryDialog } from '@/composables/useAddCategoryDialog';
 import type { Tab, TabGroup } from '@/database.ts';
 import { db } from '@/database.ts';
@@ -212,6 +213,7 @@ const updateGroup = async (
         >
         </TabGroupComponent>
         <EditCategoryDialog v-model="isAddCategoryDialogOpen" @callback="callback" />
+        <ConfirmDialog />
     </div>
     <BackToTop />
 </template>

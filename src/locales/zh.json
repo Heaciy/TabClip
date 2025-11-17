@@ -120,15 +120,15 @@
             "toastDesc": "成功复制 {total} 个标签链接"
         },
         "openTab": {
-            "firefoxNotAllow": {
-                "toastTitle": "Firefox 不允许打开此类标签",
-                "toastDesc": "链接已拷贝至剪切板，请手动粘贴到导航栏访问"
+            "notAllow": {
+                "dialogTitle": "当前浏览器不允许打开此类标签页",
+                "dialogDesc": "链接已拷贝至剪切板，请手动粘贴到地址栏访问"
             }
         },
         "openTabGroup": {
-            "firefoxNotAllow": {
-                "toastTitle": "存在 Firefox 不允许打开的标签",
-                "toastDesc": "标签组中存在 Firefox 不允许打开的标签，标签组将会被保留"
+            "notAllow": {
+                "dialogTitle": "存在当前浏览器不允许打开的标签页",
+                "dialogDesc": "标签组中存在当前浏览器不允许打开的标签页，标签组将会被保留"
             }
         }
     },
@@ -196,5 +196,9 @@
         "recentYear": "最近一年",
         "typePlaceholder": "类型",
         "yearPlaceholder": "年份"
+    },
+    "confirmDialog": {
+        "confirm": "确认",
+        "cancel": "取消"
     }
 }

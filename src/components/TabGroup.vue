@@ -29,6 +29,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useAddCategoryDialog } from '@/composables/useAddCategoryDialog';
+import { useConfirmDialog } from '@/composables/useConfirmDialog.ts';
 import { Category, type Tab, type TabGroup } from '@/database';
 import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
@@ -38,12 +39,24 @@ const settingStore = useSettingStore();
 const props = defineProps<{ tabGroup: TabGroup; searchText?: string }>();
 const emits = defineEmits(['remove-group', 'remove-tab', 'update-group']);
 const tabs = ref<Array<Tab>>(props.tabGroup.tabs_meta);
+const { openDialog: openConfirmDialog } = useConfirmDialog();
 
 function isTabOpenable(tab: Tab): boolean {
-    if (import.meta.env.FIREFOX) {
-        return tab.url?.startsWith('http') ?? false;
+    const blockedPrefixes = ['about:', 'javascript:', 'file:', 'view-source:', 'data:'];
+    if (blockedPrefixes.some((prefix) => tab.url?.startsWith(prefix))) {
+        return false;
     }
-    return true;
+
+    let browserBlocked: string[];
+    if (import.meta.env.FIREFOX) {
+        browserBlocked = ['edge:', 'chrome:'];
+    } else if (import.meta.env.EDGE) {
+        browserBlocked = ['chrome:'];
+    } else {
+        browserBlocked = ['edge:'];
+    }
+
+    return !browserBlocked.some((prefix) => tab.url?.startsWith(prefix));
 }
 
 function removeTab(id: number | string) {
@@ -56,18 +69,15 @@ function removeTab(id: number | string) {
 }
 
 async function handleLinkClick(id: number | string) {
-    if (import.meta.env.FIREFOX) {
-        console.log(2);
-        const index = tabs.value.findIndex((tab) => tab.id === id);
-        if (index !== -1) {
-            const tab = tabs.value[index];
-            if (!isTabOpenable(tab)) {
-                await navigator.clipboard.writeText(tab.url!);
-                toast.warning(t('tabGroup.openTab.firefoxNotAllow.toastTitle'), {
-                    description: t('tabGroup.openTab.firefoxNotAllow.toastDesc'),
-                });
-                return;
-            }
+    const index = tabs.value.findIndex((tab) => tab.id === id);
+    if (index !== -1) {
+        const tab = tabs.value[index];
+        if (!isTabOpenable(tab)) {
+            await navigator.clipboard.writeText(tab.url!);
+            toast.warning(t('tabGroup.openTab.notAllow.dialogTitle'), {
+                description: t('tabGroup.openTab.notAllow.dialogDesc'),
+            });
+            return;
         }
     }
 
@@ -82,15 +92,25 @@ const onTabsMetaUpdate = () => {
 };
 
 async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
-    if (import.meta.env.FIREFOX) {
+    if (tabGroup.tabs_meta.some((tab: Tab) => !isTabOpenable(tab))) {
         if (tabGroup.tabs_meta.every((tab: Tab) => !isTabOpenable(tab))) {
-            toast.warning(t('tabGroup.openTabGroup.firefoxNotAllow.toastTitle'), {
-                description: t('tabGroup.openTabGroup.firefoxNotAllow.toastDesc'),
-            });
-            return;
+            openConfirmDialog(
+                t('tabGroup.openTabGroup.notAllow.dialogTitle'),
+                t('tabGroup.openTabGroup.notAllow.dialogDesc'),
+            );
+        } else {
+            openConfirmDialog(
+                t('tabGroup.openTabGroup.notAllow.dialogTitle'),
+                t('tabGroup.openTabGroup.notAllow.dialogDesc'),
+                () => doOpenTabGroup(tabGroup, newWindow, false),
+            );
         }
+    } else {
+        await doOpenTabGroup(tabGroup, newWindow, true);
     }
+}
 
+async function doOpenTabGroup(tabGroup: TabGroup, newWindow: boolean = false, removeGroup?: boolean) {
     const window = (
         newWindow ? await browser.windows.create({ focused: true }) : await browser.windows.getCurrent()
     ) as Browser.windows.Window;
@@ -113,16 +133,9 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
         await browser.tabs.remove(tabsToClose.map((tab) => tab.id!));
     }
 
-    if (import.meta.env.FIREFOX) {
-        if (tabGroup.tabs_meta.some((tab: Tab) => !isTabOpenable(tab))) {
-            toast.warning(t('tabGroup.openTabGroup.firefoxNotAllow.toastTitle'), {
-                description: t('tabGroup.openTabGroup.firefoxNotAllow.toastDesc'),
-            });
-            return;
-        }
+    if (removeGroup) {
+        emits('remove-group');
     }
-
-    emits('remove-group');
 }
 
 async function copyTabGroup(tabGroup: TabGroup) {

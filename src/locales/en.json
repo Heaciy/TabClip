@@ -118,15 +118,15 @@
             "toastDesc": "Successfully copied {total} tab links."
         },
         "openTab": {
-            "firefoxNotAllow": {
-                "toastTitle": "Firefox Doesn't Allow Opening This Type of Tab",
-                "toastDesc": "The link has been copied to your clipboard, please paste it manually into the address bar to visit."
+            "notAllow": {
+                "dialogTitle": "This Type of Tab Cannot Be Opened in Your Browser",
+                "dialogDesc": "The link has been copied to your clipboard. Please paste it into the address bar to continue."
             }
         },
         "openTabGroup": {
-            "firefoxNotAllow": {
-                "toastTitle": "Some Tabs Cannot Be Opened in Firefox",
-                "toastDesc": "This tab group contains tabs that Firefox does not allow to open. The group will be preserved."
+            "notAllow": {
+                "dialogTitle": "Some tabs cannot be opened",
+                "dialogDesc": "This tab group contains tabs that your browser doesn’t support opening. The group will remain saved."
             }
         }
     },
@@ -194,5 +194,9 @@
         "recentYear": "Recent Year",
         "typePlaceholder": "Type",
         "yearPlaceholder": "Year"
+    },
+    "confirmDialog": {
+        "confirm": "Confirm",
+        "cancel": "Cancel"
     }
 }
