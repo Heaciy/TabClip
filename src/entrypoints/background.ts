@@ -152,6 +152,12 @@ export default defineBackground(() => {
         }
     }
 
+    function isBlankPage(tab: Browser.tabs.Tab): boolean {
+        const url = tab.url || tab.pendingUrl || '';
+        const blankTabs = ['about:blank', 'chrome://newtab/', 'edge://newtab', 'about:newtab'];
+        return blankTabs.some((prefix) => url.startsWith(prefix));
+    }
+
     function isExtensionPage(tab: Browser.tabs.Tab): boolean {
         const url = tab.url || tab.pendingUrl;
         // Use browser.runtime.getURL to create the base URL for comparison
@@ -169,7 +175,12 @@ export default defineBackground(() => {
     }
 
     function isTabClipable(tab: Browser.tabs.Tab, settings: Settings): boolean {
-        return !isExtensionPage(tab) && checkPinTabStatus(tab, settings) && checkBrowserGroup(tab, settings);
+        return (
+            !isBlankPage(tab) &&
+            !isExtensionPage(tab) &&
+            checkPinTabStatus(tab, settings) &&
+            checkBrowserGroup(tab, settings)
+        );
     }
 
     async function updateAllContextMenuStates() {
