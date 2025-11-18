@@ -5,7 +5,6 @@ import { EditIcon, FolderIcon, LoaderIcon, MergeIcon, MoreHorizontalIcon, PlusIc
 import { storeToRefs } from 'pinia';
 
 import DeleteDialog from '@/components/sidebar/DeleteCategoryDialog.vue';
-import EditDialog from '@/components/sidebar/EditCategoryDialog.vue';
 import MergeDialog from '@/components/sidebar/MergeCategoryDialog.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,6 +28,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category } from '@/database.ts';
 import { useCategoryStore } from '@/store/category';
 import { useSearchStore } from '@/store/search.ts';
@@ -42,24 +42,21 @@ onBeforeMount(() => {
 
 const { orderedCategories, isLoading: isLoadingCategories } = storeToRefs(categoryStore);
 
-const categoryToEdit = ref<Category | null>(null);
-const isEditDialogOpened = ref(false);
 const categoryToDelete = ref<Category | null>(null);
 const deleteTabGroup = ref<boolean>(false);
 const isDeleteDialogOpened = ref(false);
+const { openDialog: openEditCategoryDialog } = useEditCategoryDialog();
 
 type Pair<T1, T2> = [T1, T2];
 const categoryToMerge = ref<Pair<Category, Category> | null>(null);
 const isMergeDialogOpened = ref(false);
 
 function handleAddCategory() {
-    categoryToEdit.value = null;
-    isEditDialogOpened.value = true;
+    openEditCategoryDialog();
 }
 
 function handleEditCategory(category: Category) {
-    categoryToEdit.value = category;
-    isEditDialogOpened.value = true;
+    openEditCategoryDialog(category);
 }
 
 async function handleDeleteCategory(category: Category, deleteGroup = false) {
@@ -87,7 +84,6 @@ function handleDragEnd() {
         <SidebarContent>
             <!-- Category -->
             <SidebarGroup>
-                <EditDialog v-model="isEditDialogOpened" :category-to-edit="categoryToEdit"></EditDialog>
                 <DeleteDialog
                     v-model="isDeleteDialogOpened"
                     :category-to-delete="categoryToDelete"

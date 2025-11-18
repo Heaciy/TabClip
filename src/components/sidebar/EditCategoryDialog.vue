@@ -17,22 +17,24 @@ import {
 } from '@/components/ui/dialog';
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category } from '@/database.ts';
 import { useCategoryStore } from '@/store/category';
 import { useRefreshStore } from '@/store/refreshStore.ts';
 
 const { t } = useI18n();
-const props = defineProps<{ categoryToEdit?: Category | null }>();
-const emits = defineEmits(['callback']);
-const isDialogOpen = defineModel<boolean>({ default: false });
 const categoryStore = useCategoryStore();
 const refreshStore = useRefreshStore();
+const { isDialogOpen, onSave, categoryToEdit } = useEditCategoryDialog();
 
+const placeholder = computed(() => {
+    return categoryToEdit.value ? t('category.edit.update.placeholder') : t('category.edit.add.placeholder');
+});
 const dialogTitle = computed(() => {
-    return props.categoryToEdit ? t('category.edit.update.dialogTitle') : t('category.edit.add.dialogTitle');
+    return categoryToEdit.value ? t('category.edit.update.dialogTitle') : t('category.edit.add.dialogTitle');
 });
 const dialogDesc = computed(() => {
-    return props.categoryToEdit ? t('category.edit.update.dialogDesc') : t('category.edit.add.dialogDesc');
+    return categoryToEdit.value ? t('category.edit.update.dialogDesc') : t('category.edit.add.dialogDesc');
 });
 
 async function handleOpenChange(open: boolean) {
@@ -57,7 +59,7 @@ const { isFieldDirty, handleSubmit, setErrors, setValues } = useForm({
 
 watch(isDialogOpen, (opened) => {
     if (opened) {
-        setValues({ id: undefined, ...props.categoryToEdit });
+        setValues({ id: undefined, ...categoryToEdit.value });
     }
 });
 
@@ -84,7 +86,7 @@ const onSubmit = handleSubmit(async (values) => {
             console.debug('新增分类成功:', values.name);
         }
         isDialogOpen.value = false;
-        emits('callback', category);
+        onSave.value?.(category!);
     } catch (error) {
         console.error('新增分类失败:', error);
         setErrors({ name: '新增分类失败' });
@@ -107,7 +109,7 @@ const onSubmit = handleSubmit(async (values) => {
                     <FormItem>
                         <FormLabel>{{ $t('category.edit.formLabel') }}</FormLabel>
                         <FormControl>
-                            <Input type="text" placeholder="name" v-bind="componentField" />
+                            <Input type="text" :placeholder="placeholder" v-bind="componentField" />
                         </FormControl>
                         <FormDescription>{{ $t('category.edit.formDesc') }}</FormDescription>
                         <FormMessage />

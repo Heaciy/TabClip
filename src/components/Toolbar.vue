@@ -52,7 +52,7 @@ watch(
                                   : $t('toolBar.starredTitle')
                         }}
                     </h2>
-                    <div class="text-muted-foreground gap-2 space-x-3 text-sm">
+                    <div class="text-muted-foreground space-x-2 text-sm">
                         <span>{{ $t('toolBar.groupNum', { groupNum: refreshStore.groupTotal }) }}</span>
                         <span>{{ $t('toolBar.tabNum', { tabNum: refreshStore.tabTotal }) }}</span>
                     </div>

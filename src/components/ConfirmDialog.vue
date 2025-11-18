@@ -11,16 +11,16 @@ import {
 } from '@/components/ui/dialog';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.ts';
 
-const { isWarningDialogOpen, onConfirm, dialogTitle, dialogDescription } = useConfirmDialog();
+const { isConfirmDialogOpen, onConfirm, dialogTitle, dialogDescription } = useConfirmDialog();
 const handleOpenChange = (open: boolean, confirm?: boolean) => {
-    isWarningDialogOpen.value = open;
+    isConfirmDialogOpen.value = open;
     if (!open && confirm && onConfirm.value) {
         onConfirm.value();
     }
 };
 </script>
 <template>
-    <Dialog :open="isWarningDialogOpen" @update:open="handleOpenChange">
+    <Dialog :open="isConfirmDialogOpen" @update:open="handleOpenChange">
         <DialogTrigger as-child>
             <slot></slot>
         </DialogTrigger>

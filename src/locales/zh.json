@@ -143,10 +143,12 @@
             "formLabel": "名称",
             "formDesc": "分类名称",
             "add": {
+                "placeholder": "输入名称",
                 "dialogTitle": "新增分类",
                 "dialogDesc": "新增一个分类，完成后点击保存"
             },
             "update": {
+                "placeholder": "输入新的名称",
                 "dialogTitle": "编辑分类",
                 "dialogDesc": "编辑分类信息，完成后点击保存"
             },

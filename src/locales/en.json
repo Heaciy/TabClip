@@ -141,10 +141,12 @@
             "formLabel": "Name",
             "formDesc": "This is category name.",
             "add": {
+                "placeholder": "Enter a name",
                 "dialogTitle": "Add Category",
                 "dialogDesc": "Add a category. Click save when you're done."
             },
             "update": {
+                "placeholder": "Enter the new name",
                 "dialogTitle": "Edit Category",
                 "dialogDesc": "Edit the category. Click save when you're done."
             },

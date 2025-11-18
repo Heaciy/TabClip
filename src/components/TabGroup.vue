@@ -28,8 +28,8 @@ import {
     SelectSeparator,
     SelectValue,
 } from '@/components/ui/select';
-import { useAddCategoryDialog } from '@/composables/useAddCategoryDialog';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.ts';
+import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category, type Tab, type TabGroup } from '@/database';
 import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
@@ -150,14 +150,14 @@ async function copyTabGroup(tabGroup: TabGroup) {
 const categoryStore = useCategoryStore();
 const selectedValue = ref<AcceptableValue>(props.tabGroup.category_id || null);
 let previousValue: AcceptableValue = selectedValue.value;
-const { openDialog } = useAddCategoryDialog();
+const { openDialog: openEditCategoryDialog } = useEditCategoryDialog();
 
 const handleSelectChange = (val: AcceptableValue) => {
     if (val === previousValue) {
         selectedValue.value = null;
     } else if (val === 'ADD_NEW_CATEGORY') {
         selectedValue.value = previousValue; // 保持值不变
-        openDialog(bindNewCategoryToGroup);
+        openEditCategoryDialog(undefined, bindNewCategoryToGroup);
         return;
     }
     previousValue = selectedValue.value;
