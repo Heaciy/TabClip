@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import type { HTMLAttributes, Ref } from "vue"
-import { defaultDocument, useEventListener, useMediaQuery, useVModel } from "@vueuse/core"
+import { useEventListener, useMediaQuery, useVModel } from "@vueuse/core"
 import { TooltipProvider } from "reka-ui"
 import { computed, ref } from "vue"
 import { cn } from "@/lib/utils"
-import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
+import { provideSidebarContext, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
+
+// Local Storage key
+const SIDEBAR_LOCAL_STORAGE_KEY = "sidebar_state"
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
   open?: boolean
   class?: HTMLAttributes["class"]
 }>(), {
-  defaultOpen: !defaultDocument?.cookie.includes(`${SIDEBAR_COOKIE_NAME}=false`),
+  // Load from Local Storage
+  defaultOpen: localStorage.getItem(SIDEBAR_LOCAL_STORAGE_KEY) !== 'false',
   open: undefined,
 })
 
@@ -30,8 +34,8 @@ const open = useVModel(props, "open", emits, {
 function setOpen(value: boolean) {
   open.value = value // emits('update:open', value)
 
-  // This sets the cookie to keep the sidebar state.
-  document.cookie = `${SIDEBAR_COOKIE_NAME}=${open.value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+  // Use Local Storage
+  localStorage.setItem(SIDEBAR_LOCAL_STORAGE_KEY, String(open.value))
 }
 
 function setOpenMobile(value: boolean) {
