@@ -30,7 +30,7 @@ const searchStore = useSearchStore();
 const settingsStore = useSettingStore();
 const refreshStore = useRefreshStore();
 
-const pageIndex = ref(1);
+const offset = ref(0);
 const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
 
 let abortController: AbortController | null = null;
@@ -38,7 +38,7 @@ let abortController: AbortController | null = null;
 const resetTabGroups = () => {
     observer.disconnect();
     abortController?.abort();
-    pageIndex.value = 1;
+    offset.value = 0;
     tabGroups.value = [];
     isLoading.value = false;
     hasMore.value = true;
@@ -55,7 +55,7 @@ const fetchTabGroups = async () => {
     const data = await db.getAllTabGroups({
         ...searchStore.searchConditions,
         ...{
-            pageIndex: pageIndex.value,
+            offset: offset.value,
             pageSize: pageSize.value,
         },
     });
@@ -64,6 +64,7 @@ const fetchTabGroups = async () => {
 
     tabGroups.value.push(...data.tabGroups);
     refreshStore.refreshTotal(data.groupTotal, data.tabTotal);
+    offset.value += Math.min(pageSize.value, data.tabGroups.length);
 
     if (data.tabGroups.length < pageSize.value) {
         hasMore.value = false;
@@ -91,10 +92,6 @@ watch(
     },
 );
 
-watch(pageIndex, async () => {
-    await fetchTabGroups();
-});
-
 onMounted(async () => {
     await fetchTabGroups();
     browser.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
@@ -111,11 +108,11 @@ onUnmounted(() => {
 
 const observer = new IntersectionObserver(
     (entries) => {
-        entries.forEach((entry) => {
+        entries.forEach(async (entry) => {
             if (entry.isIntersecting && !isLoading.value) {
                 const lastTabGroup = tabGroups.value[tabGroups.value.length - 1];
                 if (entry.target === tabGroupRefs.value.get(lastTabGroup.id!)?.$el) {
-                    pageIndex.value++;
+                    await fetchTabGroups();
                 }
             }
         });
@@ -149,6 +146,7 @@ const removeGroup = async (groupIndex: number, removeFromDB: boolean = true) => 
         await db.deleteTabGroup(removedGroup.id!);
     }
 
+    offset.value -= 1;
     refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
 };
 

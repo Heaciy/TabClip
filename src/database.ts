@@ -159,6 +159,7 @@ class TabGroupDatabase extends Dexie {
             starredOnly,
             pageSize = settings.pageSize,
             pageIndex = 1,
+            offset = 0,
             categoryId,
         } = searchConditions;
 
@@ -192,7 +193,7 @@ class TabGroupDatabase extends Dexie {
         });
 
         const rawData = await querySet
-            .offset((pageIndex - 1) * pageSize)
+            .offset(offset !== undefined ? offset : (pageIndex - 1) * pageSize)
             .limit(pageSize)
             .toArray();
 

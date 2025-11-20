@@ -9,6 +9,7 @@ export interface SearchConditions {
     starredOnly?: boolean;
     pageSize?: number;
     pageIndex?: number;
+    offset?: number;
     categoryId?: string;
 }
 
