@@ -24,6 +24,7 @@ import { useSettingStore } from '@/store/settings.ts';
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
 
+const hasMore = ref(true);
 const isLoading = ref(false);
 const searchStore = useSearchStore();
 const settingsStore = useSettingStore();
@@ -32,15 +33,23 @@ const refreshStore = useRefreshStore();
 const pageIndex = ref(1);
 const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
 
+let abortController: AbortController | null = null;
+
 const resetTabGroups = () => {
     observer.disconnect();
+    abortController?.abort();
     pageIndex.value = 1;
     tabGroups.value = [];
     isLoading.value = false;
+    hasMore.value = true;
 };
 
 const fetchTabGroups = async () => {
-    if (isLoading.value) return;
+    if (isLoading.value || !hasMore.value) return;
+
+    abortController?.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
 
     isLoading.value = true;
     const data = await db.getAllTabGroups({
@@ -50,12 +59,22 @@ const fetchTabGroups = async () => {
             pageSize: pageSize.value,
         },
     });
+
+    if (signal.aborted) return;
+
     tabGroups.value.push(...data.tabGroups);
     refreshStore.refreshTotal(data.groupTotal, data.tabTotal);
 
+    if (data.tabGroups.length < pageSize.value) {
+        hasMore.value = false;
+    }
+
     await nextTick(() => {
-        observeLastTabGroup();
-        isLoading.value = false;
+        if (!signal.aborted) {
+            if (hasMore.value) observeLastTabGroup();
+            isLoading.value = false;
+            abortController = null;
+        }
     });
 };
 
@@ -109,7 +128,7 @@ const observer = new IntersectionObserver(
 );
 
 function observeLastTabGroup() {
-    if (tabGroups.value.length) {
+    if (tabGroups.value.length && hasMore.value) {
         const lastTabGroup = tabGroups.value[tabGroups.value.length - 1];
         const lastTabGroupEl = tabGroupRefs.value.get(lastTabGroup.id!)?.$el;
         if (lastTabGroupEl instanceof HTMLElement) {
