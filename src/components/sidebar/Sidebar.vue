@@ -18,6 +18,7 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     Sidebar,
     SidebarContent,
@@ -139,22 +140,27 @@ function handleDragEnd() {
                                     </DropdownMenuItem>
                                     <DropdownMenuSub>
                                         <DropdownMenuSubTrigger
+                                            :disabled="
+                                                !categoryStore.orderedCategories.some((c) => c.id !== category.id)
+                                            "
                                             class="[&_svg]:text-muted-foreground gap-2 hover:[&_svg]:text-inherit"
                                         >
                                             <MergeIcon class="size-4" />
                                             <span>{{ $t('category.dropdownMenu.mergeTo') }}</span>
                                         </DropdownMenuSubTrigger>
                                         <DropdownMenuPortal>
-                                            <DropdownMenuSubContent>
-                                                <DropdownMenuItem
-                                                    v-for="categoryTo in categoryStore.orderedCategories.filter(
-                                                        (c) => c.id !== category.id,
-                                                    )"
-                                                    :key="categoryTo.id"
-                                                    @click="handleMergeCategory(category, categoryTo)"
-                                                >
-                                                    <span>{{ categoryTo.name }}</span>
-                                                </DropdownMenuItem>
+                                            <DropdownMenuSubContent class="flex">
+                                                <ScrollArea class="max-h-48 w-full">
+                                                    <DropdownMenuItem
+                                                        v-for="categoryTo in categoryStore.orderedCategories.filter(
+                                                            (c) => c.id !== category.id,
+                                                        )"
+                                                        :key="categoryTo.id"
+                                                        @click="handleMergeCategory(category, categoryTo)"
+                                                    >
+                                                        <span>{{ categoryTo.name }}</span>
+                                                    </DropdownMenuItem>
+                                                </ScrollArea>
                                             </DropdownMenuSubContent>
                                         </DropdownMenuPortal>
                                     </DropdownMenuSub>
