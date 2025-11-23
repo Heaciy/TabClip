@@ -152,6 +152,15 @@ export default defineBackground(() => {
         }
     }
 
+    function isTabInWhitelist(tab: Browser.tabs.Tab, settings: Settings) {
+        const url = tab.url || tab.pendingUrl || '';
+        const prefixes = settings.tabWhitelist;
+        if (!url || prefixes.length === 0) return false;
+
+        return prefixes.some((prefix) => url.startsWith(prefix));
+    }
+
+    // eslint-disable-next-line no-unused-vars
     function isBlankPage(tab: Browser.tabs.Tab): boolean {
         const url = tab.url || tab.pendingUrl || '';
         const blankTabs = ['about:blank', 'chrome://newtab/', 'edge://newtab', 'about:newtab'];
@@ -176,7 +185,8 @@ export default defineBackground(() => {
 
     function isTabClipable(tab: Browser.tabs.Tab, settings: Settings): boolean {
         return (
-            !isBlankPage(tab) &&
+            !isTabInWhitelist(tab, settings) &&
+            // !isBlankPage(tab) &&
             !isExtensionPage(tab) &&
             checkPinTabStatus(tab, settings) &&
             checkBrowserGroup(tab, settings)

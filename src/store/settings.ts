@@ -1,6 +1,8 @@
 import { type Ref, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 
+const blankTabs = ['about:blank', 'about:newtab', 'chrome://newtab/', 'edge://newtab'];
+
 interface Settings {
     storePinnedTabs: boolean;
     defaultLockGroup: boolean;
@@ -9,6 +11,8 @@ interface Settings {
     useGoogleIcon: boolean;
     isStartupPage: boolean;
     storeBrowserGroup: boolean;
+    spcaeBetweenTabs: number;
+    tabWhitelist: string[];
 }
 
 const defaultSettings: Settings = {
@@ -19,12 +23,17 @@ const defaultSettings: Settings = {
     useGoogleIcon: false,
     isStartupPage: true,
     storeBrowserGroup: false,
+    spcaeBetweenTabs: 2,
+    tabWhitelist: blankTabs,
 };
 
 async function loadSettings(): Promise<Settings> {
     const result = await browser.storage.local.get('settings');
     const storedSettings = result.settings;
-    return storedSettings && storedSettings !== 'null' ? JSON.parse(storedSettings) : defaultSettings;
+    return {
+        ...defaultSettings,
+        ...(storedSettings ? JSON.parse(storedSettings) : undefined),
+    };
 }
 
 export const useSettingStore = defineStore('setting', () => {
@@ -53,4 +62,4 @@ export const useSettingStore = defineStore('setting', () => {
     };
 });
 
-export { loadSettings, type Settings };
+export { defaultSettings, loadSettings, type Settings };

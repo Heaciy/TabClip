@@ -46,8 +46,19 @@
             "selectLabel": "Page Size",
             "desc": "The number of tab groups loaded each time."
         },
+        "spcaeBetweenTabs": {
+            "title": "Space Between Tabs",
+            "selectLabel": "Space Size",
+            "desc": "The gap size betwen tabs."
+        },
+        "TabWhitelist": {
+            "title": "Tab Whitelist",
+            "placeholder": "Enter tab URL prefixes, one per line",
+            "desc": "Tabs whose URLs match any of the prefixes in the whitelist will not be stored."
+        },
         "buttonSave": "Save Changes",
-        "buttonDiscard": "Discard"
+        "buttonDiscard": "Discard",
+        "buttonRestoreDefaults": "Restore Defaults"
     },
     "moreOperations": {
         "dataOperations": {

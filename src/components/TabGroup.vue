@@ -39,6 +39,16 @@ const settingStore = useSettingStore();
 const props = defineProps<{ tabGroup: TabGroup; searchText?: string }>();
 const emits = defineEmits(['remove-group', 'remove-tab', 'update-group']);
 const tabs = ref<Array<Tab>>(props.tabGroup.tabs_meta);
+const spaceClass = computed(() => {
+    const map: Record<number, string> = {
+        0: 'space-y-0',
+        0.5: 'space-y-0.5',
+        1: 'space-y-1',
+        1.5: 'space-y-1.5',
+        2: 'space-y-2',
+    };
+    return map[settingStore.settings.spcaeBetweenTabs] || 'space-y-2';
+});
 const { openDialog: openConfirmDialog } = useConfirmDialog();
 
 function isTabOpenable(tab: Tab): boolean {
@@ -275,7 +285,7 @@ const bindNewCategoryToGroup = (category: Category) => {
             :animation="150"
             group="tabGroup"
             ghost-class="ghost"
-            class="space-y-2"
+            :class="spaceClass"
             @update="onTabsMetaUpdate"
             @add="onTabsMetaUpdate"
             @remove="onTabsMetaUpdate"
