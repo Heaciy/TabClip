@@ -122,6 +122,18 @@ export const useCategoryStore = defineStore('category', () => {
         }
     }
 
+    async function truncateCategories() {
+        error.value = null;
+        try {
+            await db.truncateCategories();
+            await loadCategories();
+        } catch (e: any) {
+            error.value = 'Truncate category failed: ' + e.message;
+            console.error('Truncate category failed: ', e);
+            throw e;
+        }
+    }
+
     return {
         categories,
         isLoading,
@@ -132,6 +144,7 @@ export const useCategoryStore = defineStore('category', () => {
         updateCategory,
         deleteCategory,
         mergeCategory,
+        truncateCategories,
         saveOrderedCategories,
         orderedCategories,
     };

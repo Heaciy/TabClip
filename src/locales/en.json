@@ -68,17 +68,23 @@
         },
         "dangerOperations": {
             "label": "Danger Operations",
-            "truncateGroups": "Delete Groups"
+            "truncateData": "Delete All Data"
         }
     },
-    "truncateGroups": {
-        "title": "Delete Groups",
-        "descLeft": "This will delete all your tab groups. Type",
+    "truncateData": {
+        "title": "Delete All Data",
+        "descLeft": "This will delete all your seleted data. Type",
         "descRight": "to confirm.",
+        "checkbox": {
+            "truncateGroups": "Delete Tab Groups",
+            "truncateCategories": "Delete Categories"
+        },
         "buttonDelete": "Delete",
         "buttonCancel": "Cancel",
-        "toastTitle": "Deletion Successful",
-        "toastDesc": "Successfully deleted all tab groups."
+        "success": {
+            "toastTitle": "Deletion Successful",
+            "toastDesc": "Successfully deleted all data."
+        }
     },
     "importGroups": {
         "dialogTitle": "Import Data",

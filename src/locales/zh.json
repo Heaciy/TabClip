@@ -68,18 +68,22 @@
         },
         "dangerOperations": {
             "label": "危险操作",
-            "truncateGroups": "删除所有标签组"
+            "truncateData": "删除所有数据"
         }
     },
-    "truncateGroups": {
-        "title": "删除所有标签组",
-        "descLeft": "该操作会删除所有标签组, 输入",
+    "truncateData": {
+        "title": "删除所有数据",
+        "descLeft": "该操作会删除所有选中的数据, 输入",
         "descRight": "来确认",
+        "checkbox": {
+            "truncateGroups": "删除标签组",
+            "truncateCategories": "删除分类"
+        },
         "buttonDelete": "删除",
         "buttonCancel": "取消",
         "success": {
             "toastTitle": "删除成功",
-            "toastDesc": "删除所有标签组成功"
+            "toastDesc": "删除所有数据成功"
         }
     },
     "importGroups": {

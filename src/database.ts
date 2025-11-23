@@ -341,6 +341,16 @@ class TabGroupDatabase extends Dexie {
             await this.categories.delete(category.id);
         });
     }
+
+    async truncateCategories() {
+        return this.transaction('rw', this.categories, this.tabGroups, async () => {
+            await this.tabGroups.toCollection().modify({
+                category_id: undefined,
+                update_time: new Date(),
+            });
+            await this.categories.clear();
+        });
+    }
 }
 
 const getDateRange = (year?: number): [string, string] => {

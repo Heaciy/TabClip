@@ -95,7 +95,7 @@ const redirectToGithub = () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened = true">
-                            <span class="mr-auto">{{ $t('moreOperations.dangerOperations.truncateGroups') }}</span>
+                            <span class="mr-auto">{{ $t('moreOperations.dangerOperations.truncateData') }}</span>
                             <ExclamationTriangleIcon />
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
