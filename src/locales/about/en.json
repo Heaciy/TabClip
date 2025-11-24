@@ -1,0 +1,27 @@
+{
+    "about": {
+        "sections": [
+            {
+                "title": "✨ Features",
+                "items": [
+                    "Tab Group Categorization: Added support for categorizing tab groups.",
+                    "Sidebar Management: Introduced a sidebar for easier category management.",
+                    "Tab Whitelist: Added a whitelist to filter tabs that don’t need to be saved.",
+                    "UI & Settings Improvements: Support for restoring default settings, added version notes, and improved UI experience."
+                ]
+            },
+            {
+                "title": "🐛 Bug Fixes",
+                "items": [
+                    "Duplicate Rendering: Fixed multiple fetches and duplicate tab groups when loading the first page after custom settings.",
+                    "Scroll Loading Issue: Fixed data offset issue when loading the next page after deleting a tab group."
+                ]
+            }
+        ],
+        "dialogDesc": "TabClip is open-source software for managing tabs. Thanks for using it.",
+        "allReleases": "📝 All Releases",
+        "buttonGithub": "Github",
+        "buttonWebsite": "Website",
+        "buttonEmail": "Email"
+    }
+}

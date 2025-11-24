@@ -104,6 +104,7 @@ export default defineBackground(() => {
     browser.runtime.onInstalled.addListener(async (details) => {
         await setupContextMenus();
         await updateAllContextMenuStates(); // Initialize states after creation
+        await browser.storage.local.set({ showAboutDialog: true });
 
         const settings = await loadSettings();
         if (settings.isStartupPage && (details.reason === 'install' || details.reason === 'update')) {

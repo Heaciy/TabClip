@@ -69,6 +69,11 @@
         "dangerOperations": {
             "label": "危险操作",
             "truncateData": "删除所有数据"
+        },
+        "moreInfo": {
+            "label": "更多信息",
+            "userGuide": "用户指南",
+            "about": "关于"
         }
     },
     "truncateData": {

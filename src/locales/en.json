@@ -69,6 +69,11 @@
         "dangerOperations": {
             "label": "Danger Operations",
             "truncateData": "Delete All Data"
+        },
+        "moreInfo": {
+            "label": "More Info",
+            "userGuide": "User Guide",
+            "about": "About & Version"
         }
     },
     "truncateData": {

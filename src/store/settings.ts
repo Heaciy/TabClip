@@ -1,7 +1,7 @@
 import { type Ref, ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 
-const blankTabs = ['about:blank', 'about:newtab', 'chrome://newtab/', 'edge://newtab'];
+const blankTabs = ['about:blank', 'about:newtab', 'chrome://newtab', 'edge://newtab'];
 
 interface Settings {
     storePinnedTabs: boolean;

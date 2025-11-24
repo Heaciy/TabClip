@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import {
     DotsVerticalIcon,
     ExclamationTriangleIcon,
@@ -9,7 +10,9 @@ import {
     UploadIcon,
 } from '@radix-icons/vue';
 import { useColorMode } from '@vueuse/core';
+import { BookIcon, InfoIcon } from 'lucide-vue-next';
 
+import AboutDialog from './AboutDialog.vue';
 import ExportUtil from '@/components/ExportUtil.vue';
 import Heatmap from '@/components/Heatmap.vue';
 import I18n from '@/components/I18n.vue';
@@ -33,15 +36,31 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useExport } from '@/composables/useExport';
 import { useImport } from '@/composables/useImport';
 
+const { locale } = useI18n();
 const mode = useColorMode();
 
 const { isExporting, exportProgress, exportLargeJsonFile } = useExport();
 const { isImporting, importProgress, importData, isImportDialogOpened } = useImport();
 
 const isTruncateDialogOpened = ref(false);
+const isAboutDialogOpened = ref(false);
 const redirectToGithub = () => {
     window.open('https://github.com/Heaciy/TabClip', '_blank');
 };
+
+const redirectToWebsite = () => {
+    const lang = locale.value === 'zh' ? '' : '/en';
+    window.open(`https://tabclip.heaciy.com${lang}/settings/`, '_blank');
+};
+
+onMounted(async () => {
+    const { showAboutDialog } = await browser.storage.local.get('showAboutDialog');
+
+    if (showAboutDialog) {
+        isAboutDialogOpened.value = true;
+        await browser.storage.local.set({ showAboutDialog: false });
+    }
+});
 </script>
 
 <template>
@@ -99,6 +118,19 @@ const redirectToGithub = () => {
                             <ExclamationTriangleIcon />
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel>{{ $t('moreOperations.moreInfo.label') }}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem @click="redirectToWebsite">
+                            <span class="mr-auto">{{ $t('moreOperations.moreInfo.userGuide') }}</span>
+                            <BookIcon />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem @click="isAboutDialogOpened = true">
+                            <span class="mr-auto">{{ $t('moreOperations.moreInfo.about') }}</span>
+                            <InfoIcon />
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
@@ -110,6 +142,7 @@ const redirectToGithub = () => {
             :import-data="importData"
         >
         </ImportDialog>
+        <AboutDialog v-model="isAboutDialogOpened"></AboutDialog>
     </header>
 </template>
 

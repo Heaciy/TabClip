@@ -3,6 +3,8 @@ import tailwindcss from '@tailwindcss/vite';
 // import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'wxt';
 
+import pkg from './package.json';
+
 // See https://wxt.dev/api/config.html
 export default defineConfig({
     srcDir: './src',
@@ -22,7 +24,7 @@ export default defineConfig({
 
         return {
             name: '__MSG_appName__',
-            version: '0.1.1',
+            version: pkg.version,
             description: '__MSG_appDesc__',
             default_locale: 'en',
             permissions,
