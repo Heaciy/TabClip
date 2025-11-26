@@ -7,6 +7,7 @@
                     "Tab Group Categorization: Added support for categorizing tab groups.",
                     "Sidebar Management: Introduced a sidebar for easier category management.",
                     "Tab Whitelist: Added a whitelist to filter tabs that don’t need to be saved.",
+                    "Internationalization: Added support for more languages, such as Japanese, Korean, French, Spanish, etc.",
                     "UI & Settings Improvements: Support for restoring default settings, added version notes, and improved UI experience."
                 ]
             },

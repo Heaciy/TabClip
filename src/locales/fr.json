@@ -1,0 +1,226 @@
+{
+    "search": {
+        "startTime": "Heure de début",
+        "endTime": "Heure de fin",
+        "category": "Catégorie",
+        "textPlaceholder": "Rechercher",
+        "timePlaceholder": "Choisir une date",
+        "categoryPlaceholder": "Sélectionner une catégorie",
+        "popoverTitle": "Filtres de recherche",
+        "popoverDesc": "Définir plus de conditions de recherche.",
+        "buttonSearch": "Rechercher",
+        "buttonCancel": "Annuler"
+    },
+    "i18n": {
+        "label": "Choisir la langue"
+    },
+    "settings": {
+        "sheetTile": "Modifier les paramètres",
+        "sheetDesc": "Modifiez vos paramètres ici. Cliquez sur Enregistrer une fois terminé.",
+        "storePinnedTabs": {
+            "title": "Enregistrer les onglets épinglés",
+            "desc": "Permet d'enregistrer les onglets épinglés lors de l'ajout d'un groupe. Désactivé par défaut."
+        },
+        "storeBrowserGroup": {
+            "title": "Enregistrer les groupes d'onglets du navigateur",
+            "desc": "Enregistre les groupes d'onglets du navigateur en tant que nouveaux groupes distincts. Désactivé par défaut."
+        },
+        "defaultLockGroup": {
+            "title": "Verrouiller le groupe par défaut",
+            "desc": "Verrouille par défaut un groupe lors de son ajout pour empêcher toute modification ou suppression."
+        },
+        "openGroupInNewWindow": {
+            "title": "Ouvrir le groupe dans une nouvelle fenêtre",
+            "desc": "Ouvre le groupe dans une nouvelle fenêtre lors de sa restauration. Désactivé par défaut."
+        },
+        "useGoogleIcon": {
+            "title": "Charger l'icône depuis Google",
+            "desc": "L'icône sera chargée depuis Google uniquement si elle n'est pas en cache."
+        },
+        "isStartupPage": {
+            "title": "Définir comme page de démarrage",
+            "desc": "Ouvre automatiquement TabClip comme page d'accueil à chaque démarrage du navigateur."
+        },
+        "pageSize": {
+            "title": "Taille de page",
+            "selectLabel": "Taille de page",
+            "desc": "Le nombre de groupes d'onglets chargés à chaque fois."
+        },
+        "spcaeBetweenTabs": {
+            "title": "Espace entre les onglets",
+            "selectLabel": "Taille de l'espace",
+            "desc": "La taille de l'espace entre les éléments des onglets."
+        },
+        "TabWhitelist": {
+            "title": "Liste blanche d'onglets",
+            "placeholder": "Entrez les préfixes d'URL, un par ligne",
+            "desc": "Les onglets dont les URL correspondent aux préfixes de la liste blanche ne seront pas enregistrés."
+        },
+        "buttonSave": "Enregistrer",
+        "buttonDiscard": "Annuler",
+        "buttonRestoreDefaults": "Rétablir les paramètres par défaut"
+    },
+    "moreOperations": {
+        "dataOperations": {
+            "label": "Opérations sur les données",
+            "exportGroups": "Exporter les données",
+            "importGroups": "Importer les données"
+        },
+        "dangerOperations": {
+            "label": "Opérations dangereuses",
+            "truncateData": "Supprimer toutes les données"
+        },
+        "moreInfo": {
+            "label": "Plus d'infos",
+            "userGuide": "Guide utilisateur",
+            "about": "À propos et version"
+        }
+    },
+    "truncateData": {
+        "title": "Supprimer toutes les données",
+        "descLeft": "Ceci supprimera toutes les données sélectionnées. Saisissez",
+        "descRight": "pour confirmer.",
+        "checkbox": {
+            "truncateGroups": "Supprimer les groupes d'onglets",
+            "truncateCategories": "Supprimer les catégories"
+        },
+        "buttonDelete": "Supprimer",
+        "buttonCancel": "Annuler",
+        "success": {
+            "toastTitle": "Suppression réussie",
+            "toastDesc": "Toutes les données ont été supprimées avec succès."
+        }
+    },
+    "importGroups": {
+        "dialogTitle": "Importer des données",
+        "dialogDesc": "Importer les données exportées depuis TabClip/Onetab.",
+        "success": {
+            "toastTitle": "Importation réussie",
+            "toastDesc": "{total} groupes d'onglets importés avec succès."
+        },
+        "error": {
+            "parseError": "Échec de l'analyse du fichier JSON",
+            "fileFormatError": "Erreur de format de fichier"
+        },
+        "form": {
+            "file": {
+                "label": "Fichier exporté",
+                "desc": "Le fichier exporté depuis l'extension TabClip/Onetab (JSON, max {maxSize})."
+            }
+        },
+        "buttonImport": "Importer",
+        "buttonImporting": "Importation...",
+        "buttonReset": "Réinitialiser"
+    },
+    "exportGroups": {
+        "success": {
+            "toastTitle": "Exportation réussie",
+            "toastDesc": "{total} groupes d'onglets exportés avec succès."
+        },
+        "error": {
+            "toastTitle": "Échec de l'exportation",
+            "toastDesc": "L'exportation a échoué : {error}"
+        }
+    },
+    "toolBar": {
+        "searchTitle": "Recherche",
+        "allTabsTitle": "Tous les onglets",
+        "starredTitle": "Favoris",
+        "allTabsTab": "Tout",
+        "starredTab": "Favoris",
+        "groupNum": "{groupNum} Groupes",
+        "tabNum": "{tabNum} Onglets"
+    },
+    "tabGroup": {
+        "unnamedGroup": "Groupe sans nom",
+        "inputGroupName": "Saisir un nom",
+        "total": "{total} Onglets",
+        "copyLinks": {
+            "toastTitle": "Liens copiés",
+            "toastDesc": "{total} liens d'onglets copiés avec succès."
+        },
+        "openTab": {
+            "notAllow": {
+                "dialogTitle": "Ce type d'onglet ne peut pas être ouvert",
+                "dialogDesc": "Le lien a été copié dans votre presse-papiers. Veuillez le coller dans la barre d'adresse."
+            }
+        },
+        "openTabGroup": {
+            "notAllow": {
+                "dialogTitle": "Certains onglets ne peuvent pas être ouverts",
+                "dialogDesc": "Ce groupe contient des onglets non supportés par votre navigateur. Le groupe sera conservé."
+            }
+        }
+    },
+    "category": {
+        "label": "Catégories",
+        "loading": "Chargement...",
+        "quickActions": {
+            "label": "Actions rapides",
+            "add": "Ajouter une catégorie"
+        },
+        "edit": {
+            "formLabel": "Nom",
+            "formDesc": "Ceci est le nom de la catégorie.",
+            "add": {
+                "placeholder": "Entrer un nom",
+                "dialogTitle": "Ajouter une catégorie",
+                "dialogDesc": "Ajoutez une catégorie. Cliquez sur Enregistrer une fois terminé."
+            },
+            "update": {
+                "placeholder": "Entrer le nouveau nom",
+                "dialogTitle": "Modifier la catégorie",
+                "dialogDesc": "Modifiez la catégorie. Cliquez sur Enregistrer une fois terminé."
+            },
+            "buttonSave": "Enregistrer",
+            "duplicateError": "Les noms de catégories en double ne sont pas autorisés."
+        },
+        "delete": {
+            "buttonCancel": "Annuler",
+            "buttonDelete": "Supprimer",
+            "deleteCategory": {
+                "dialogTitle": "Supprimer la catégorie '{categoryName}' ?",
+                "dialogDesc": "Seule la catégorie sera supprimée, les groupes d'onglets associés seront conservés."
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "Supprimer '{categoryName}' et ses groupes ?",
+                "dialogDesc": "Cela supprimera la catégorie et tous ses groupes d'onglets associés, même ceux verrouillés."
+            }
+        },
+        "merge": {
+            "buttonCancel": "Annuler",
+            "buttonMerge": "Fusionner",
+            "dialogTitle": "Fusionner '{categoryName}' dans '{categoryToName}' ?",
+            "dialogDesc": "Les groupes de '{categoryName}' seront déplacés dans '{categoryToName}' et '{categoryName}' sera supprimé."
+        },
+        "dropdownMenu": {
+            "edit": "Modifier la catégorie",
+            "mergeTo": "Fusionner dans",
+            "deleteCategory": "Supprimer la catégorie",
+            "deleteCategoryAndGroups": "Supprimer cat. et groupes"
+        }
+    },
+    "veeValidate": {
+        "fileRequired": "Veuillez sélectionner un fichier",
+        "fileSize": "La taille du fichier doit être inférieure à {maxSize}",
+        "fileType": "Le fichier doit être au format {fileType}",
+        "required": "Le champ {field} est obligatoire.",
+        "strMin": "{field} doit contenir au moins {min} caractères.",
+        "strMax": "{field} doit contenir au plus {max} caractères.",
+        "default": "Entrée invalide pour {field}."
+    },
+    "heatmap": {
+        "title": "Carte thermique",
+        "desc": "Distribution temporelle des données",
+        "buttonClose": "Fermer",
+        "groupsSelect": "Groupes",
+        "tabsSelect": "Onglets",
+        "recentYear": "Dernière année",
+        "typePlaceholder": "Type",
+        "yearPlaceholder": "Année"
+    },
+    "confirmDialog": {
+        "confirm": "Confirmer",
+        "cancel": "Annuler"
+    }
+}

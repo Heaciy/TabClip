@@ -1,0 +1,226 @@
+{
+    "search": {
+        "startTime": "開始時間",
+        "endTime": "終了時間",
+        "category": "カテゴリ",
+        "textPlaceholder": "検索",
+        "timePlaceholder": "日付を選択",
+        "categoryPlaceholder": "カテゴリを選択",
+        "popoverTitle": "検索条件",
+        "popoverDesc": "詳細な検索条件を設定します。",
+        "buttonSearch": "検索",
+        "buttonCancel": "キャンセル"
+    },
+    "i18n": {
+        "label": "言語を選択"
+    },
+    "settings": {
+        "sheetTile": "設定の編集",
+        "sheetDesc": "設定を変更します。完了したら「保存」をクリックしてください。",
+        "storePinnedTabs": {
+            "title": "固定されたタブの保存",
+            "desc": "固定されたタブもリストに保存して閉じることを許可します（デフォルトでは無効）。"
+        },
+        "storeBrowserGroup": {
+            "title": "タブグループの保存",
+            "desc": "ブラウザのタブグループを新しいグループとして個別に保存します（デフォルトでは無効）。"
+        },
+        "defaultLockGroup": {
+            "title": "デフォルトでグループをロック",
+            "desc": "新しいグループを追加する際、誤って変更や削除をしないようにデフォルトでロックします。"
+        },
+        "openGroupInNewWindow": {
+            "title": "グループを新しいウィンドウで開く",
+            "desc": "タブグループを復元する際、新しいウィンドウで開きます（デフォルトでは現在のウィンドウ）。"
+        },
+        "useGoogleIcon": {
+            "title": "Googleからアイコンを取得",
+            "desc": "キャッシュにアイコンがない場合、Googleからオンラインで取得します。"
+        },
+        "isStartupPage": {
+            "title": "起動ページに設定",
+            "desc": "ブラウザ起動時にTabClipを自動的にホームページとして開きます。"
+        },
+        "pageSize": {
+            "title": "ページサイズ",
+            "selectLabel": "表示件数",
+            "desc": "一度に読み込むタブグループの数です。"
+        },
+        "spcaeBetweenTabs": {
+            "title": "タブの間隔",
+            "selectLabel": "間隔サイズ",
+            "desc": "タブ要素間の隙間のサイズです。"
+        },
+        "TabWhitelist": {
+            "title": "タブのホワイトリスト",
+            "placeholder": "URLのプレフィックスを入力（改行で区切る）",
+            "desc": "ホワイトリストのURLプレフィックスに一致するタブは保存（閉じる）されません。"
+        },
+        "buttonSave": "変更を保存",
+        "buttonDiscard": "変更を破棄",
+        "buttonRestoreDefaults": "デフォルトに戻す"
+    },
+    "moreOperations": {
+        "dataOperations": {
+            "label": "データ操作",
+            "exportGroups": "データをエクスポート",
+            "importGroups": "データをインポート"
+        },
+        "dangerOperations": {
+            "label": "危険な操作",
+            "truncateData": "すべてのデータを削除"
+        },
+        "moreInfo": {
+            "label": "詳細情報",
+            "userGuide": "ユーザーガイド",
+            "about": "バージョン情報"
+        }
+    },
+    "truncateData": {
+        "title": "すべてのデータを削除",
+        "descLeft": "選択したすべてのデータが削除されます。確認のため、",
+        "descRight": "と入力してください。",
+        "checkbox": {
+            "truncateGroups": "タブグループを削除",
+            "truncateCategories": "カテゴリを削除"
+        },
+        "buttonDelete": "削除",
+        "buttonCancel": "キャンセル",
+        "success": {
+            "toastTitle": "削除完了",
+            "toastDesc": "すべてのデータを正常に削除しました。"
+        }
+    },
+    "importGroups": {
+        "dialogTitle": "データのインポート",
+        "dialogDesc": "TabClip/Onetabからエクスポートされたデータをインポートします。",
+        "success": {
+            "toastTitle": "インポート成功",
+            "toastDesc": "{total} 個のタブグループをインポートしました。"
+        },
+        "error": {
+            "parseError": "JSONファイルの解析に失敗しました",
+            "fileFormatError": "ファイル形式エラー"
+        },
+        "form": {
+            "file": {
+                "label": "インポートするファイル",
+                "desc": "TabClip/Onetabからエクスポートされたデータファイル（JSON形式、最大 {maxSize}）。"
+            }
+        },
+        "buttonImport": "インポート",
+        "buttonImporting": "インポート中...",
+        "buttonReset": "リセット"
+    },
+    "exportGroups": {
+        "success": {
+            "toastTitle": "エクスポート成功",
+            "toastDesc": "{total} 個のタブグループをエクスポートしました。"
+        },
+        "error": {
+            "toastTitle": "エクスポート失敗",
+            "toastDesc": "エクスポートに失敗しました: {error}"
+        }
+    },
+    "toolBar": {
+        "searchTitle": "検索結果",
+        "allTabsTitle": "すべてのタブ",
+        "starredTitle": "お気に入り",
+        "allTabsTab": "すべて",
+        "starredTab": "お気に入り",
+        "groupNum": "{groupNum} グループ",
+        "tabNum": "{tabNum} タブ"
+    },
+    "tabGroup": {
+        "unnamedGroup": "名称未設定グループ",
+        "inputGroupName": "名前を入力",
+        "total": "{total} タブ",
+        "copyLinks": {
+            "toastTitle": "リンクをコピーしました",
+            "toastDesc": "{total} 個のタブリンクをコピーしました。"
+        },
+        "openTab": {
+            "notAllow": {
+                "dialogTitle": "この種類のタブは開けません",
+                "dialogDesc": "リンクがクリップボードにコピーされました。アドレスバーに貼り付けてアクセスしてください。"
+            }
+        },
+        "openTabGroup": {
+            "notAllow": {
+                "dialogTitle": "一部のタブを開くことができません",
+                "dialogDesc": "ブラウザがサポートしていないタブが含まれています。グループは保持されます。"
+            }
+        }
+    },
+    "category": {
+        "label": "カテゴリ",
+        "loading": "読み込み中...",
+        "quickActions": {
+            "label": "クイックアクション",
+            "add": "カテゴリを追加"
+        },
+        "edit": {
+            "formLabel": "名前",
+            "formDesc": "カテゴリ名を入力してください。",
+            "add": {
+                "placeholder": "名前を入力",
+                "dialogTitle": "カテゴリの追加",
+                "dialogDesc": "新しいカテゴリを追加します。完了したら保存をクリックしてください。"
+            },
+            "update": {
+                "placeholder": "新しい名前を入力",
+                "dialogTitle": "カテゴリの編集",
+                "dialogDesc": "カテゴリ情報を編集します。完了したら保存をクリックしてください。"
+            },
+            "buttonSave": "保存",
+            "duplicateError": "そのカテゴリ名は既に使用されています。"
+        },
+        "delete": {
+            "buttonCancel": "キャンセル",
+            "buttonDelete": "削除",
+            "deleteCategory": {
+                "dialogTitle": "カテゴリ '{categoryName}' を削除しますか？",
+                "dialogDesc": "カテゴリのみ削除されます。関連するタブグループは削除されません。"
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "カテゴリ '{categoryName}' と関連グループを削除しますか？",
+                "dialogDesc": "このカテゴリと、関連するすべてのタブグループ（ロックされたグループを含む）が削除されます。"
+            }
+        },
+        "merge": {
+            "buttonCancel": "キャンセル",
+            "buttonMerge": "マージ",
+            "dialogTitle": "カテゴリ '{categoryName}' を '{categoryToName}' に統合しますか？",
+            "dialogDesc": "元のカテゴリ '{categoryName}' 内のタブグループは '{categoryToName}' に移動し、元のカテゴリは削除されます。"
+        },
+        "dropdownMenu": {
+            "edit": "カテゴリを編集",
+            "mergeTo": "カテゴリを統合",
+            "deleteCategory": "カテゴリを削除",
+            "deleteCategoryAndGroups": "カテゴリとグループを削除"
+        }
+    },
+    "veeValidate": {
+        "fileRequired": "ファイルを選択してください",
+        "fileSize": "ファイルサイズは {maxSize} 未満である必要があります",
+        "fileType": "ファイル形式は {fileType} である必要があります",
+        "required": "{field}は必須項目です。",
+        "strMin": "{field}は{min}文字以上である必要があります。",
+        "strMax": "{field}は{max}文字以下である必要があります。",
+        "default": "{field}の入力が無効です。"
+    },
+    "heatmap": {
+        "title": "ヒートマップ",
+        "desc": "タブデータの時間分布",
+        "buttonClose": "閉じる",
+        "groupsSelect": "グループ数",
+        "tabsSelect": "タブ数",
+        "recentYear": "過去1年",
+        "typePlaceholder": "タイプ",
+        "yearPlaceholder": "年"
+    },
+    "confirmDialog": {
+        "confirm": "確認",
+        "cancel": "キャンセル"
+    }
+}

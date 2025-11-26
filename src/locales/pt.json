@@ -1,0 +1,226 @@
+{
+    "search": {
+        "startTime": "Hora de início",
+        "endTime": "Hora de término",
+        "category": "Categoria",
+        "textPlaceholder": "Pesquisar",
+        "timePlaceholder": "Selecionar data",
+        "categoryPlaceholder": "Selecionar categoria",
+        "popoverTitle": "Filtros de pesquisa",
+        "popoverDesc": "Definir mais condições de pesquisa.",
+        "buttonSearch": "Pesquisar",
+        "buttonCancel": "Cancelar"
+    },
+    "i18n": {
+        "label": "Selecionar idioma"
+    },
+    "settings": {
+        "sheetTile": "Editar configurações",
+        "sheetDesc": "Faça alterações nas suas configurações aqui. Clique em Salvar quando terminar.",
+        "storePinnedTabs": {
+            "title": "Salvar abas fixadas",
+            "desc": "Permite salvar abas fixadas ao adicionar um grupo. Desativado por padrão."
+        },
+        "storeBrowserGroup": {
+            "title": "Salvar grupos de abas do navegador",
+            "desc": "Salva os grupos de abas do navegador como novos grupos separados. Desativado por padrão."
+        },
+        "defaultLockGroup": {
+            "title": "Bloquear grupo por padrão",
+            "desc": "Bloqueia automaticamente um grupo ao adicioná-lo para evitar alterações ou exclusão."
+        },
+        "openGroupInNewWindow": {
+            "title": "Abrir grupo em nova janela",
+            "desc": "Abre o grupo em uma nova janela ao restaurá-lo. O padrão é abrir na janela atual."
+        },
+        "useGoogleIcon": {
+            "title": "Carregar ícone do Google",
+            "desc": "O ícone será carregado do Google apenas se não estiver em cache."
+        },
+        "isStartupPage": {
+            "title": "Definir como página inicial",
+            "desc": "Abrir o TabClip automaticamente como página inicial ao iniciar o navegador."
+        },
+        "pageSize": {
+            "title": "Tamanho da página",
+            "selectLabel": "Tamanho",
+            "desc": "O número de grupos de abas carregados de cada vez."
+        },
+        "spcaeBetweenTabs": {
+            "title": "Espaço entre abas",
+            "selectLabel": "Tamanho do espaço",
+            "desc": "O tamanho do espaço entre os elementos das abas."
+        },
+        "TabWhitelist": {
+            "title": "Lista branca de abas",
+            "placeholder": "Digite prefixos de URL, um por linha",
+            "desc": "Abas cujas URLs correspondam a qualquer prefixo da lista branca não serão salvas."
+        },
+        "buttonSave": "Salvar alterações",
+        "buttonDiscard": "Descartar",
+        "buttonRestoreDefaults": "Restaurar padrões"
+    },
+    "moreOperations": {
+        "dataOperations": {
+            "label": "Operações de dados",
+            "exportGroups": "Exportar dados",
+            "importGroups": "Importar dados"
+        },
+        "dangerOperations": {
+            "label": "Operações perigosas",
+            "truncateData": "Excluir todos os dados"
+        },
+        "moreInfo": {
+            "label": "Mais informações",
+            "userGuide": "Guia do usuário",
+            "about": "Sobre e versão"
+        }
+    },
+    "truncateData": {
+        "title": "Excluir todos os dados",
+        "descLeft": "Isso excluirá todos os dados selecionados. Digite",
+        "descRight": "para confirmar.",
+        "checkbox": {
+            "truncateGroups": "Excluir grupos de abas",
+            "truncateCategories": "Excluir categorias"
+        },
+        "buttonDelete": "Excluir",
+        "buttonCancel": "Cancelar",
+        "success": {
+            "toastTitle": "Exclusão concluída",
+            "toastDesc": "Todos os dados foram excluídos com sucesso."
+        }
+    },
+    "importGroups": {
+        "dialogTitle": "Importar dados",
+        "dialogDesc": "Importar dados exportados do TabClip/Onetab.",
+        "success": {
+            "toastTitle": "Importação concluída",
+            "toastDesc": "{total} grupos de abas importados com sucesso."
+        },
+        "error": {
+            "parseError": "Falha ao analisar arquivo JSON",
+            "fileFormatError": "Erro de formato de arquivo"
+        },
+        "form": {
+            "file": {
+                "label": "Arquivo exportado",
+                "desc": "O arquivo exportado do TabClip/Onetab (JSON, máx {maxSize})."
+            }
+        },
+        "buttonImport": "Importar",
+        "buttonImporting": "Importando...",
+        "buttonReset": "Redefinir"
+    },
+    "exportGroups": {
+        "success": {
+            "toastTitle": "Exportação concluída",
+            "toastDesc": "{total} grupos de abas exportados com sucesso."
+        },
+        "error": {
+            "toastTitle": "Falha na exportação",
+            "toastDesc": "A exportação falhou: {error}"
+        }
+    },
+    "toolBar": {
+        "searchTitle": "Resultados",
+        "allTabsTitle": "Todas as abas",
+        "starredTitle": "Favoritos",
+        "allTabsTab": "Tudo",
+        "starredTab": "Favoritos",
+        "groupNum": "{groupNum} Grupos",
+        "tabNum": "{tabNum} Abas"
+    },
+    "tabGroup": {
+        "unnamedGroup": "Grupo sem nome",
+        "inputGroupName": "Inserir nome",
+        "total": "{total} Abas",
+        "copyLinks": {
+            "toastTitle": "Links copiados",
+            "toastDesc": "{total} links de abas copiados com sucesso."
+        },
+        "openTab": {
+            "notAllow": {
+                "dialogTitle": "Este tipo de aba não pode ser aberto",
+                "dialogDesc": "O link foi copiado para a área de transferência. Cole-o na barra de endereços para acessar."
+            }
+        },
+        "openTabGroup": {
+            "notAllow": {
+                "dialogTitle": "Algumas abas não podem ser abertas",
+                "dialogDesc": "Este grupo contém abas que o navegador não suporta abrir. O grupo será mantido salvo."
+            }
+        }
+    },
+    "category": {
+        "label": "Categorias",
+        "loading": "Carregando...",
+        "quickActions": {
+            "label": "Ações rápidas",
+            "add": "Adicionar categoria"
+        },
+        "edit": {
+            "formLabel": "Nome",
+            "formDesc": "Este é o nome da categoria.",
+            "add": {
+                "placeholder": "Inserir nome",
+                "dialogTitle": "Adicionar categoria",
+                "dialogDesc": "Adicione uma categoria. Clique em salvar quando terminar."
+            },
+            "update": {
+                "placeholder": "Inserir novo nome",
+                "dialogTitle": "Editar categoria",
+                "dialogDesc": "Edite a categoria. Clique em salvar quando terminar."
+            },
+            "buttonSave": "Salvar",
+            "duplicateError": "Nomes de categorias duplicados não são permitidos."
+        },
+        "delete": {
+            "buttonCancel": "Cancelar",
+            "buttonDelete": "Excluir",
+            "deleteCategory": {
+                "dialogTitle": "Excluir categoria '{categoryName}'?",
+                "dialogDesc": "Apenas a categoria será excluída, os grupos de abas associados serão mantidos."
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "Excluir '{categoryName}' e seus grupos?",
+                "dialogDesc": "Isso excluirá a categoria e todos os grupos de abas associados, incluindo os bloqueados."
+            }
+        },
+        "merge": {
+            "buttonCancel": "Cancelar",
+            "buttonMerge": "Mesclar",
+            "dialogTitle": "Mesclar categoria '{categoryName}' em '{categoryToName}'?",
+            "dialogDesc": "Os grupos de '{categoryName}' serão movidos para '{categoryToName}' e '{categoryName}' será removida."
+        },
+        "dropdownMenu": {
+            "edit": "Editar categoria",
+            "mergeTo": "Mesclar em",
+            "deleteCategory": "Excluir categoria",
+            "deleteCategoryAndGroups": "Excluir cat. e grupos"
+        }
+    },
+    "veeValidate": {
+        "fileRequired": "Por favor, selecione um arquivo",
+        "fileSize": "O tamanho do arquivo deve ser menor que {maxSize}",
+        "fileType": "O arquivo deve estar no formato {fileType}",
+        "required": "O campo {field} é obrigatório.",
+        "strMin": "{field} deve ter pelo menos {min} caracteres.",
+        "strMax": "{field} deve ter no máximo {max} caracteres.",
+        "default": "Entrada inválida para {field}."
+    },
+    "heatmap": {
+        "title": "Mapa de calor",
+        "desc": "Distribuição temporal dos dados",
+        "buttonClose": "Fechar",
+        "groupsSelect": "Grupos",
+        "tabsSelect": "Abas",
+        "recentYear": "Último ano",
+        "typePlaceholder": "Tipo",
+        "yearPlaceholder": "Ano"
+    },
+    "confirmDialog": {
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+    }
+}

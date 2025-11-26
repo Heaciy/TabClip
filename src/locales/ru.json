@@ -1,0 +1,226 @@
+{
+    "search": {
+        "startTime": "Время начала",
+        "endTime": "Время окончания",
+        "category": "Категория",
+        "textPlaceholder": "Поиск",
+        "timePlaceholder": "Выберите дату",
+        "categoryPlaceholder": "Выберите категорию",
+        "popoverTitle": "Параметры поиска",
+        "popoverDesc": "Установите дополнительные условия поиска.",
+        "buttonSearch": "Найти",
+        "buttonCancel": "Отмена"
+    },
+    "i18n": {
+        "label": "Выберите язык"
+    },
+    "settings": {
+        "sheetTile": "Настройки",
+        "sheetDesc": "Измените настройки здесь. Нажмите «Сохранить», когда закончите.",
+        "storePinnedTabs": {
+            "title": "Сохранять закрепленные вкладки",
+            "desc": "Разрешить сохранение закрепленных вкладок при добавлении группы. По умолчанию отключено."
+        },
+        "storeBrowserGroup": {
+            "title": "Сохранять группы вкладок браузера",
+            "desc": "Сохранять группы вкладок браузера как отдельные новые группы. По умолчанию отключено."
+        },
+        "defaultLockGroup": {
+            "title": "Блокировать группу по умолчанию",
+            "desc": "Автоматически блокировать группу при добавлении, чтобы предотвратить изменения или удаление."
+        },
+        "openGroupInNewWindow": {
+            "title": "Открывать группу в новом окне",
+            "desc": "Открывать группу в новом окне при восстановлении. По умолчанию открывается в текущем окне."
+        },
+        "useGoogleIcon": {
+            "title": "Загружать иконки из Google",
+            "desc": "Иконка будет загружена из Google, только если она не найдена в кеше."
+        },
+        "isStartupPage": {
+            "title": "Сделать стартовой страницей",
+            "desc": "Автоматически открывать TabClip как домашнюю страницу при запуске браузера."
+        },
+        "pageSize": {
+            "title": "Размер страницы",
+            "selectLabel": "Количество",
+            "desc": "Количество групп вкладок, загружаемых за один раз."
+        },
+        "spcaeBetweenTabs": {
+            "title": "Интервал между вкладками",
+            "selectLabel": "Размер интервала",
+            "desc": "Размер пространства между элементами вкладок."
+        },
+        "TabWhitelist": {
+            "title": "Белый список вкладок",
+            "placeholder": "Введите префиксы URL, по одному в строке",
+            "desc": "Вкладки, URL которых соответствуют любому префиксу из белого списка, не будут сохранены."
+        },
+        "buttonSave": "Сохранить",
+        "buttonDiscard": "Отменить",
+        "buttonRestoreDefaults": "По умолчанию"
+    },
+    "moreOperations": {
+        "dataOperations": {
+            "label": "Операции с данными",
+            "exportGroups": "Экспорт данных",
+            "importGroups": "Импорт данных"
+        },
+        "dangerOperations": {
+            "label": "Опасные операции",
+            "truncateData": "Удалить все данные"
+        },
+        "moreInfo": {
+            "label": "Информация",
+            "userGuide": "Руководство",
+            "about": "О программе"
+        }
+    },
+    "truncateData": {
+        "title": "Удалить все данные",
+        "descLeft": "Это действие удалит все выбранные данные. Введите",
+        "descRight": ", чтобы подтвердить.",
+        "checkbox": {
+            "truncateGroups": "Удалить группы вкладок",
+            "truncateCategories": "Удалить категории"
+        },
+        "buttonDelete": "Удалить",
+        "buttonCancel": "Отмена",
+        "success": {
+            "toastTitle": "Удаление успешно",
+            "toastDesc": "Все данные были успешно удалены."
+        }
+    },
+    "importGroups": {
+        "dialogTitle": "Импорт данных",
+        "dialogDesc": "Импорт данных, экспортированных из TabClip/Onetab.",
+        "success": {
+            "toastTitle": "Импорт завершен",
+            "toastDesc": "Успешно импортировано {total} групп вкладок."
+        },
+        "error": {
+            "parseError": "Ошибка анализа JSON файла",
+            "fileFormatError": "Неверный формат файла"
+        },
+        "form": {
+            "file": {
+                "label": "Файл экспорта",
+                "desc": "Файл, экспортированный из TabClip/Onetab (JSON, макс. {maxSize})."
+            }
+        },
+        "buttonImport": "Импортировать",
+        "buttonImporting": "Импорт...",
+        "buttonReset": "Сброс"
+    },
+    "exportGroups": {
+        "success": {
+            "toastTitle": "Экспорт завершен",
+            "toastDesc": "Успешно экспортировано {total} групп вкладок."
+        },
+        "error": {
+            "toastTitle": "Ошибка экспорта",
+            "toastDesc": "Экспорт не удался: {error}"
+        }
+    },
+    "toolBar": {
+        "searchTitle": "Поиск",
+        "allTabsTitle": "Все вкладки",
+        "starredTitle": "Избранное",
+        "allTabsTab": "Все",
+        "starredTab": "Избранное",
+        "groupNum": "{groupNum} Групп",
+        "tabNum": "{tabNum} Вкладок"
+    },
+    "tabGroup": {
+        "unnamedGroup": "Безымянная группа",
+        "inputGroupName": "Введите имя",
+        "total": "{total} Вкладок",
+        "copyLinks": {
+            "toastTitle": "Ссылки скопированы",
+            "toastDesc": "Успешно скопировано {total} ссылок."
+        },
+        "openTab": {
+            "notAllow": {
+                "dialogTitle": "Этот тип вкладки нельзя открыть",
+                "dialogDesc": "Ссылка скопирована в буфер обмена. Пожалуйста, вставьте ее в адресную строку."
+            }
+        },
+        "openTabGroup": {
+            "notAllow": {
+                "dialogTitle": "Некоторые вкладки нельзя открыть",
+                "dialogDesc": "Эта группа содержит вкладки, которые ваш браузер не поддерживает. Группа останется сохраненной."
+            }
+        }
+    },
+    "category": {
+        "label": "Категории",
+        "loading": "Загрузка...",
+        "quickActions": {
+            "label": "Быстрые действия",
+            "add": "Добавить категорию"
+        },
+        "edit": {
+            "formLabel": "Название",
+            "formDesc": "Это название категории.",
+            "add": {
+                "placeholder": "Введите название",
+                "dialogTitle": "Добавить категорию",
+                "dialogDesc": "Добавьте категорию. Нажмите «Сохранить», когда закончите."
+            },
+            "update": {
+                "placeholder": "Введите новое название",
+                "dialogTitle": "Редактировать категорию",
+                "dialogDesc": "Редактируйте категорию. Нажмите «Сохранить», когда закончите."
+            },
+            "buttonSave": "Сохранить",
+            "duplicateError": "Дублирование имен категорий не допускается."
+        },
+        "delete": {
+            "buttonCancel": "Отмена",
+            "buttonDelete": "Удалить",
+            "deleteCategory": {
+                "dialogTitle": "Удалить категорию '{categoryName}'?",
+                "dialogDesc": "Будет удалена только категория, связанные группы вкладок останутся."
+            },
+            "deleteCategoryAndGroups": {
+                "dialogTitle": "Удалить '{categoryName}' и ее группы?",
+                "dialogDesc": "Это удалит категорию и все связанные с ней группы вкладок, включая заблокированные."
+            }
+        },
+        "merge": {
+            "buttonCancel": "Отмена",
+            "buttonMerge": "Объединить",
+            "dialogTitle": "Объединить '{categoryName}' в '{categoryToName}'?",
+            "dialogDesc": "Группы из '{categoryName}' будут перемещены в '{categoryToName}', а '{categoryName}' будет удалена."
+        },
+        "dropdownMenu": {
+            "edit": "Редактировать",
+            "mergeTo": "Объединить в",
+            "deleteCategory": "Удалить категорию",
+            "deleteCategoryAndGroups": "Удалить кат. и группы"
+        }
+    },
+    "veeValidate": {
+        "fileRequired": "Пожалуйста, выберите файл",
+        "fileSize": "Размер файла должен быть меньше {maxSize}",
+        "fileType": "Файл должен быть в формате {fileType}",
+        "required": "Поле {field} обязательно.",
+        "strMin": "Длина {field} должна быть не менее {min} символов.",
+        "strMax": "Длина {field} должна быть не более {max} символов.",
+        "default": "Неверное значение для {field}."
+    },
+    "heatmap": {
+        "title": "Тепловая карта",
+        "desc": "Временное распределение данных",
+        "buttonClose": "Закрыть",
+        "groupsSelect": "Группы",
+        "tabsSelect": "Вкладки",
+        "recentYear": "Последний год",
+        "typePlaceholder": "Тип",
+        "yearPlaceholder": "Год"
+    },
+    "confirmDialog": {
+        "confirm": "Подтвердить",
+        "cancel": "Отмена"
+    }
+}
