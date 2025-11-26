@@ -5,9 +5,17 @@ import aboutZh from './about/zh.json';
 import en from './en.json';
 import zh from './zh.json';
 
+export const availableLocales = {
+    zh: '简体中文',
+    en: 'English',
+};
+
+const browserLocale = browser.i18n.getUILanguage().split('-')[0]; // 'en-US' -> 'en'
+const locale = browserLocale in availableLocales ? browserLocale : 'en';
+
 export const i18n = createI18n({
-    locale: 'zh',
-    fallbackLocale: 'zh',
+    locale,
+    fallbackLocale: 'en',
     messages: {
         en: {
             ...en,
@@ -19,8 +27,3 @@ export const i18n = createI18n({
         },
     },
 });
-
-export const availableLocales = {
-    zh: '简体中文',
-    en: 'English',
-};
