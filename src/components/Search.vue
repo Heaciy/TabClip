@@ -232,44 +232,40 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                 </div>
                                 <div class="flex gap-4">
                                     <div class="min-w-48">
-                                        <div class="min-w-48">
-                                            <Popover>
-                                                <PopoverTrigger as-child>
-                                                    <Button
-                                                        variant="outline"
-                                                        :class="
-                                                            cn(
-                                                                'w-full justify-start text-left font-normal',
-                                                                !searchConditions.endTime && 'text-muted-foreground',
-                                                            )
-                                                        "
-                                                    >
-                                                        <CalendarSearchIcon class="mr-2 h-4 w-4" />
-                                                        {{
-                                                            searchConditions.endTime
-                                                                ? df.format(
-                                                                      searchConditions.endTime.toDate(
-                                                                          getLocalTimeZone(),
-                                                                      ),
-                                                                  )
-                                                                : $t('search.timePlaceholder')
-                                                        }}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent class="w-auto p-0">
-                                                    <Calendar
-                                                        v-model="searchConditions.endTime"
-                                                        :min-value="
-                                                            searchConditions.startTime
-                                                                ? searchConditions.startTime
-                                                                : undefined
-                                                        "
-                                                        :locale="locale"
-                                                        initial-focus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
+                                        <Popover>
+                                            <PopoverTrigger as-child>
+                                                <Button
+                                                    variant="outline"
+                                                    :class="
+                                                        cn(
+                                                            'w-full justify-start text-left font-normal',
+                                                            !searchConditions.endTime && 'text-muted-foreground',
+                                                        )
+                                                    "
+                                                >
+                                                    <CalendarSearchIcon class="mr-2 h-4 w-4" />
+                                                    {{
+                                                        searchConditions.endTime
+                                                            ? df.format(
+                                                                  searchConditions.endTime.toDate(getLocalTimeZone()),
+                                                              )
+                                                            : $t('search.timePlaceholder')
+                                                    }}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent class="w-auto p-0">
+                                                <Calendar
+                                                    v-model="searchConditions.endTime"
+                                                    :min-value="
+                                                        searchConditions.startTime
+                                                            ? searchConditions.startTime
+                                                            : undefined
+                                                    "
+                                                    :locale="locale"
+                                                    initial-focus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
                                     <Button
                                         variant="outline"
@@ -290,37 +286,39 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                     <label>{{ $t('search.category') }}</label>
                                 </div>
                                 <div class="flex gap-4">
-                                    <div class="min-w-48">
-                                        <div class="min-w-48">
-                                            <Select v-model="searchConditions.categoryId">
-                                                <SelectTrigger class="w-full">
-                                                    <Button
-                                                        variant="outline"
-                                                        :class="
-                                                            cn(
-                                                                'w-full justify-start text-left font-normal',
-                                                                !searchConditions.categoryId && 'text-muted-foreground',
-                                                            )
-                                                        "
+                                    <div class="w-48">
+                                        <Select v-model="searchConditions.categoryId">
+                                            <SelectTrigger class="w-full">
+                                                <Button
+                                                    variant="outline"
+                                                    :class="
+                                                        cn(
+                                                            'w-full justify-start text-left font-normal',
+                                                            !searchConditions.categoryId && 'text-muted-foreground',
+                                                        )
+                                                    "
+                                                >
+                                                    <FolderSearchIcon class="mr-2 h-4 w-4"></FolderSearchIcon>
+                                                    <SelectValue
+                                                        :placeholder="t('search.categoryPlaceholder')"
+                                                        class="inline-block truncate"
+                                                    />
+                                                </Button>
+                                            </SelectTrigger>
+                                            <SelectContent class="max-w-48">
+                                                <SelectGroup>
+                                                    <SelectLabel>{{ $t('search.category') }}</SelectLabel>
+                                                    <SelectItem
+                                                        v-for="category in categoryStore.orderedCategories"
+                                                        :key="category.id"
+                                                        class="[&>span:nth-child(2)]:inline-block [&>span:nth-child(2)]:truncate"
+                                                        :value="category.id!"
                                                     >
-                                                        <FolderSearchIcon class="mr-2 h-4 w-4"></FolderSearchIcon>
-                                                        <SelectValue :placeholder="t('search.categoryPlaceholder')" />
-                                                    </Button>
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>{{ $t('search.category') }}</SelectLabel>
-                                                        <SelectItem
-                                                            v-for="category in categoryStore.orderedCategories"
-                                                            :key="category.id"
-                                                            :value="category.id!"
-                                                        >
-                                                            {{ category.name }}
-                                                        </SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                                        {{ category.name }}
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                     <Button
                                         variant="outline"

@@ -246,19 +246,20 @@ const bindNewCategoryToGroup = (category: Category) => {
                     <SelectTrigger as-child>
                         <Button
                             variant="ghost"
-                            class="group font-normal focus-visible:ring-0"
+                            class="group max-w-48 font-normal focus-visible:ring-0"
                             :class="selectedValue ? 'gap-2' : 'gap-0'"
                         >
                             <Folder />
-                            <SelectValue class="text-muted-foreground group-hover:text-inherit" />
+                            <SelectValue class="text-muted-foreground inline-block truncate group-hover:text-inherit" />
                         </Button>
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent class="max-w-48">
                         <SelectGroup>
                             <SelectLabel>{{ $t('category.label') }}</SelectLabel>
                             <SelectItem
                                 v-for="category in categoryStore.orderedCategories"
                                 :key="category.id"
+                                class="[&>span:nth-child(2)]:inline-block [&>span:nth-child(2)]:truncate"
                                 :value="category.id!"
                             >
                                 {{ category.name }}
