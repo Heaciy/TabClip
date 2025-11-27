@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "Display TabClip",
+    "sendCurrentTab": "Send only this tab to TabClip",
+    "sendTabsExceptThis": "Send all tabs except this tab to TabClip",
+    "sendAllTabsInCurrentWindow": "Send all tabs in current window to TabClip",
+    "sendAllTabsInAllWindows": "Send all tabs from all windows to TabClip",
+    "sendTabsToTheLeft": "Send tabs on the left to TabClip",
+    "sendTabsToTheRight": "Send tabs on the right to TabClip"
+}

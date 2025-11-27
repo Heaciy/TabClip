@@ -4,26 +4,5 @@
     },
     "appDesc": {
         "message": "你的数字回形针!"
-    },
-    "displayTabClip": {
-        "message": "显示 TabClip"
-    },
-    "sendCurrentTab": {
-        "message": "发送此标签页至 TabClip"
-    },
-    "sendTabsExceptThis": {
-        "message": "发送除此标签页外的标签页至 TabClip"
-    },
-    "sendAllTabsInCurrentWindow": {
-        "message": "发送当前窗口全部标签页至 TabClip"
-    },
-    "sendAllTabsInAllWindows": {
-        "message": "发送所有窗口全部标签页至 TabClip"
-    },
-    "sendTabsToTheLeft": {
-        "message": "发送左侧标签页至 TabClip"
-    },
-    "sendTabsToTheRight": {
-        "message": "发送右侧标签页至 TabClip"
     }
 }

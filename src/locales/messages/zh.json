@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "打开 TabClip",
+    "sendCurrentTab": "发送此标签页至 TabClip",
+    "sendTabsExceptThis": "发送除此标签页外的标签页至 TabClip",
+    "sendAllTabsInCurrentWindow": "发送当前窗口全部标签页至 TabClip",
+    "sendAllTabsInAllWindows": "发送所有窗口全部标签页至 TabClip",
+    "sendTabsToTheLeft": "发送左侧标签页至 TabClip",
+    "sendTabsToTheRight": "发送右侧标签页至 TabClip"
+}

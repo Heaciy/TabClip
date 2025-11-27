@@ -6,84 +6,105 @@
 // Adjust import paths based on your WXT project structure
 // e.g., if 'database' and 'store/settings' are in a 'shared' or 'utils' folder
 import { db, TabGroup } from '@/database';
+import enMessages from '@/locales/messages/en.json';
+import zhMessages from '@/locales/messages/zh.json';
 import { loadSettings, type Settings } from '@/store/settings';
 
-const i18n = (messageName: any, substitutions?: string | string[], defaultValue?: string): string => {
-    const translation = browser.i18n.getMessage(messageName, substitutions);
-    if (translation) return translation;
+const MESSAGES: Record<string, Record<string, string>> = {
+    zh: zhMessages,
+    en: enMessages,
+};
 
-    console.warn(`No translation available for: ${messageName}`);
-    return defaultValue ?? messageName;
+const t = (key: string, lang: string): string => {
+    return MESSAGES[lang]?.[key] || MESSAGES['en']?.[key] || key;
 };
 
 export default defineBackground(() => {
-    const contextMenuProperties: Array<Browser.contextMenus.CreateProperties> = [
-        {
-            id: 'TabClip',
-            title: 'TabClip', // Consider i18n: i18n('extensionName', undefined, 'TabClip')
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'displayTabClipMenu',
-            title: i18n('displayTabClip', undefined, 'Display TabClip Interface'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'separator0',
-            type: 'separator',
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendAllTabsInCurrentWindowMenu',
-            title: i18n('sendAllTabsInCurrentWindow', undefined, 'Clip All Tabs in Current Window'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendAllTabsInAllWindowsMenu',
-            title: i18n('sendAllTabsInAllWindows', undefined, 'Clip All Tabs in All Windows'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'separator1',
-            type: 'separator',
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendCurrentTabMenu',
-            title: i18n('sendCurrentTab', undefined, 'Clip Current Tab'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendTabsExceptThisMenu',
-            title: i18n('sendTabsExceptThis', undefined, 'Clip Tabs Except This'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'separator2',
-            type: 'separator',
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendTabsToTheLeftMenu',
-            title: i18n('sendTabsToTheLeft', undefined, 'Clip Tabs to the Left'),
-            contexts: ['all'],
-        },
-        {
-            parentId: 'TabClip',
-            id: 'sendTabsToTheRightMenu',
-            title: i18n('sendTabsToTheRight', undefined, 'Clip Tabs to the Right'),
-            contexts: ['all'],
-        },
-    ];
+    async function getCurrentLang(): Promise<string> {
+        const result = await browser.storage.local.get('locale');
+        const storageLang = result['locale'];
+
+        if (storageLang in MESSAGES) {
+            return storageLang;
+        }
+
+        const browserLang = browser.i18n.getUILanguage();
+        if (browserLang.startsWith('zh')) {
+            return 'zh';
+        }
+        return 'en';
+    }
+
+    async function getContextMenuProperties(): Promise<Array<Browser.contextMenus.CreateProperties>> {
+        const lang = await getCurrentLang();
+        return [
+            {
+                id: 'TabClip',
+                title: 'TabClip',
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'displayTabClipMenu',
+                title: t('displayTabClip', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'separator0',
+                type: 'separator',
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendAllTabsInCurrentWindowMenu',
+                title: t('sendAllTabsInCurrentWindow', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendAllTabsInAllWindowsMenu',
+                title: t('sendAllTabsInAllWindows', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'separator1',
+                type: 'separator',
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendCurrentTabMenu',
+                title: t('sendCurrentTab', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendTabsExceptThisMenu',
+                title: t('sendTabsExceptThis', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'separator2',
+                type: 'separator',
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendTabsToTheLeftMenu',
+                title: t('sendTabsToTheLeft', lang),
+                contexts: ['all'],
+            },
+            {
+                parentId: 'TabClip',
+                id: 'sendTabsToTheRightMenu',
+                title: t('sendTabsToTheRight', lang),
+                contexts: ['all'],
+            },
+        ];
+    }
 
     async function setupContextMenus() {
         // WXT might handle declarative context menus in wxt.config.ts in the future,
@@ -91,6 +112,7 @@ export default defineBackground(() => {
         // For Firefox, it's good practice to remove existing menus before recreating,
         // especially during development to avoid errors if IDs conflict.
         await browser.contextMenus.removeAll();
+        const contextMenuProperties = await getContextMenuProperties();
         contextMenuProperties.forEach((menu) => {
             try {
                 browser.contextMenus.create(menu);
@@ -119,6 +141,14 @@ export default defineBackground(() => {
         const settings = await loadSettings();
         if (settings.isStartupPage) {
             await redirectToExtensionPage();
+        }
+    });
+
+    browser.storage.onChanged.addListener(async (changes, areaName) => {
+        if (areaName !== 'local') return;
+        if (changes['locale']) {
+            await setupContextMenus();
+            await updateAllContextMenuStates();
         }
     });
 
@@ -207,6 +237,7 @@ export default defineBackground(() => {
             } catch (e2) {
                 console.warn('Could not get current or last focused window:', e2);
                 // If no window context, disable all actionable menus
+                const contextMenuProperties = await getContextMenuProperties();
                 const menuIdsToDisable = contextMenuProperties
                     .filter((m) => m.id !== 'TabClip' && m.id !== 'displayTabClipMenu' && m.type !== 'separator')
                     .map((m) => m.id);
@@ -222,6 +253,7 @@ export default defineBackground(() => {
 
         const currentTabs = currentWindow.tabs || (await browser.tabs.query({ windowId: currentWindow.id }));
         if (!currentTabs || currentTabs.length === 0) {
+            const contextMenuProperties = await getContextMenuProperties();
             const menuIdsToDisable = contextMenuProperties
                 .filter(
                     (m) =>

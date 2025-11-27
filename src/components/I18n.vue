@@ -18,8 +18,9 @@ import { availableLocales } from '@/locales';
 const { locale } = useI18n();
 const currentLang = ref(locale.value);
 
-onMounted(() => {
-    const savedLang = localStorage.getItem('locale');
+onMounted(async () => {
+    const result = await browser.storage.local.get('locale');
+    const savedLang = result.locale;
     if (savedLang && savedLang !== locale.value) {
         locale.value = savedLang;
         currentLang.value = savedLang;
@@ -28,8 +29,7 @@ onMounted(() => {
 
 watch(currentLang, () => {
     locale.value = currentLang.value;
-
-    localStorage.setItem('locale', currentLang.value);
+    browser.storage.local.set({ locale: currentLang.value });
 });
 </script>
 
