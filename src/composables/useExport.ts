@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
-import { db, type TabGroup } from '@/database.ts';
+import { Category, db, type TabGroup } from '@/database.ts';
 import { i18n } from '@/locales';
 import { ORDERED_CATEGORIES } from '@/store/category';
 
@@ -41,8 +41,9 @@ export function useExport() {
                 async start(controller) {
                     try {
                         // 写入JSON开头
-                        const categories = localStorage.getItem(ORDERED_CATEGORIES) || '[]';
-                        controller.enqueue(encoder.encode(`{"categories":${categories},"tabGroups":[`));
+                        const storageResult = await browser.storage.local.get(ORDERED_CATEGORIES);
+                        const categories = (storageResult[ORDERED_CATEGORIES] as Category[]) || [];
+                        controller.enqueue(encoder.encode(`{"categories":${JSON.stringify(categories)},"tabGroups":[`));
 
                         // 逐页处理数据
                         for (let pageIndex = 1; pageIndex <= pageCount && !streamClosed; pageIndex++) {

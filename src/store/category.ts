@@ -20,13 +20,13 @@ export const useCategoryStore = defineStore('category', () => {
             const dbCategories = await db.getAllCategories();
             categories.value = dbCategories;
 
-            const ordered_categories: Category[] = JSON.parse(localStorage.getItem(ORDERED_CATEGORIES) || '[]');
+            const storageResult = await browser.storage.local.get(ORDERED_CATEGORIES);
+            const storedOrder = (storageResult[ORDERED_CATEGORIES] as Category[]) || [];
+
             const dbMap = new Map(dbCategories.map((c) => [c.id, c]));
 
             // 保留已存在的顺序，但更新为数据库中的最新对象
-            const syncedOrder: Category[] = ordered_categories
-                .filter((c) => dbMap.has(c.id))
-                .map((c) => dbMap.get(c.id)!);
+            const syncedOrder: Category[] = storedOrder.filter((c) => dbMap.has(c.id)).map((c) => dbMap.get(c.id)!);
 
             // 找出数据库中新增的分类（本地未记录）
             const syncedIds = new Set(syncedOrder.map((c) => c.id));
@@ -37,7 +37,9 @@ export const useCategoryStore = defineStore('category', () => {
 
             // 保存和更新
             orderedCategories.value = finalOrder;
-            localStorage.setItem(ORDERED_CATEGORIES, JSON.stringify(finalOrder));
+
+            const cleanData = JSON.parse(JSON.stringify(finalOrder));
+            await browser.storage.local.set({ [ORDERED_CATEGORIES]: cleanData });
         } catch (e: any) {
             error.value = 'Load categories failed: ' + e.message;
             console.error('Load categories failed: ', e);
@@ -46,10 +48,11 @@ export const useCategoryStore = defineStore('category', () => {
         }
     }
 
-    function saveOrderedCategories(newOrder: Category[]) {
+    async function saveOrderedCategories(newOrder: Category[]) {
         try {
             orderedCategories.value = newOrder;
-            localStorage.setItem(ORDERED_CATEGORIES, JSON.stringify(newOrder));
+            const cleanData = JSON.parse(JSON.stringify(newOrder));
+            await browser.storage.local.set({ [ORDERED_CATEGORIES]: cleanData });
         } catch (e: any) {
             error.value = 'Save ordered categories failed: ' + e.message;
             console.error('Save ordered categories failed: ', e);

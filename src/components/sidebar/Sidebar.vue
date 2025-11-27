@@ -37,8 +37,8 @@ import { useSearchStore } from '@/store/search.ts';
 const categoryStore = useCategoryStore();
 const searchStore = useSearchStore();
 
-onBeforeMount(() => {
-    categoryStore.loadCategories();
+onBeforeMount(async () => {
+    await categoryStore.loadCategories();
 });
 
 const { orderedCategories, isLoading: isLoadingCategories } = storeToRefs(categoryStore);
@@ -76,8 +76,8 @@ async function handleMergeCategory(category: Category, categoryTo: Category) {
     isMergeDialogOpened.value = true;
 }
 
-function handleDragEnd() {
-    categoryStore.saveOrderedCategories(orderedCategories.value);
+async function handleDragEnd() {
+    await categoryStore.saveOrderedCategories(orderedCategories.value);
 }
 </script>
 <template>
