@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "Abrir TabClip",
+    "sendCurrentTab": "Enviar esta aba para o TabClip",
+    "sendTabsExceptThis": "Enviar outras abas para o TabClip",
+    "sendAllTabsInCurrentWindow": "Enviar todas as abas desta janela para o TabClip",
+    "sendAllTabsInAllWindows": "Enviar todas as abas de todas as janelas para o TabClip",
+    "sendTabsToTheLeft": "Enviar abas à esquerda para o TabClip",
+    "sendTabsToTheRight": "Enviar abas à direita para o TabClip"
+}

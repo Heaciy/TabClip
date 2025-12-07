@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "TabClip 열기",
+    "sendCurrentTab": "현재 탭을 TabClip으로 보내기",
+    "sendTabsExceptThis": "다른 탭들을 TabClip으로 보내기",
+    "sendAllTabsInCurrentWindow": "현재 창의 모든 탭을 TabClip으로 보내기",
+    "sendAllTabsInAllWindows": "모든 창의 모든 탭을 TabClip으로 보내기",
+    "sendTabsToTheLeft": "왼쪽 탭들을 TabClip으로 보내기",
+    "sendTabsToTheRight": "오른쪽 탭들을 TabClip으로 보내기"
+}

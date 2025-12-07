@@ -6,13 +6,29 @@
 // Adjust import paths based on your WXT project structure
 // e.g., if 'database' and 'store/settings' are in a 'shared' or 'utils' folder
 import { db, TabGroup } from '@/database';
+import deMessages from '@/locales/messages/de.json';
 import enMessages from '@/locales/messages/en.json';
+import esMessages from '@/locales/messages/es.json';
+import frMessages from '@/locales/messages/fr.json';
+import jaMessages from '@/locales/messages/ja.json';
+import koMessages from '@/locales/messages/ko.json';
+import ptMessages from '@/locales/messages/pt.json';
+import ruMessages from '@/locales/messages/ru.json';
 import zhMessages from '@/locales/messages/zh.json';
+import zh_TWMessages from '@/locales/messages/zh-TW.json';
 import { loadSettings, type Settings } from '@/store/settings';
 
 const MESSAGES: Record<string, Record<string, string>> = {
     zh: zhMessages,
     en: enMessages,
+    de: deMessages,
+    es: esMessages,
+    fr: frMessages,
+    ko: koMessages,
+    ja: jaMessages,
+    'zh-TW': zh_TWMessages,
+    pt: ptMessages,
+    ru: ruMessages,
 };
 
 const t = (key: string, lang: string): string => {

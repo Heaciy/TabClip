@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "開啟 TabClip",
+    "sendCurrentTab": "傳送此標籤頁至 TabClip",
+    "sendTabsExceptThis": "傳送其他標籤頁至 TabClip",
+    "sendAllTabsInCurrentWindow": "傳送目前視窗所有標籤頁至 TabClip",
+    "sendAllTabsInAllWindows": "傳送所有視窗的標籤頁至 TabClip",
+    "sendTabsToTheLeft": "傳送左側標籤頁至 TabClip",
+    "sendTabsToTheRight": "傳送右側標籤頁至 TabClip"
+}

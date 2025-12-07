@@ -38,7 +38,30 @@ const option = ref({});
 const langDayLabelMap = new Map<string, Array<string>>(
     Object.entries({
         zh: ['', '周一', '', '周三', '', '周五', ''],
-        en: ['', 'Mon', '', 'Wen', '', 'Fri  ', ''],
+        'zh-TW': ['', '週一', '', '週三', '', '週五', ''],
+        en: ['', 'Mon', '', 'Wed', '', 'Fri', ''],
+        ja: ['', '月', '', '水', '', '金', ''],
+        ko: ['', '월', '', '수', '', '금', ''],
+        es: ['', 'Lun', '', 'Mié', '', 'Vie', ''],
+        fr: ['', 'Lun', '', 'Mer', '', 'Ven', ''],
+        de: ['', 'Mo', '', 'Mi', '', 'Fr', ''],
+        pt: ['', 'Seg', '', 'Qua', '', 'Sex', ''],
+        ru: ['', 'Пн', '', 'Ср', '', 'Пт', ''],
+    }),
+);
+
+const langMonthLabelMap = new Map<string, Array<string>>(
+    Object.entries({
+        zh: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        'zh-TW': ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        ko: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        es: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'],
+        fr: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+        de: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+        pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+        ru: ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
     }),
 );
 
@@ -103,6 +126,9 @@ const updateChart = () => {
             },
             dayLabel: {
                 nameMap: computed(() => langDayLabelMap.get(locale.value)),
+            },
+            monthLabel: {
+                nameMap: computed(() => langMonthLabelMap.get(locale.value)),
             },
             yearLabel: { show: false },
         },

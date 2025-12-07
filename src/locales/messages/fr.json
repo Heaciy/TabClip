@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "Ouvrir TabClip",
+    "sendCurrentTab": "Envoyer l'onglet vers TabClip",
+    "sendTabsExceptThis": "Envoyer les autres onglets vers TabClip",
+    "sendAllTabsInCurrentWindow": "Envoyer tous les onglets de cette fenêtre vers TabClip",
+    "sendAllTabsInAllWindows": "Envoyer tous les onglets de toutes les fenêtres vers TabClip",
+    "sendTabsToTheLeft": "Envoyer les onglets de gauche vers TabClip",
+    "sendTabsToTheRight": "Envoyer les onglets de droite vers TabClip"
+}

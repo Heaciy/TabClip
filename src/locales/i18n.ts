@@ -16,7 +16,7 @@ import zh_TW from './zh-TW.json';
 export const availableLocales = {
     zh: '简体中文',
     en: 'English',
-    zh_TW: '繁體中文', // Traditional Chinese
+    'zh-TW': '繁體中文', // Traditional Chinese
     ja: '日本語', // Japanese
     ko: '한국어', // Korean
     es: 'Español', // Spanish
@@ -41,7 +41,7 @@ export const i18n = createI18n({
             ...zh,
             ...aboutZh,
         },
-        zh_TW,
+        'zh-TW': zh_TW,
         ja,
         ko,
         es,

@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "TabClip を開く",
+    "sendCurrentTab": "このタブを TabClip に送信",
+    "sendTabsExceptThis": "他のタブを TabClip に送信",
+    "sendAllTabsInCurrentWindow": "現在のウィンドウの全タブを TabClip に送信",
+    "sendAllTabsInAllWindows": "全てのウィンドウの全タブを TabClip に送信",
+    "sendTabsToTheLeft": "左側のタブを TabClip に送信",
+    "sendTabsToTheRight": "右側のタブを TabClip に送信"
+}

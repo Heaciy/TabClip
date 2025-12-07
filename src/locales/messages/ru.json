@@ -1,0 +1,9 @@
+{
+    "displayTabClip": "Открыть TabClip",
+    "sendCurrentTab": "Отправить эту вкладку в TabClip",
+    "sendTabsExceptThis": "Отправить другие вкладки в TabClip",
+    "sendAllTabsInCurrentWindow": "Отправить все вкладки этого окна в TabClip",
+    "sendAllTabsInAllWindows": "Отправить все вкладки всех окон в TabClip",
+    "sendTabsToTheLeft": "Отправить вкладки слева в TabClip",
+    "sendTabsToTheRight": "Отправить вкладки справа в TabClip"
+}
