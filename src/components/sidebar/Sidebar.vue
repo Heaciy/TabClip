@@ -149,7 +149,7 @@ async function handleDragEnd() {
                                             <span>{{ $t('category.dropdownMenu.mergeTo') }}</span>
                                         </DropdownMenuSubTrigger>
                                         <DropdownMenuPortal>
-                                            <DropdownMenuSubContent class="flex">
+                                            <DropdownMenuSubContent class="flex max-w-48">
                                                 <ScrollArea class="max-h-48 w-full">
                                                     <DropdownMenuItem
                                                         v-for="categoryTo in categoryStore.orderedCategories.filter(
@@ -158,7 +158,7 @@ async function handleDragEnd() {
                                                         :key="categoryTo.id"
                                                         @click="handleMergeCategory(category, categoryTo)"
                                                     >
-                                                        <span>{{ categoryTo.name }}</span>
+                                                        <span class="inline-block truncate">{{ categoryTo.name }}</span>
                                                     </DropdownMenuItem>
                                                 </ScrollArea>
                                             </DropdownMenuSubContent>

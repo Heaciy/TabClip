@@ -41,11 +41,12 @@ export default defineConfig({
                         items: [{ text: '插件截图', link: '/screenshots' }],
                     },
                     {
-                        text: '使用手册',
+                        text: '使用文档',
                         items: [
                             { text: '安装插件', link: '/install' },
                             { text: '插件设置', link: '/settings' },
                             { text: '导入导出', link: '/import-export' },
+                            { text: '更新日志', link: '/releases' },
                         ],
                     },
                     {
@@ -90,11 +91,12 @@ export default defineConfig({
                         items: [{ text: 'Screenshots', link: '/en/screenshots' }],
                     },
                     {
-                        text: 'User Manual',
+                        text: 'User Guide',
                         items: [
                             { text: 'Install Extension', link: '/en/install' },
                             { text: 'Extension Settings', link: '/en/settings' },
                             { text: 'Import/Export', link: '/en/import-export' },
+                            { text: 'All Releases', link: '/releases' },
                         ],
                     },
                     {
