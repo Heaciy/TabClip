@@ -6,22 +6,22 @@
 
 界面在亮色主题下的显示效果
 
-![亮色模式](/public/screenshots/light-mode.png)
+![亮色模式](/screenshots/light-mode.png)
 
 ## 🌙 暗色模式
 
 界面在暗色主题下的显示效果
 
-![暗色模式](/public/screenshots/dark-mode.png)
+![暗色模式](/screenshots/dark-mode.png)
 
 ## 📊 热力图
 
 可视化的热力图展示
 
-![热力图](/public/screenshots/heatmap.png)
+![热力图](/screenshots/heatmap.png)
 
 ## ⚙️设置
 
 插件的可配置选项界面
 
-![设置](/public/screenshots/settings.png)
+![设置](/screenshots/settings.png)

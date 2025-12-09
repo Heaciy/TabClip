@@ -4,7 +4,7 @@ This page records all version updates of TabClip.
 
 ## v0.1.2
 
-> 2025-12-08
+> 2025-12-09
 
 ### ✨ Features
 
