@@ -1,7 +1,7 @@
 {
     "search": {
-        "startTime": "開始時間",
-        "endTime": "終了時間",
+        "startTime": "開始日時",
+        "endTime": "終了日時",
         "category": "カテゴリ",
         "textPlaceholder": "検索",
         "timePlaceholder": "日付を選択",
@@ -16,45 +16,45 @@
     },
     "settings": {
         "sheetTile": "設定の編集",
-        "sheetDesc": "設定を変更します。完了したら「保存」をクリックしてください。",
+        "sheetDesc": "設定を変更します。完了したら「変更を保存」をクリックしてください。",
         "storePinnedTabs": {
             "title": "固定されたタブの保存",
-            "desc": "固定されたタブもリストに保存して閉じることを許可します（デフォルトでは無効）。"
+            "desc": "固定されたタブをリストに保存（収納）することを許可します。デフォルトでは無効です。"
         },
         "storeBrowserGroup": {
             "title": "タブグループの保存",
-            "desc": "ブラウザのタブグループを新しいグループとして個別に保存します（デフォルトでは無効）。"
+            "desc": "ブラウザのタブグループを、独立した新しいグループとして保存します。デフォルトでは無効です。"
         },
         "defaultLockGroup": {
             "title": "デフォルトでグループをロック",
-            "desc": "新しいグループを追加する際、誤って変更や削除をしないようにデフォルトでロックします。"
+            "desc": "新しいグループを追加する際、誤操作による変更や削除を防ぐためデフォルトでロックします。"
         },
         "openGroupInNewWindow": {
             "title": "グループを新しいウィンドウで開く",
-            "desc": "タブグループを復元する際、新しいウィンドウで開きます（デフォルトでは現在のウィンドウ）。"
+            "desc": "タブグループを復元する際、新しいウィンドウで開きます。デフォルトでは現在のウィンドウで開きます。"
         },
         "useGoogleIcon": {
             "title": "Googleからアイコンを取得",
-            "desc": "キャッシュにアイコンがない場合、Googleからオンラインで取得します。"
+            "desc": "アイコンがキャッシュにない場合、Googleからオンラインで取得します。"
         },
         "isStartupPage": {
             "title": "起動ページに設定",
             "desc": "ブラウザ起動時にTabClipを自動的にホームページとして開きます。"
         },
         "pageSize": {
-            "title": "ページサイズ",
-            "selectLabel": "表示件数",
-            "desc": "一度に読み込むタブグループの数です。"
+            "title": "1ページあたりの表示数",
+            "selectLabel": "ページサイズ",
+            "desc": "一度に読み込むタブグループの数量です。"
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "タブの間隔",
             "selectLabel": "間隔サイズ",
             "desc": "タブ要素間の隙間のサイズです。"
         },
         "TabWhitelist": {
             "title": "タブのホワイトリスト",
-            "placeholder": "URLのプレフィックスを入力（改行で区切る）",
-            "desc": "ホワイトリストのURLプレフィックスに一致するタブは保存（閉じる）されません。"
+            "placeholder": "URLプレフィックスを入力（1行に1つ）",
+            "desc": "ここに指定したURLプレフィックスに一致するタブは、リストに保存（収納）されません。"
         },
         "buttonSave": "変更を保存",
         "buttonDiscard": "変更を破棄",
@@ -93,7 +93,7 @@
     },
     "importGroups": {
         "dialogTitle": "データのインポート",
-        "dialogDesc": "TabClip/Onetabからエクスポートされたデータをインポートします。",
+        "dialogDesc": "TabClipまたはOnetabからエクスポートされたデータをインポートします。",
         "success": {
             "toastTitle": "インポート成功",
             "toastDesc": "{total} 個のタブグループをインポートしました。"
@@ -137,18 +137,18 @@
         "total": "{total} タブ",
         "copyLinks": {
             "toastTitle": "リンクをコピーしました",
-            "toastDesc": "{total} 個のタブリンクをコピーしました。"
+            "toastDesc": "{total} 件のタブリンクをコピーしました。"
         },
         "openTab": {
             "notAllow": {
-                "dialogTitle": "この種類のタブは開けません",
+                "dialogTitle": "この種類のタブは現在のブラウザで開けません",
                 "dialogDesc": "リンクがクリップボードにコピーされました。アドレスバーに貼り付けてアクセスしてください。"
             }
         },
         "openTabGroup": {
             "notAllow": {
                 "dialogTitle": "一部のタブを開くことができません",
-                "dialogDesc": "ブラウザがサポートしていないタブが含まれています。グループは保持されます。"
+                "dialogDesc": "ブラウザがサポートしていないタブが含まれています。これらのタブを含むグループは保持されます。"
             }
         }
     },
@@ -213,8 +213,8 @@
         "title": "ヒートマップ",
         "desc": "タブデータの時間分布",
         "buttonClose": "閉じる",
-        "groupsSelect": "グループ数",
-        "tabsSelect": "タブ数",
+        "groupsSelect": "グループ",
+        "tabsSelect": "タブ",
         "recentYear": "過去1年",
         "typePlaceholder": "タイプ",
         "yearPlaceholder": "年"

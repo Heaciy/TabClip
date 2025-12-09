@@ -7,7 +7,7 @@
         "timePlaceholder": "Datum wählen",
         "categoryPlaceholder": "Kategorie wählen",
         "popoverTitle": "Suchoptionen",
-        "popoverDesc": "Weitere Suchbedingungen festlegen.",
+        "popoverDesc": "Weitere Suchfilter festlegen.",
         "buttonSearch": "Suchen",
         "buttonCancel": "Abbrechen"
     },
@@ -15,11 +15,11 @@
         "label": "Sprache auswählen"
     },
     "settings": {
-        "sheetTile": "Einstellungen bearbeiten",
-        "sheetDesc": "Ändern Sie hier Ihre Einstellungen. Klicken Sie auf Speichern, wenn Sie fertig sind.",
+        "sheetTile": "Einstellungen",
+        "sheetDesc": "Passen Sie hier Ihre Einstellungen an. Klicken Sie auf Speichern, wenn Sie fertig sind.",
         "storePinnedTabs": {
             "title": "Angepinnte Tabs speichern",
-            "desc": "Erlaubt das Speichern von angepinnten Tabs beim Hinzufügen einer Gruppe. Standardmäßig deaktiviert."
+            "desc": "Erlaubt das Speichern (und Schließen) von angepinnten Tabs. Standardmäßig deaktiviert."
         },
         "storeBrowserGroup": {
             "title": "Browser-Tabgruppen speichern",
@@ -27,34 +27,34 @@
         },
         "defaultLockGroup": {
             "title": "Gruppe standardmäßig sperren",
-            "desc": "Sperrt eine Gruppe automatisch beim Hinzufügen, um Änderungen oder Löschen zu verhindern."
+            "desc": "Sperrt neue Gruppen automatisch, um versehentliche Änderungen oder Löschungen zu verhindern."
         },
         "openGroupInNewWindow": {
             "title": "Gruppe in neuem Fenster öffnen",
-            "desc": "Öffnet eine Gruppe beim Wiederherstellen in einem neuen Fenster. Standardmäßig deaktiviert."
+            "desc": "Öffnet eine Tabgruppe beim Wiederherstellen in einem neuen Fenster. Standardmäßig im aktuellen Fenster."
         },
         "useGoogleIcon": {
-            "title": "Icon von Google laden",
-            "desc": "Das Icon wird nur von Google geladen, wenn es nicht im Cache vorhanden ist."
+            "title": "Icons von Google laden",
+            "desc": "Lädt fehlende Icons online von Google, falls sie nicht im Cache vorhanden sind."
         },
         "isStartupPage": {
             "title": "Als Startseite festlegen",
             "desc": "Öffnet TabClip automatisch als Startseite bei jedem Browserstart."
         },
         "pageSize": {
-            "title": "Seitengröße",
+            "title": "Gruppen pro Seite",
             "selectLabel": "Anzahl",
-            "desc": "Die Anzahl der Tabgruppen, die jedes Mal geladen werden."
+            "desc": "Die Anzahl der Tabgruppen, die pro Seite geladen werden."
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "Abstand zwischen Tabs",
             "selectLabel": "Abstand",
-            "desc": "Die Größe des Abstands zwischen den Tab-Elementen."
+            "desc": "Die Größe des Abstands zwischen den einzelnen Tab-Elementen."
         },
         "TabWhitelist": {
             "title": "Tab-Whitelist",
-            "placeholder": "URL-Präfixe eingeben, eines pro Zeile",
-            "desc": "Tabs, deren URLs mit einem Präfix in der Whitelist übereinstimmen, werden nicht gespeichert."
+            "placeholder": "URL-Präfixe eingeben (eines pro Zeile)",
+            "desc": "Tabs, deren URL mit einem dieser Präfixe beginnt, werden nicht gespeichert."
         },
         "buttonSave": "Speichern",
         "buttonDiscard": "Verwerfen",
@@ -62,12 +62,12 @@
     },
     "moreOperations": {
         "dataOperations": {
-            "label": "Datenoperationen",
+            "label": "Datenverwaltung",
             "exportGroups": "Daten exportieren",
             "importGroups": "Daten importieren"
         },
         "dangerOperations": {
-            "label": "Gefährliche Operationen",
+            "label": "Gefährliche Aktionen",
             "truncateData": "Alle Daten löschen"
         },
         "moreInfo": {
@@ -93,19 +93,19 @@
     },
     "importGroups": {
         "dialogTitle": "Daten importieren",
-        "dialogDesc": "Importieren Sie Daten, die aus TabClip/Onetab exportiert wurden.",
+        "dialogDesc": "Importieren Sie Daten, die von TabClip oder Onetab exportiert wurden.",
         "success": {
             "toastTitle": "Import erfolgreich",
             "toastDesc": "{total} Tabgruppen erfolgreich importiert."
         },
         "error": {
-            "parseError": "JSON-Dateifehler",
-            "fileFormatError": "Dateiformatfehler"
+            "parseError": "Fehler beim Lesen der JSON-Datei",
+            "fileFormatError": "Ungültiges Dateiformat"
         },
         "form": {
             "file": {
-                "label": "Exportierte Datei",
-                "desc": "Die aus TabClip/Onetab exportierte Datei (JSON, max. {maxSize})."
+                "label": "Datei auswählen",
+                "desc": "Die exportierte Datei von TabClip/Onetab (JSON, max. {maxSize})."
             }
         },
         "buttonImport": "Importieren",
@@ -123,7 +123,7 @@
         }
     },
     "toolBar": {
-        "searchTitle": "Suche",
+        "searchTitle": "Suchergebnisse",
         "allTabsTitle": "Alle Tabs",
         "starredTitle": "Favoriten",
         "allTabsTab": "Alle",
@@ -137,18 +137,18 @@
         "total": "{total} Tabs",
         "copyLinks": {
             "toastTitle": "Links kopiert",
-            "toastDesc": "{total} Tab-Links erfolgreich kopiert."
+            "toastDesc": "{total} Links erfolgreich in die Zwischenablage kopiert."
         },
         "openTab": {
             "notAllow": {
-                "dialogTitle": "Dieser Tab-Typ kann nicht geöffnet werden",
-                "dialogDesc": "Der Link wurde in die Zwischenablage kopiert. Bitte fügen Sie ihn in die Adressleiste ein."
+                "dialogTitle": "Tab kann nicht geöffnet werden",
+                "dialogDesc": "Der Link wurde kopiert. Bitte fügen Sie ihn manuell in die Adressleiste ein."
             }
         },
         "openTabGroup": {
             "notAllow": {
-                "dialogTitle": "Einige Tabs können nicht geöffnet werden",
-                "dialogDesc": "Diese Gruppe enthält Tabs, die Ihr Browser nicht öffnen kann. Die Gruppe bleibt gespeichert."
+                "dialogTitle": "Einige Tabs sind nicht kompatibel",
+                "dialogDesc": "Diese Gruppe enthält Tabs, die der Browser nicht öffnen kann. Die Gruppe bleibt gespeichert."
             }
         }
     },
@@ -161,49 +161,49 @@
         },
         "edit": {
             "formLabel": "Name",
-            "formDesc": "Dies ist der Kategoriename.",
+            "formDesc": "Name der Kategorie.",
             "add": {
                 "placeholder": "Namen eingeben",
                 "dialogTitle": "Kategorie hinzufügen",
-                "dialogDesc": "Fügen Sie eine Kategorie hinzu. Klicken Sie auf Speichern, wenn Sie fertig sind."
+                "dialogDesc": "Neue Kategorie erstellen. Klicken Sie zum Abschluss auf Speichern."
             },
             "update": {
                 "placeholder": "Neuen Namen eingeben",
                 "dialogTitle": "Kategorie bearbeiten",
-                "dialogDesc": "Bearbeiten Sie die Kategorie. Klicken Sie auf Speichern, wenn Sie fertig sind."
+                "dialogDesc": "Kategorie ändern. Klicken Sie zum Abschluss auf Speichern."
             },
             "buttonSave": "Speichern",
-            "duplicateError": "Doppelte Kategorienamen sind nicht zulässig."
+            "duplicateError": "Dieser Kategoriename existiert bereits."
         },
         "delete": {
             "buttonCancel": "Abbrechen",
             "buttonDelete": "Löschen",
             "deleteCategory": {
                 "dialogTitle": "Kategorie '{categoryName}' löschen?",
-                "dialogDesc": "Nur die Kategorie wird gelöscht, die zugehörigen Tabgruppen bleiben erhalten."
+                "dialogDesc": "Nur die Kategorie wird gelöscht. Die zugehörigen Tabgruppen bleiben erhalten."
             },
             "deleteCategoryAndGroups": {
-                "dialogTitle": "'{categoryName}' und Gruppen löschen?",
-                "dialogDesc": "Dies löscht die Kategorie und alle zugehörigen Tabgruppen, auch gesperrte."
+                "dialogTitle": "'{categoryName}' und zugehörige Gruppen löschen?",
+                "dialogDesc": "Dies löscht die Kategorie und alle darin enthaltenen Tabgruppen (auch gesperrte)."
             }
         },
         "merge": {
             "buttonCancel": "Abbrechen",
             "buttonMerge": "Zusammenführen",
-            "dialogTitle": "'{categoryName}' in '{categoryToName}' zusammenführen?",
-            "dialogDesc": "Alle Gruppen aus '{categoryName}' werden nach '{categoryToName}' verschoben und '{categoryName}' wird gelöscht."
+            "dialogTitle": "'{categoryName}' in '{categoryToName}' integrieren?",
+            "dialogDesc": "Alle Gruppen aus '{categoryName}' werden nach '{categoryToName}' verschoben. '{categoryName}' wird gelöscht."
         },
         "dropdownMenu": {
-            "edit": "Kategorie bearbeiten",
+            "edit": "Bearbeiten",
             "mergeTo": "Zusammenführen in",
-            "deleteCategory": "Kategorie löschen",
-            "deleteCategoryAndGroups": "Kat. & Gruppen löschen"
+            "deleteCategory": "Löschen",
+            "deleteCategoryAndGroups": "Alles löschen"
         }
     },
     "veeValidate": {
-        "fileRequired": "Bitte wählen Sie eine Datei aus",
-        "fileSize": "Dateigröße muss kleiner als {maxSize} sein",
-        "fileType": "Datei muss im Format {fileType} sein",
+        "fileRequired": "Bitte wählen Sie eine Datei aus.",
+        "fileSize": "Die Datei muss kleiner als {maxSize} sein.",
+        "fileType": "Die Datei muss im Format {fileType} vorliegen.",
         "required": "{field} ist erforderlich.",
         "strMin": "{field} muss mindestens {min} Zeichen lang sein.",
         "strMax": "{field} darf höchstens {max} Zeichen lang sein.",
@@ -211,7 +211,7 @@
     },
     "heatmap": {
         "title": "Heatmap",
-        "desc": "Zeitliche Verteilung der Daten",
+        "desc": "Zeitliche Verteilung Ihrer Tabs",
         "buttonClose": "Schließen",
         "groupsSelect": "Gruppen",
         "tabsSelect": "Tabs",

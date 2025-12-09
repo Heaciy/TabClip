@@ -11,7 +11,7 @@ interface Settings {
     useGoogleIcon: boolean;
     isStartupPage: boolean;
     storeBrowserGroup: boolean;
-    spcaeBetweenTabs: number;
+    spaceBetweenTabs: number;
     tabWhitelist: string[];
 }
 
@@ -23,7 +23,7 @@ const defaultSettings: Settings = {
     useGoogleIcon: false,
     isStartupPage: true,
     storeBrowserGroup: false,
-    spcaeBetweenTabs: 2,
+    spaceBetweenTabs: 2,
     tabWhitelist: blankTabs,
 };
 

@@ -47,7 +47,7 @@ const spaceClass = computed(() => {
         1.5: 'space-y-1.5',
         2: 'space-y-2',
     };
-    return map[settingStore.settings.spcaeBetweenTabs] || 'space-y-2';
+    return map[settingStore.settings.spaceBetweenTabs] || 'space-y-2';
 });
 const { openDialog: openConfirmDialog } = useConfirmDialog();
 

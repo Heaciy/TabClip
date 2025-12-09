@@ -42,7 +42,7 @@ const formSchema = toTypedSchema(
         openGroupInNewWindow: z.boolean().optional(),
         useGoogleIcon: z.boolean().optional(),
         pageSize: z.number().optional(),
-        spcaeBetweenTabs: z.number().optional(),
+        spaceBetweenTabs: z.number().optional(),
         isStartupPage: z.boolean().optional(),
         storeBrowserGroup: z.boolean().optional(),
         tabWhitelist: z.string().optional(),
@@ -242,14 +242,14 @@ const doRestoreDefaults = () => {
                                 </FormControl>
                             </FormItem>
                         </FormField>
-                        <FormField v-slot="{ componentField }" name="spcaeBetweenTabs">
+                        <FormField v-slot="{ componentField }" name="spaceBetweenTabs">
                             <FormItem class="flex flex-row items-center justify-between">
                                 <div class="space-y-0.5">
                                     <FormLabel class="text-base">
-                                        {{ $t('settings.spcaeBetweenTabs.title') }}
+                                        {{ $t('settings.spaceBetweenTabs.title') }}
                                     </FormLabel>
                                     <FormDescription>
-                                        {{ $t('settings.spcaeBetweenTabs.desc') }}
+                                        {{ $t('settings.spaceBetweenTabs.desc') }}
                                     </FormDescription>
                                 </div>
                                 <FormControl>
@@ -262,7 +262,7 @@ const doRestoreDefaults = () => {
                                         <SelectContent>
                                             <SelectGroup>
                                                 <SelectLabel
-                                                    >{{ $t('settings.spcaeBetweenTabs.selectLabel') }}
+                                                    >{{ $t('settings.spaceBetweenTabs.selectLabel') }}
                                                 </SelectLabel>
                                                 <SelectItem
                                                     v-for="(space, index) in spaceBewteenTabsChoices"

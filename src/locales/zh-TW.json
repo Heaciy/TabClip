@@ -18,20 +18,20 @@
         "sheetTile": "編輯設定",
         "sheetDesc": "修改設定，完成後點擊儲存變更",
         "storePinnedTabs": {
-            "title": "允許收起固定的標籤頁",
-            "desc": "允許收起被固定的標籤頁，預設不允許"
+            "title": "允許收起釘選的分頁",
+            "desc": "允許收起被釘選的分頁，預設不允許"
         },
         "storeBrowserGroup": {
-            "title": "允許收起瀏覽器群組",
-            "desc": "允許將瀏覽器標籤群組收起為獨立的新群組，預設不允許"
+            "title": "允許收起瀏覽器分頁群組",
+            "desc": "允許將瀏覽器分頁群組收起為獨立的新群組，預設不允許"
         },
         "defaultLockGroup": {
-            "title": "預設鎖定標籤群組",
-            "desc": "新增標籤群組時預設鎖定，以防止誤修改或刪除，預設不鎖定"
+            "title": "預設鎖定分頁群組",
+            "desc": "新增分頁群組時預設鎖定，以防止誤修改或刪除，預設不鎖定"
         },
         "openGroupInNewWindow": {
-            "title": "在新視窗開啟標籤群組",
-            "desc": "使用新視窗來還原標籤群組，預設在當前視窗開啟"
+            "title": "在新視窗開啟分頁群組",
+            "desc": "使用新視窗來還原分頁群組，預設在當前視窗開啟"
         },
         "useGoogleIcon": {
             "title": "從 Google 載入圖示",
@@ -42,19 +42,19 @@
             "desc": "每次啟動瀏覽器時自動開啟 TabClip 作為首頁"
         },
         "pageSize": {
-            "title": "頁面大小",
-            "selectLabel": "頁面大小",
-            "desc": "每次載入標籤群組的數量"
+            "title": "每頁群組數量",
+            "selectLabel": "分頁大小",
+            "desc": "每次載入的分頁群組數量"
         },
-        "spcaeBetweenTabs": {
-            "title": "標籤間距",
+        "spaceBetweenTabs": {
+            "title": "分頁間距",
             "selectLabel": "間距大小",
-            "desc": "標籤元素之間的間距大小"
+            "desc": "分頁元素之間的間距大小"
         },
         "TabWhitelist": {
-            "title": "標籤頁白名單",
-            "placeholder": "輸入標籤頁連結 (URL) 前綴，多個請換行分隔",
-            "desc": "符合白名單連結 (URL) 前綴的標籤頁將不會被收起"
+            "title": "分頁白名單",
+            "placeholder": "輸入分頁連結 (URL) 前綴，多個請換行分隔",
+            "desc": "符合白名單連結 (URL) 前綴的分頁將不會被收起"
         },
         "buttonSave": "儲存變更",
         "buttonDiscard": "取消變更",
@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "資料操作",
-            "exportGroups": "匯出標籤群組",
-            "importGroups": "匯入標籤群組"
+            "exportGroups": "匯出資料",
+            "importGroups": "匯入資料"
         },
         "dangerOperations": {
             "label": "危險操作",
@@ -81,7 +81,7 @@
         "descLeft": "此操作將刪除所有選取的資料，輸入",
         "descRight": "以確認",
         "checkbox": {
-            "truncateGroups": "刪除標籤群組",
+            "truncateGroups": "刪除分頁群組",
             "truncateCategories": "刪除分類"
         },
         "buttonDelete": "刪除",
@@ -92,11 +92,11 @@
         }
     },
     "importGroups": {
-        "dialogTitle": "匯入標籤群組",
+        "dialogTitle": "匯入資料",
         "dialogDesc": "匯入從 TabClip/Onetab 匯出的資料",
         "success": {
             "toastTitle": "匯入成功",
-            "toastDesc": "成功匯入 {total} 個標籤群組"
+            "toastDesc": "成功匯入 {total} 個分頁群組"
         },
         "error": {
             "parseError": "JSON 檔案解析失敗",
@@ -115,7 +115,7 @@
     "exportGroups": {
         "success": {
             "toastTitle": "匯出成功",
-            "toastDesc": "成功匯出 {total} 個標籤群組"
+            "toastDesc": "成功匯出 {total} 個分頁群組"
         },
         "error": {
             "toastTitle": "匯出失敗",
@@ -124,31 +124,31 @@
     },
     "toolBar": {
         "searchTitle": "搜尋結果",
-        "allTabsTitle": "全部標籤群組",
-        "starredTitle": "已收藏標籤群組",
+        "allTabsTitle": "全部分頁",
+        "starredTitle": "已收藏",
         "allTabsTab": "全部",
         "starredTab": "收藏",
         "groupNum": "{groupNum} 個群組",
-        "tabNum": "{tabNum} 個標籤頁"
+        "tabNum": "{tabNum} 個分頁"
     },
     "tabGroup": {
         "unnamedGroup": "未命名群組",
         "inputGroupName": "輸入名稱",
-        "total": "{total} 個標籤頁",
+        "total": "{total} 個分頁",
         "copyLinks": {
             "toastTitle": "複製連結成功",
-            "toastDesc": "成功複製 {total} 個標籤連結"
+            "toastDesc": "成功複製 {total} 個分頁連結"
         },
         "openTab": {
             "notAllow": {
-                "dialogTitle": "當前瀏覽器不允許開啟此類標籤頁",
-                "dialogDesc": "連結已複製至剪貼簿，請手動貼上到網址列存取"
+                "dialogTitle": "當前瀏覽器不允許開啟此類分頁",
+                "dialogDesc": "連結已複製至剪貼簿，請手動貼上到網址列前往"
             }
         },
         "openTabGroup": {
             "notAllow": {
-                "dialogTitle": "存在當前瀏覽器不允許開啟的標籤頁",
-                "dialogDesc": "群組中存在當前瀏覽器不允許開啟的標籤頁，該群組將會被保留"
+                "dialogTitle": "存在當前瀏覽器不允許開啟的分頁",
+                "dialogDesc": "群組中存在當前瀏覽器不允許開啟的分頁，該群組將會被保留"
             }
         }
     },
@@ -180,18 +180,18 @@
             "buttonDelete": "刪除",
             "deleteCategory": {
                 "dialogTitle": "刪除分類 '{categoryName}'?",
-                "dialogDesc": "僅刪除分類，關聯的標籤群組不會被刪除"
+                "dialogDesc": "僅刪除分類，關聯的分頁群組不會被刪除"
             },
             "deleteCategoryAndGroups": {
                 "dialogTitle": "刪除分類 '{categoryName}' 及關聯群組?",
-                "dialogDesc": "這將刪除分類及其關聯的所有標籤群組，包含已鎖定的群組"
+                "dialogDesc": "這將刪除分類及其關聯的所有分頁群組，包含已鎖定的群組"
             }
         },
         "merge": {
             "buttonCancel": "取消",
             "buttonMerge": "合併",
             "dialogTitle": "合併分類 '{categoryName}' 至 '{categoryToName}'?",
-            "dialogDesc": "原分類 '{categoryName}' 的標籤群組將合併至新分類 '{categoryToName}' 中，且原分類 '{categoryName}' 將被刪除"
+            "dialogDesc": "原分類 '{categoryName}' 的分頁群組將合併至新分類 '{categoryToName}' 中，且原分類 '{categoryName}' 將被刪除"
         },
         "dropdownMenu": {
             "edit": "編輯分類",
@@ -211,10 +211,10 @@
     },
     "heatmap": {
         "title": "熱力圖",
-        "desc": "標籤資料時間分佈",
+        "desc": "資料時間分佈",
         "buttonClose": "關閉",
-        "groupsSelect": "標籤群組",
-        "tabsSelect": "標籤頁",
+        "groupsSelect": "群組",
+        "tabsSelect": "分頁",
         "recentYear": "最近一年",
         "typePlaceholder": "類型",
         "yearPlaceholder": "年份"

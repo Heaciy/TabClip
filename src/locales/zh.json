@@ -42,11 +42,11 @@
             "desc": "每次启动浏览器时自动打开 TabClip 作为首页"
         },
         "pageSize": {
-            "title": "页面大小",
-            "selectLabel": "页面大小",
+            "title": "每页标签组数量",
+            "selectLabel": "分页大小",
             "desc": "每次加载标签组的数量"
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "标签间距",
             "selectLabel": "间距大小",
             "desc": "标签元素之间的间距大小"

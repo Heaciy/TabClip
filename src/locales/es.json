@@ -1,7 +1,7 @@
 {
     "search": {
         "startTime": "Hora de inicio",
-        "endTime": "Hora de finalización",
+        "endTime": "Hora de fin",
         "category": "Categoría",
         "textPlaceholder": "Buscar",
         "timePlaceholder": "Seleccionar fecha",
@@ -19,46 +19,46 @@
         "sheetDesc": "Modifica tu configuración aquí. Haz clic en Guardar cuando termines.",
         "storePinnedTabs": {
             "title": "Guardar pestañas fijadas",
-            "desc": "Permite guardar pestañas fijadas al añadir un grupo. Desactivado por defecto."
+            "desc": "Permite guardar (y cerrar) las pestañas fijadas al añadir un grupo. Desactivado por defecto."
         },
         "storeBrowserGroup": {
-            "title": "Guardar grupos de pestañas del navegador",
-            "desc": "Guarda los grupos de pestañas del navegador como nuevos grupos independientes. Desactivado por defecto."
+            "title": "Guardar grupos de pestañas",
+            "desc": "Guarda los grupos de pestañas del navegador como grupos independientes. Desactivado por defecto."
         },
         "defaultLockGroup": {
             "title": "Bloquear grupo por defecto",
-            "desc": "Bloquea automáticamente un grupo al añadirlo para evitar cambios o eliminación. Desactivado por defecto."
+            "desc": "Bloquea automáticamente un nuevo grupo al añadirlo para evitar cambios accidentales."
         },
         "openGroupInNewWindow": {
             "title": "Abrir grupo en nueva ventana",
-            "desc": "Abre el grupo en una nueva ventana al restaurarlo. Por defecto se abre en la ventana actual."
+            "desc": "Abre el grupo en una ventana nueva al restaurarlo. Por defecto se abre en la ventana actual."
         },
         "useGoogleIcon": {
-            "title": "Cargar icono desde Google",
-            "desc": "El icono se cargará desde Google solo si no está en caché. Desactivado por defecto."
+            "title": "Cargar iconos desde Google",
+            "desc": "Carga el icono desde Google solo si no está disponible en caché."
         },
         "isStartupPage": {
             "title": "Establecer como página de inicio",
-            "desc": "Abrir TabClip automáticamente como página de inicio al iniciar el navegador."
+            "desc": "Abre TabClip automáticamente como página de inicio al iniciar el navegador."
         },
         "pageSize": {
-            "title": "Tamaño de página",
-            "selectLabel": "Tamaño",
-            "desc": "Número de grupos de pestañas cargados cada vez."
+            "title": "Grupos por página",
+            "selectLabel": "Tamaño de página",
+            "desc": "Número de grupos de pestañas que se cargan cada vez."
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "Espacio entre pestañas",
             "selectLabel": "Tamaño del espacio",
-            "desc": "El tamaño del espacio entre los elementos de las pestañas."
+            "desc": "El tamaño del espacio entre las pestañas."
         },
         "TabWhitelist": {
             "title": "Lista blanca de pestañas",
-            "placeholder": "Introduce prefijos de URL, uno por línea",
-            "desc": "Las pestañas cuyas URL coincidan con algún prefijo de la lista blanca no se guardarán."
+            "placeholder": "Introduce prefijos de URL (uno por línea)",
+            "desc": "Las pestañas cuyas URL coincidan con los prefijos de la lista blanca no se guardarán."
         },
         "buttonSave": "Guardar cambios",
         "buttonDiscard": "Descartar",
-        "buttonRestoreDefaults": "Restaurar valores predeterminados"
+        "buttonRestoreDefaults": "Restaurar valores por defecto"
     },
     "moreOperations": {
         "dataOperations": {
@@ -67,7 +67,7 @@
             "importGroups": "Importar datos"
         },
         "dangerOperations": {
-            "label": "Operaciones peligrosas",
+            "label": "Zona de peligro",
             "truncateData": "Eliminar todos los datos"
         },
         "moreInfo": {
@@ -78,7 +78,7 @@
     },
     "truncateData": {
         "title": "Eliminar todos los datos",
-        "descLeft": "Esto eliminará todos los datos seleccionados. Escribe",
+        "descLeft": "Esto eliminará permanentemente todos los datos seleccionados. Escribe",
         "descRight": "para confirmar.",
         "checkbox": {
             "truncateGroups": "Eliminar grupos de pestañas",
@@ -88,29 +88,29 @@
         "buttonCancel": "Cancelar",
         "success": {
             "toastTitle": "Eliminación exitosa",
-            "toastDesc": "Se han eliminado todos los datos correctamente."
+            "toastDesc": "Todos los datos han sido eliminados correctamente."
         }
     },
     "importGroups": {
         "dialogTitle": "Importar datos",
-        "dialogDesc": "Importa datos exportados desde TabClip/Onetab.",
+        "dialogDesc": "Importa datos exportados desde TabClip o Onetab.",
         "success": {
             "toastTitle": "Importación exitosa",
             "toastDesc": "Se han importado {total} grupos de pestañas correctamente."
         },
         "error": {
             "parseError": "Error al analizar el archivo JSON",
-            "fileFormatError": "Error de formato de archivo"
+            "fileFormatError": "Formato de archivo incorrecto"
         },
         "form": {
             "file": {
                 "label": "Archivo exportado",
-                "desc": "El archivo exportado desde TabClip/Onetab (JSON, máx. {maxSize})."
+                "desc": "El archivo de datos de TabClip/Onetab (JSON, máx. {maxSize})."
             }
         },
         "buttonImport": "Importar",
         "buttonImporting": "Importando...",
-        "buttonReset": "Reiniciar"
+        "buttonReset": "Restablecer"
     },
     "exportGroups": {
         "success": {
@@ -123,7 +123,7 @@
         }
     },
     "toolBar": {
-        "searchTitle": "Búsqueda",
+        "searchTitle": "Resultados",
         "allTabsTitle": "Todas las pestañas",
         "starredTitle": "Favoritos",
         "allTabsTab": "Todo",
@@ -137,18 +137,18 @@
         "total": "{total} pestañas",
         "copyLinks": {
             "toastTitle": "Enlaces copiados",
-            "toastDesc": "Se copiaron {total} enlaces de pestañas correctamente."
+            "toastDesc": "Se han copiado {total} enlaces al portapapeles."
         },
         "openTab": {
             "notAllow": {
-                "dialogTitle": "Este tipo de pestaña no se puede abrir",
+                "dialogTitle": "No se puede abrir este tipo de pestaña",
                 "dialogDesc": "El enlace se ha copiado al portapapeles. Pégalo en la barra de direcciones para acceder."
             }
         },
         "openTabGroup": {
             "notAllow": {
                 "dialogTitle": "Algunas pestañas no se pueden abrir",
-                "dialogDesc": "Este grupo contiene pestañas que tu navegador no soporta abrir. El grupo se mantendrá guardado."
+                "dialogDesc": "Este grupo contiene pestañas que el navegador no soporta. El grupo permanecerá guardado."
             }
         }
     },
@@ -161,52 +161,52 @@
         },
         "edit": {
             "formLabel": "Nombre",
-            "formDesc": "Nombre de la categoría.",
+            "formDesc": "El nombre de la categoría.",
             "add": {
-                "placeholder": "Introducir un nombre",
+                "placeholder": "Introducir nombre",
                 "dialogTitle": "Añadir categoría",
-                "dialogDesc": "Añade una categoría. Haz clic en guardar al terminar."
+                "dialogDesc": "Añade una nueva categoría. Haz clic en guardar al terminar."
             },
             "update": {
                 "placeholder": "Introducir nuevo nombre",
                 "dialogTitle": "Editar categoría",
-                "dialogDesc": "Edita la categoría. Haz clic en guardar al terminar."
+                "dialogDesc": "Modifica la categoría. Haz clic en guardar al terminar."
             },
             "buttonSave": "Guardar",
-            "duplicateError": "No se permiten nombres de categoría duplicados."
+            "duplicateError": "Ya existe una categoría con ese nombre."
         },
         "delete": {
             "buttonCancel": "Cancelar",
             "buttonDelete": "Eliminar",
             "deleteCategory": {
-                "dialogTitle": "¿Eliminar categoría '{categoryName}'?",
+                "dialogTitle": "¿Eliminar la categoría '{categoryName}'?",
                 "dialogDesc": "Solo se eliminará la categoría; los grupos de pestañas asociados no se borrarán."
             },
             "deleteCategoryAndGroups": {
-                "dialogTitle": "¿Eliminar categoría '{categoryName}' y sus grupos?",
-                "dialogDesc": "Esto eliminará la categoría y todos sus grupos de pestañas asociados, incluidos los bloqueados."
+                "dialogTitle": "¿Eliminar '{categoryName}' y sus grupos?",
+                "dialogDesc": "Esto eliminará la categoría y todos sus grupos de pestañas asociados (incluidos los bloqueados)."
             }
         },
         "merge": {
             "buttonCancel": "Cancelar",
             "buttonMerge": "Fusionar",
-            "dialogTitle": "¿Fusionar categoría '{categoryName}' en '{categoryToName}'?",
-            "dialogDesc": "Todos los grupos de pestañas de '{categoryName}' se moverán a '{categoryToName}' y se eliminará '{categoryName}'."
+            "dialogTitle": "¿Fusionar '{categoryName}' en '{categoryToName}'?",
+            "dialogDesc": "Los grupos de pestañas de '{categoryName}' se moverán a '{categoryToName}' y se eliminará la categoría original."
         },
         "dropdownMenu": {
-            "edit": "Editar categoría",
+            "edit": "Editar",
             "mergeTo": "Fusionar en",
-            "deleteCategory": "Eliminar categoría",
-            "deleteCategoryAndGroups": "Eliminar cat. y grupos"
+            "deleteCategory": "Eliminar",
+            "deleteCategoryAndGroups": "Eliminar todo"
         }
     },
     "veeValidate": {
-        "fileRequired": "Por favor, selecciona un archivo",
-        "fileSize": "El tamaño del archivo debe ser menor que {maxSize}",
-        "fileType": "El archivo debe tener formato {fileType}",
-        "required": "{field} es obligatorio.",
+        "fileRequired": "Por favor, selecciona un archivo.",
+        "fileSize": "El tamaño del archivo debe ser menor a {maxSize}.",
+        "fileType": "El archivo debe estar en formato {fileType}.",
+        "required": "El campo {field} es obligatorio.",
         "strMin": "{field} debe tener al menos {min} caracteres.",
-        "strMax": "{field} debe tener como máximo {max} caracteres.",
+        "strMax": "{field} no puede tener más de {max} caracteres.",
         "default": "Entrada inválida para {field}."
     },
     "heatmap": {

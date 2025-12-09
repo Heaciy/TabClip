@@ -42,14 +42,14 @@
             "desc": "Automatically open TabClip as the home page every time you start your browser."
         },
         "pageSize": {
-            "title": "Page Size",
+            "title": "Groups Per Page",
             "selectLabel": "Page Size",
             "desc": "The number of tab groups loaded each time."
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "Space Between Tabs",
             "selectLabel": "Space Size",
-            "desc": "The gap size betwen tabs."
+            "desc": "The gap size between tabs."
         },
         "TabWhitelist": {
             "title": "Tab Whitelist",
@@ -78,7 +78,7 @@
     },
     "truncateData": {
         "title": "Delete All Data",
-        "descLeft": "This will delete all your seleted data. Type",
+        "descLeft": "This will delete all your selected data. Type",
         "descRight": "to confirm.",
         "checkbox": {
             "truncateGroups": "Delete Tab Groups",

@@ -40,7 +40,7 @@ This page will explain the settings items in the extension.
 - Default/Recommended Value: On ✅
 - Configuration Description: Automatically open TabClip as the homepage every time the browser starts. On by default.
 
-## Page Size
+## Groups Per Page
 
 - Default/Recommended Value: 10
 - Configuration Description: The tab group list uses scroll loading to reduce extension memory usage. This configuration

@@ -19,19 +19,19 @@
         "sheetDesc": "설정을 변경하고 완료되면 저장을 클릭하세요.",
         "storePinnedTabs": {
             "title": "고정된 탭 저장 허용",
-            "desc": "고정된 탭을 저장(숨김)하는 것을 허용합니다. (기본값: 비활성화)"
+            "desc": "고정된 탭을 저장(숨김)하는 것을 허용합니다. 기본값은 '허용 안 함'입니다."
         },
         "storeBrowserGroup": {
             "title": "브라우저 탭 그룹 저장 허용",
-            "desc": "브라우저 탭 그룹을 별도의 새 그룹으로 저장합니다. (기본값: 비활성화)"
+            "desc": "브라우저 탭 그룹을 별도의 새 그룹으로 저장합니다. 기본값은 '허용 안 함'입니다."
         },
         "defaultLockGroup": {
             "title": "기본적으로 그룹 잠금",
-            "desc": "새 그룹 추가 시 수정이나 삭제를 방지하기 위해 기본적으로 잠급니다."
+            "desc": "새 그룹 추가 시 오작동으로 인한 수정이나 삭제를 방지하기 위해 기본적으로 잠급니다."
         },
         "openGroupInNewWindow": {
             "title": "새 창에서 그룹 열기",
-            "desc": "탭 그룹을 복원할 때 새 창에서 엽니다. (기본값: 현재 창에서 열기)"
+            "desc": "탭 그룹을 복원할 때 새 창에서 엽니다. 기본값은 '현재 창에서 열기'입니다."
         },
         "useGoogleIcon": {
             "title": "Google에서 아이콘 로드",
@@ -42,11 +42,11 @@
             "desc": "브라우저를 시작할 때마다 TabClip을 홈페이지로 자동 실행합니다."
         },
         "pageSize": {
-            "title": "페이지 크기",
+            "title": "페이지당 탭 그룹 수",
             "selectLabel": "페이지 크기",
-            "desc": "한 번에 로드되는 탭 그룹의 수입니다."
+            "desc": "한 번에 불러올 탭 그룹의 개수입니다."
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "탭 간격",
             "selectLabel": "간격 크기",
             "desc": "탭 요소 사이의 간격 크기입니다."
@@ -54,7 +54,7 @@
         "TabWhitelist": {
             "title": "탭 화이트리스트",
             "placeholder": "URL 접두사 입력 (한 줄에 하나씩)",
-            "desc": "화이트리스트의 URL 접두사와 일치하는 탭은 저장되지 않습니다."
+            "desc": "화이트리스트의 URL 접두사와 일치하는 탭은 저장(숨김)되지 않습니다."
         },
         "buttonSave": "변경 사항 저장",
         "buttonDiscard": "취소",
@@ -93,7 +93,7 @@
     },
     "importGroups": {
         "dialogTitle": "데이터 가져오기",
-        "dialogDesc": "TabClip/Onetab에서 내보낸 데이터를 가져옵니다.",
+        "dialogDesc": "TabClip 또는 Onetab에서 내보낸 데이터를 가져옵니다.",
         "success": {
             "toastTitle": "가져오기 성공",
             "toastDesc": "{total}개의 탭 그룹을 성공적으로 가져왔습니다."
@@ -105,7 +105,7 @@
         "form": {
             "file": {
                 "label": "내보낸 파일",
-                "desc": "TabClip/Onetab에서 내보낸 데이터 파일 (JSON, 최대 {maxSize})."
+                "desc": "TabClip/Onetab에서 내보낸 데이터 파일 (JSON 형식, 최대 {maxSize})."
             }
         },
         "buttonImport": "가져오기",
@@ -148,7 +148,7 @@
         "openTabGroup": {
             "notAllow": {
                 "dialogTitle": "일부 탭을 열 수 없습니다",
-                "dialogDesc": "이 탭 그룹에는 브라우저에서 열 수 없는 탭이 포함되어 있습니다. 그룹은 저장된 상태로 유지됩니다."
+                "dialogDesc": "이 탭 그룹에는 브라우저에서 열 수 없는 탭이 포함되어 있습니다. 해당 그룹은 보존됩니다."
             }
         }
     },
@@ -170,7 +170,7 @@
             "update": {
                 "placeholder": "새 이름 입력",
                 "dialogTitle": "카테고리 편집",
-                "dialogDesc": "카테고리를 편집합니다. 완료되면 저장을 클릭하세요."
+                "dialogDesc": "카테고리 정보를 수정합니다. 완료되면 저장을 클릭하세요."
             },
             "buttonSave": "저장",
             "duplicateError": "중복된 카테고리 이름은 사용할 수 없습니다."
@@ -184,7 +184,7 @@
             },
             "deleteCategoryAndGroups": {
                 "dialogTitle": "'{categoryName}' 카테고리 및 관련 그룹을 삭제하시겠습니까?",
-                "dialogDesc": "이 카테고리와 잠긴 그룹을 포함한 모든 관련 탭 그룹이 삭제됩니다."
+                "dialogDesc": "이 카테고리와 잠긴 그룹을 포함한 모든 관련 탭 그룹이 영구적으로 삭제됩니다."
             }
         },
         "merge": {
@@ -201,10 +201,10 @@
         }
     },
     "veeValidate": {
-        "fileRequired": "파일을 선택해주세요",
-        "fileSize": "파일 크기는 {maxSize}보다 작아야 합니다",
-        "fileType": "파일은 {fileType} 형식이어야 합니다",
-        "required": "{field} 필수 항목입니다.",
+        "fileRequired": "파일을 선택해주세요.",
+        "fileSize": "파일 크기는 {maxSize}보다 작아야 합니다.",
+        "fileType": "파일은 {fileType} 형식이어야 합니다.",
+        "required": "{field} 항목은 필수입니다.",
         "strMin": "{field} 길이는 최소 {min}자 이상이어야 합니다.",
         "strMax": "{field} 길이는 최대 {max}자 이하여야 합니다.",
         "default": "{field} 입력이 유효하지 않습니다."

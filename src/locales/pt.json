@@ -15,19 +15,19 @@
         "label": "Selecionar idioma"
     },
     "settings": {
-        "sheetTile": "Editar configurações",
-        "sheetDesc": "Faça alterações nas suas configurações aqui. Clique em Salvar quando terminar.",
+        "sheetTile": "Configurações",
+        "sheetDesc": "Edite suas configurações aqui. Clique em Salvar quando terminar.",
         "storePinnedTabs": {
             "title": "Salvar abas fixadas",
-            "desc": "Permite salvar abas fixadas ao adicionar um grupo. Desativado por padrão."
+            "desc": "Permite salvar (e fechar) abas fixadas ao adicionar um grupo. Desativado por padrão."
         },
         "storeBrowserGroup": {
-            "title": "Salvar grupos de abas do navegador",
+            "title": "Salvar grupos de abas",
             "desc": "Salva os grupos de abas do navegador como novos grupos separados. Desativado por padrão."
         },
         "defaultLockGroup": {
             "title": "Bloquear grupo por padrão",
-            "desc": "Bloqueia automaticamente um grupo ao adicioná-lo para evitar alterações ou exclusão."
+            "desc": "Bloqueia automaticamente um novo grupo ao adicioná-lo para evitar alterações acidentais."
         },
         "openGroupInNewWindow": {
             "title": "Abrir grupo em nova janela",
@@ -35,25 +35,25 @@
         },
         "useGoogleIcon": {
             "title": "Carregar ícone do Google",
-            "desc": "O ícone será carregado do Google apenas se não estiver em cache."
+            "desc": "O ícone será carregado do Google apenas se não estiver disponível em cache."
         },
         "isStartupPage": {
             "title": "Definir como página inicial",
             "desc": "Abrir o TabClip automaticamente como página inicial ao iniciar o navegador."
         },
         "pageSize": {
-            "title": "Tamanho da página",
-            "selectLabel": "Tamanho",
-            "desc": "O número de grupos de abas carregados de cada vez."
+            "title": "Grupos por página",
+            "selectLabel": "Tamanho da página",
+            "desc": "Quantidade de grupos de abas carregados por vez."
         },
-        "spcaeBetweenTabs": {
+        "spaceBetweenTabs": {
             "title": "Espaço entre abas",
             "selectLabel": "Tamanho do espaço",
             "desc": "O tamanho do espaço entre os elementos das abas."
         },
         "TabWhitelist": {
             "title": "Lista branca de abas",
-            "placeholder": "Digite prefixos de URL, um por linha",
+            "placeholder": "Digite prefixos de URL (um por linha)",
             "desc": "Abas cujas URLs correspondam a qualquer prefixo da lista branca não serão salvas."
         },
         "buttonSave": "Salvar alterações",
@@ -67,7 +67,7 @@
             "importGroups": "Importar dados"
         },
         "dangerOperations": {
-            "label": "Operações perigosas",
+            "label": "Zona de perigo",
             "truncateData": "Excluir todos os dados"
         },
         "moreInfo": {
@@ -78,7 +78,7 @@
     },
     "truncateData": {
         "title": "Excluir todos os dados",
-        "descLeft": "Isso excluirá todos os dados selecionados. Digite",
+        "descLeft": "Isso excluirá permanentemente todos os dados selecionados. Digite",
         "descRight": "para confirmar.",
         "checkbox": {
             "truncateGroups": "Excluir grupos de abas",
@@ -93,7 +93,7 @@
     },
     "importGroups": {
         "dialogTitle": "Importar dados",
-        "dialogDesc": "Importar dados exportados do TabClip/Onetab.",
+        "dialogDesc": "Importar dados exportados do TabClip ou Onetab.",
         "success": {
             "toastTitle": "Importação concluída",
             "toastDesc": "{total} grupos de abas importados com sucesso."
@@ -133,22 +133,22 @@
     },
     "tabGroup": {
         "unnamedGroup": "Grupo sem nome",
-        "inputGroupName": "Inserir nome",
+        "inputGroupName": "Digite um nome",
         "total": "{total} Abas",
         "copyLinks": {
             "toastTitle": "Links copiados",
-            "toastDesc": "{total} links de abas copiados com sucesso."
+            "toastDesc": "{total} links copiados com sucesso."
         },
         "openTab": {
             "notAllow": {
-                "dialogTitle": "Este tipo de aba não pode ser aberto",
+                "dialogTitle": "Não é possível abrir esta aba",
                 "dialogDesc": "O link foi copiado para a área de transferência. Cole-o na barra de endereços para acessar."
             }
         },
         "openTabGroup": {
             "notAllow": {
                 "dialogTitle": "Algumas abas não podem ser abertas",
-                "dialogDesc": "Este grupo contém abas que o navegador não suporta abrir. O grupo será mantido salvo."
+                "dialogDesc": "Este grupo contém abas que o navegador não suporta. O grupo será mantido salvo."
             }
         }
     },
@@ -161,14 +161,14 @@
         },
         "edit": {
             "formLabel": "Nome",
-            "formDesc": "Este é o nome da categoria.",
+            "formDesc": "O nome da categoria.",
             "add": {
-                "placeholder": "Inserir nome",
+                "placeholder": "Digite um nome",
                 "dialogTitle": "Adicionar categoria",
                 "dialogDesc": "Adicione uma categoria. Clique em salvar quando terminar."
             },
             "update": {
-                "placeholder": "Inserir novo nome",
+                "placeholder": "Digite o novo nome",
                 "dialogTitle": "Editar categoria",
                 "dialogDesc": "Edite a categoria. Clique em salvar quando terminar."
             },
@@ -184,26 +184,26 @@
             },
             "deleteCategoryAndGroups": {
                 "dialogTitle": "Excluir '{categoryName}' e seus grupos?",
-                "dialogDesc": "Isso excluirá a categoria e todos os grupos de abas associados, incluindo os bloqueados."
+                "dialogDesc": "Isso excluirá a categoria e todos os grupos de abas associados (incluindo os bloqueados)."
             }
         },
         "merge": {
             "buttonCancel": "Cancelar",
             "buttonMerge": "Mesclar",
             "dialogTitle": "Mesclar categoria '{categoryName}' em '{categoryToName}'?",
-            "dialogDesc": "Os grupos de '{categoryName}' serão movidos para '{categoryToName}' e '{categoryName}' será removida."
+            "dialogDesc": "Os grupos de '{categoryName}' serão movidos para '{categoryToName}' e a categoria original será removida."
         },
         "dropdownMenu": {
-            "edit": "Editar categoria",
+            "edit": "Editar",
             "mergeTo": "Mesclar em",
-            "deleteCategory": "Excluir categoria",
-            "deleteCategoryAndGroups": "Excluir cat. e grupos"
+            "deleteCategory": "Excluir",
+            "deleteCategoryAndGroups": "Excluir tudo"
         }
     },
     "veeValidate": {
-        "fileRequired": "Por favor, selecione um arquivo",
-        "fileSize": "O tamanho do arquivo deve ser menor que {maxSize}",
-        "fileType": "O arquivo deve estar no formato {fileType}",
+        "fileRequired": "Por favor, selecione um arquivo.",
+        "fileSize": "O tamanho do arquivo deve ser menor que {maxSize}.",
+        "fileType": "O arquivo deve estar no formato {fileType}.",
         "required": "O campo {field} é obrigatório.",
         "strMin": "{field} deve ter pelo menos {min} caracteres.",
         "strMax": "{field} deve ter no máximo {max} caracteres.",
