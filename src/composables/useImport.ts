@@ -86,8 +86,8 @@ export function useImport() {
             isImportDialogOpened.value = false;
             await categoryStore.loadCategories();
             refreshStore.refresh();
-            toast.success(t('importGroups.success.toastTitle'), {
-                description: t('importGroups.success.toastDesc', { total: tabGroups.length }),
+            toast.success(t('importData.success.toastTitle'), {
+                description: t('importData.success.toastDesc', { total: tabGroups.length }),
             });
         } finally {
             isImporting.value = false;

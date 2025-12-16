@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Operaciones de datos",
-            "exportGroups": "Exportar datos",
-            "importGroups": "Importar datos"
+            "exportData": "Exportar datos",
+            "importData": "Importar datos"
         },
         "dangerOperations": {
             "label": "Zona de peligro",
@@ -91,7 +91,7 @@
             "toastDesc": "Todos los datos han sido eliminados correctamente."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Importar datos",
         "dialogDesc": "Importa datos exportados desde TabClip o Onetab.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Importando...",
         "buttonReset": "Restablecer"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Exportación exitosa",
             "toastDesc": "Se han exportado {total} grupos de pestañas correctamente."

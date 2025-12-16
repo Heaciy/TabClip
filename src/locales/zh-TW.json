@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "資料操作",
-            "exportGroups": "匯出資料",
-            "importGroups": "匯入資料"
+            "exportData": "匯出資料",
+            "importData": "匯入資料"
         },
         "dangerOperations": {
             "label": "危險操作",
@@ -91,7 +91,7 @@
             "toastDesc": "已成功刪除所有資料"
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "匯入資料",
         "dialogDesc": "匯入從 TabClip/Onetab 匯出的資料",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "匯入中...",
         "buttonReset": "重設"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "匯出成功",
             "toastDesc": "成功匯出 {total} 個分頁群組"

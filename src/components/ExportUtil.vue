@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{ isExporting?: boolean; progress?: numbe
 <template>
     <DropdownMenuItem :disabled="props.isExporting" @click="emits('exportLargeJsonFile')">
         <div class="mr-auto flex items-center gap-2">
-            <span>{{ $t('moreOperations.dataOperations.exportGroups') }}</span>
+            <span>{{ $t('moreOperations.dataOperations.exportData') }}</span>
             <span v-if="props.isExporting" class="text-muted-foreground text-sm">{{ props.progress.toFixed(0) }}%</span>
         </div>
         <DownloadIcon />

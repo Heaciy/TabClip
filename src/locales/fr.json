@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Gestion des données",
-            "exportGroups": "Exporter les données",
-            "importGroups": "Importer les données"
+            "exportData": "Exporter les données",
+            "importData": "Importer les données"
         },
         "dangerOperations": {
             "label": "Zone de danger",
@@ -91,7 +91,7 @@
             "toastDesc": "Toutes les données ont été supprimées avec succès."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Importer des données",
         "dialogDesc": "Importer les données exportées depuis TabClip ou Onetab.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Importation...",
         "buttonReset": "Réinitialiser"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Exportation réussie",
             "toastDesc": "{total} groupes d'onglets exportés avec succès."

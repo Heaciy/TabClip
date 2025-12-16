@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Datenverwaltung",
-            "exportGroups": "Daten exportieren",
-            "importGroups": "Daten importieren"
+            "exportData": "Daten exportieren",
+            "importData": "Daten importieren"
         },
         "dangerOperations": {
             "label": "Gefährliche Aktionen",
@@ -91,7 +91,7 @@
             "toastDesc": "Alle Daten wurden erfolgreich gelöscht."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Daten importieren",
         "dialogDesc": "Importieren Sie Daten, die von TabClip oder Onetab exportiert wurden.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Importiere...",
         "buttonReset": "Zurücksetzen"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Export erfolgreich",
             "toastDesc": "{total} Tabgruppen erfolgreich exportiert."

@@ -81,8 +81,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     try {
         await props.importData(file);
     } catch (err) {
-        console.error(t('importGroups.error.parseError'), err);
-        form.setErrors({ file: t('importGroups.error.fileFormatError') });
+        console.error(t('importData.error.parseError'), err);
+        form.setErrors({ file: t('importData.error.fileFormatError') });
     }
 });
 
@@ -103,9 +103,9 @@ async function handleOpenChange(open: boolean) {
         </DialogTrigger>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>{{ $t('importGroups.dialogTitle') }}</DialogTitle>
+                <DialogTitle>{{ $t('importData.dialogTitle') }}</DialogTitle>
                 <DialogDescription>
-                    {{ $t('importGroups.dialogDesc') }}
+                    {{ $t('importData.dialogDesc') }}
                 </DialogDescription>
             </DialogHeader>
 
@@ -113,7 +113,7 @@ async function handleOpenChange(open: boolean) {
                 <FormField v-slot="{ handleChange }" name="file">
                     <FormItem>
                         <FormLabel
-                            >{{ $t('importGroups.form.file.label') }}<span class="ml-1 text-red-500">*</span>
+                            >{{ $t('importData.form.file.label') }}<span class="ml-1 text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                             <input
@@ -126,7 +126,7 @@ async function handleOpenChange(open: boolean) {
                         </FormControl>
                         <FormDescription>
                             {{
-                                $t('importGroups.form.file.desc', {
+                                $t('importData.form.file.desc', {
                                     maxSize: `${bytesToMB(MAX_FILE_SIZE)}MB`,
                                 })
                             }}
@@ -139,10 +139,10 @@ async function handleOpenChange(open: boolean) {
 
             <DialogFooter>
                 <Button type="reset" form="dialogForm" variant="destructive" :disabled="props.isImporting">
-                    {{ $t('importGroups.buttonReset') }}
+                    {{ $t('importData.buttonReset') }}
                 </Button>
                 <Button type="submit" form="dialogForm" :disabled="props.isImporting">
-                    {{ props.isImporting ? $t('importGroups.buttonImporting') : $t('importGroups.buttonImport') }}
+                    {{ props.isImporting ? $t('importData.buttonImporting') : $t('importData.buttonImport') }}
                 </Button>
             </DialogFooter>
         </DialogContent>

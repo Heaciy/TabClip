@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Data Operations",
-            "exportGroups": "Export Data",
-            "importGroups": "Import Data"
+            "exportData": "Export Data",
+            "importData": "Import Data"
         },
         "dangerOperations": {
             "label": "Danger Operations",
@@ -91,7 +91,7 @@
             "toastDesc": "Successfully deleted all data."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Import Data",
         "dialogDesc": "Import the data exported from TabClip/Onetab.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Importing...",
         "buttonReset": "Reset"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Export Successful",
             "toastDesc": "Successfully exported {total} tab groups."

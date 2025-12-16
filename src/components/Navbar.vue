@@ -101,7 +101,7 @@ onMounted(async () => {
                         ></ExportUtil>
                         <DropdownMenuItem :disabled="isImporting" @click="isImportDialogOpened = true">
                             <div class="mr-auto flex items-center gap-2">
-                                <span>{{ $t('moreOperations.dataOperations.importGroups') }}</span>
+                                <span>{{ $t('moreOperations.dataOperations.importData') }}</span>
                                 <span v-if="isImporting" class="text-muted-foreground text-sm">
                                     {{ importProgress.toFixed(0) }}%
                                 </span>

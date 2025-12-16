@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "データ操作",
-            "exportGroups": "データをエクスポート",
-            "importGroups": "データをインポート"
+            "exportData": "データをエクスポート",
+            "importData": "データをインポート"
         },
         "dangerOperations": {
             "label": "危険な操作",
@@ -91,7 +91,7 @@
             "toastDesc": "すべてのデータを正常に削除しました。"
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "データのインポート",
         "dialogDesc": "TabClipまたはOnetabからエクスポートされたデータをインポートします。",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "インポート中...",
         "buttonReset": "リセット"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "エクスポート成功",
             "toastDesc": "{total} 個のタブグループをエクスポートしました。"

@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "데이터 작업",
-            "exportGroups": "데이터 내보내기",
-            "importGroups": "데이터 가져오기"
+            "exportData": "데이터 내보내기",
+            "importData": "데이터 가져오기"
         },
         "dangerOperations": {
             "label": "위험 작업",
@@ -91,7 +91,7 @@
             "toastDesc": "모든 데이터가 성공적으로 삭제되었습니다."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "데이터 가져오기",
         "dialogDesc": "TabClip 또는 Onetab에서 내보낸 데이터를 가져옵니다.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "가져오는 중...",
         "buttonReset": "초기화"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "내보내기 성공",
             "toastDesc": "{total}개의 탭 그룹을 성공적으로 내보냈습니다."

@@ -112,8 +112,8 @@ export function useExport() {
                     filename: 'tabGroups_export.json',
                     saveAs: true,
                 });
-                toast.success(t('exportGroups.success.toastTitle'), {
-                    description: t('exportGroups.success.toastDesc', {
+                toast.success(t('exportData.success.toastTitle'), {
+                    description: t('exportData.success.toastDesc', {
                         total: total,
                     }),
                 });
@@ -126,8 +126,8 @@ export function useExport() {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                toast.success(t('exportGroups.success.toastTitle'), {
-                    description: t('exportGroups.success.toastDesc', {
+                toast.success(t('exportData.success.toastTitle'), {
+                    description: t('exportData.success.toastDesc', {
                         total: total,
                     }),
                 });
@@ -138,8 +138,8 @@ export function useExport() {
                 }, 100);
             }
         } catch (error) {
-            toast.error(t('exportGroups.error.toastTitle'), {
-                description: t('exportGroups.error.toastDesc', {
+            toast.error(t('exportData.error.toastTitle'), {
+                description: t('exportData.error.toastDesc', {
                     error: error,
                 }),
             });

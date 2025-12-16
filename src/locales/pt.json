@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Operações de dados",
-            "exportGroups": "Exportar dados",
-            "importGroups": "Importar dados"
+            "exportData": "Exportar dados",
+            "importData": "Importar dados"
         },
         "dangerOperations": {
             "label": "Zona de perigo",
@@ -91,7 +91,7 @@
             "toastDesc": "Todos os dados foram excluídos com sucesso."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Importar dados",
         "dialogDesc": "Importar dados exportados do TabClip ou Onetab.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Importando...",
         "buttonReset": "Redefinir"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Exportação concluída",
             "toastDesc": "{total} grupos de abas exportados com sucesso."

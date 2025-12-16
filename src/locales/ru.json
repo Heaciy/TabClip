@@ -63,8 +63,8 @@
     "moreOperations": {
         "dataOperations": {
             "label": "Управление данными",
-            "exportGroups": "Экспорт данных",
-            "importGroups": "Импорт данных"
+            "exportData": "Экспорт данных",
+            "importData": "Импорт данных"
         },
         "dangerOperations": {
             "label": "Опасная зона",
@@ -91,7 +91,7 @@
             "toastDesc": "Все данные были успешно удалены."
         }
     },
-    "importGroups": {
+    "importData": {
         "dialogTitle": "Импорт данных",
         "dialogDesc": "Импорт данных, экспортированных из TabClip или Onetab.",
         "success": {
@@ -112,7 +112,7 @@
         "buttonImporting": "Импорт...",
         "buttonReset": "Сбросить"
     },
-    "exportGroups": {
+    "exportData": {
         "success": {
             "toastTitle": "Экспорт завершен",
             "toastDesc": "Успешно экспортировано {total} групп вкладок."
