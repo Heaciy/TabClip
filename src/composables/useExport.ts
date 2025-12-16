@@ -41,9 +41,15 @@ export function useExport() {
                 async start(controller) {
                     try {
                         // 写入JSON开头
-                        const storageResult = await browser.storage.local.get(ORDERED_CATEGORIES);
-                        const categories = (storageResult[ORDERED_CATEGORIES] as Category[]) || [];
-                        controller.enqueue(encoder.encode(`{"categories":${JSON.stringify(categories)},"tabGroups":[`));
+                        const rawSettings = await browser.storage.local.get('settings');
+                        const settings = rawSettings.settings || {};
+                        const rawCategories = await browser.storage.local.get(ORDERED_CATEGORIES);
+                        const categories = (rawCategories[ORDERED_CATEGORIES] as Category[]) || [];
+                        controller.enqueue(
+                            encoder.encode(
+                                `{"settings":${JSON.stringify(settings)},"categories":${JSON.stringify(categories)},"tabGroups":[`,
+                            ),
+                        );
 
                         // 逐页处理数据
                         for (let pageIndex = 1; pageIndex <= pageCount && !streamClosed; pageIndex++) {

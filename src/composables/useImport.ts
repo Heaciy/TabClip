@@ -6,6 +6,7 @@ import { db, type Tab, type TabGroup } from '@/database.ts';
 import { i18n } from '@/locales';
 import { useCategoryStore } from '@/store/category';
 import { useRefreshStore } from '@/store/refreshStore';
+import { useSettingStore } from '@/store/settings.ts';
 
 export function useImport() {
     const isImporting = ref<boolean>(false);
@@ -13,6 +14,7 @@ export function useImport() {
     const isImportDialogOpened = ref<boolean>(false);
 
     const refreshStore = useRefreshStore();
+    const settingsStore = useSettingStore();
     const categoryStore = useCategoryStore();
     const t = i18n.global.t;
 
@@ -50,7 +52,7 @@ export function useImport() {
             const data = JSON.parse(jsonStr);
             importProgress.value = 10;
 
-            let appType, tabGroups, categories;
+            let appType, tabGroups, categories, settings;
 
             if (data.state?.tabGroups) {
                 appType = 'Onetab';
@@ -59,11 +61,13 @@ export function useImport() {
                 appType = 'TabClip';
                 tabGroups = data.tabGroups;
                 categories = data.categories || [];
+                settings = data.settings || {};
             } else {
                 throw new Error('File format error');
             }
 
             await db.bulkPutCategories(categories);
+            settingsStore.refreshSettings(settings);
             const categoryIds = new Set((await db.getAllCategories()).map((category) => category.id));
 
             const pageSize = 100;
@@ -80,7 +84,7 @@ export function useImport() {
             }
 
             isImportDialogOpened.value = false;
-            categoryStore.loadCategories();
+            await categoryStore.loadCategories();
             refreshStore.refresh();
             toast.success(t('importGroups.success.toastTitle'), {
                 description: t('importGroups.success.toastDesc', { total: tabGroups.length }),
