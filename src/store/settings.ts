@@ -28,12 +28,14 @@ const defaultSettings: Settings = {
 };
 
 async function loadSettings(): Promise<Settings> {
-    const result = await browser.storage.local.get('settings');
-    const storedSettings = result.settings;
-    return {
-        ...defaultSettings,
-        ...(storedSettings ? JSON.parse(storedSettings) : undefined),
-    };
+    const { settings: rawSettings } = await browser.storage.local.get('settings');
+    try {
+        const storedSettings: Partial<Settings> =
+            typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
+        return { ...defaultSettings, ...storedSettings };
+    } catch {
+        return defaultSettings;
+    }
 }
 
 export const useSettingStore = defineStore('setting', () => {
@@ -48,7 +50,7 @@ export const useSettingStore = defineStore('setting', () => {
     watch(settings, async (_newSettings) => {
         // 只有在加载完成后才保存设置，避免覆盖原始设置
         if (isLoaded.value) {
-            await browser.storage.local.set({ settings: JSON.stringify(settings.value) });
+            await browser.storage.local.set({ settings: toRaw(settings.value) });
         }
     });
 
