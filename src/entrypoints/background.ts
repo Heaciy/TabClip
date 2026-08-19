@@ -18,9 +18,6 @@ import zhMessages from '@/locales/messages/zh.json';
 import zh_TWMessages from '@/locales/messages/zh-TW.json';
 import { loadSettings, type Settings } from '@/store/settings';
 
-// Whether to show the About dialog after installing or updating to the current version
-const showAboutDialog = false;
-
 const MESSAGES: Record<string, Record<string, string>> = {
     zh: zhMessages,
     en: enMessages,
@@ -146,8 +143,13 @@ export default defineBackground(() => {
         await setupContextMenus();
         await updateAllContextMenuStates(); // Initialize states after creation
 
-        if (details.reason === 'install' || details.reason === 'update') {
-            await browser.storage.local.set({ showAboutDialog });
+        // Only show dialog on extension install or version update, not on browser updates
+        const manifest = browser.runtime.getManifest();
+        const isExtensionVersionChanged =
+            details.reason === 'update' && details.previousVersion && details.previousVersion !== manifest.version;
+
+        if (details.reason === 'install' || isExtensionVersionChanged) {
+            await browser.storage.local.set({ showAboutDialog: import.meta.env.SHOW_ABOUT_DIALOG });
 
             const settings = await loadSettings();
             if (settings.isStartupPage) {

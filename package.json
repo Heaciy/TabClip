@@ -2,6 +2,7 @@
     "name": "tabclip",
     "private": true,
     "version": "0.1.2",
+    "showAboutDialog": true,
     "type": "module",
     "scripts": {
         "dev": "wxt",

@@ -41,6 +41,9 @@ export default defineConfig({
     },
     vite({ command }) {
         return {
+            define: {
+                'import.meta.env.SHOW_ABOUT_DIALOG': JSON.stringify(pkg.showAboutDialog),
+            },
             plugins: [
                 tailwindcss(),
                 // visualizer({
