@@ -154,6 +154,8 @@
     },
     "category": {
         "label": "所有分類",
+        "defaultCategory": "預設分類",
+        "customCategory": "自訂分類",
         "loading": "載入中...",
         "quickActions": {
             "label": "快速操作",

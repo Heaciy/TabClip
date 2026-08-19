@@ -154,6 +154,8 @@
     },
     "category": {
         "label": "所有分类",
+        "defaultCategory": "默认分类",
+        "customCategory": "自定义分类",
         "loading": "加载中...",
         "quickActions": {
             "label": "快捷操作",

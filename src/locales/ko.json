@@ -154,6 +154,8 @@
     },
     "category": {
         "label": "카테고리",
+        "defaultCategory": "기본 카테고리",
+        "customCategory": "사용자 지정 카테고리",
         "loading": "로딩 중...",
         "quickActions": {
             "label": "빠른 작업",

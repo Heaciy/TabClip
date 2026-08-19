@@ -154,6 +154,8 @@
     },
     "category": {
         "label": "Categorias",
+        "defaultCategory": "Categorias padrão",
+        "customCategory": "Categorias personalizadas",
         "loading": "Carregando...",
         "quickActions": {
             "label": "Ações rápidas",

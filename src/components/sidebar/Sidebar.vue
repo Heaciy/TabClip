@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { EditIcon, FolderIcon, LoaderIcon, MergeIcon, MoreHorizontalIcon, PlusIcon, TrashIcon } from 'lucide-vue-next';
+import {
+    EditIcon,
+    FolderIcon,
+    LayoutGridIcon,
+    LoaderIcon,
+    MergeIcon,
+    MoreHorizontalIcon,
+    PlusIcon,
+    StarIcon,
+    TrashIcon,
+} from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 
 import DeleteDialog from '@/components/sidebar/DeleteCategoryDialog.vue';
@@ -43,6 +53,14 @@ onBeforeMount(async () => {
 
 const { orderedCategories, isLoading: isLoadingCategories } = storeToRefs(categoryStore);
 
+const isAllActive = computed(
+    () => !searchStore.searchConditions.starredOnly && !searchStore.searchConditions.categoryId,
+);
+const isStarredActive = computed(
+    () => !!searchStore.searchConditions.starredOnly && !searchStore.searchConditions.categoryId,
+);
+const isCategoryActive = (category: Category) => searchStore.searchConditions.categoryId === category.id;
+
 const categoryToDelete = ref<Category | null>(null);
 const deleteTabGroup = ref<boolean>(false);
 const isDeleteDialogOpened = ref(false);
@@ -54,6 +72,14 @@ const isMergeDialogOpened = ref(false);
 
 function handleAddCategory() {
     openEditCategoryDialog();
+}
+
+function handleSelectAll() {
+    searchStore.updateSearchConditions({ starredOnly: false, categoryId: undefined }, true);
+}
+
+function handleSelectStarred() {
+    searchStore.updateSearchConditions({ starredOnly: true, categoryId: undefined }, true);
 }
 
 function handleEditCategory(category: Category) {
@@ -83,6 +109,26 @@ async function handleDragEnd() {
 <template>
     <Sidebar>
         <SidebarContent>
+            <!-- Default Category -->
+            <SidebarGroup>
+                <SidebarGroupLabel>
+                    <span>{{ $t('category.defaultCategory') }}</span>
+                </SidebarGroupLabel>
+                <SidebarMenu class="space-y-1">
+                    <SidebarMenuItem>
+                        <SidebarMenuButton :is-active="isAllActive" @click="handleSelectAll">
+                            <LayoutGridIcon />
+                            <span>{{ $t('toolBar.allTabsTab') }}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton :is-active="isStarredActive" @click="handleSelectStarred">
+                            <StarIcon />
+                            <span>{{ $t('toolBar.starredTab') }}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarGroup>
             <!-- Category -->
             <SidebarGroup>
                 <DeleteDialog
@@ -92,7 +138,7 @@ async function handleDragEnd() {
                 ></DeleteDialog>
                 <MergeDialog v-model="isMergeDialogOpened" :category-to-merge="categoryToMerge"></MergeDialog>
                 <SidebarGroupLabel>
-                    <span>{{ $t('category.label') }}</span>
+                    <span>{{ $t('category.customCategory') }}</span>
                     <Button variant="ghost" size="icon-sm" class="-mr-2.5 ml-auto" @click="handleAddCategory">
                         <PlusIcon />
                     </Button>
@@ -108,6 +154,7 @@ async function handleDragEnd() {
                         <SidebarMenuItem v-for="category in orderedCategories" :key="category.id">
                             <SidebarMenuButton
                                 as-child
+                                :is-active="isCategoryActive(category)"
                                 @click="
                                     () => {
                                         searchStore.updateSearchConditions({ categoryId: category.id }, true);

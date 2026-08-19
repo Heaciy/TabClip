@@ -114,7 +114,7 @@ watch(
             endTime: searchStore.searchConditions.endTime,
             categoryId: searchStore.searchConditions.categoryId,
         };
-        searched.value = true;
+        searched.value = !searchStore.isEmpty();
     },
 );
 

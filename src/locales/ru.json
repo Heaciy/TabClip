@@ -154,6 +154,8 @@
     },
     "category": {
         "label": "Категории",
+        "defaultCategory": "Категории по умолчанию",
+        "customCategory": "Пользовательские категории",
         "loading": "Загрузка...",
         "quickActions": {
             "label": "Быстрые действия",
