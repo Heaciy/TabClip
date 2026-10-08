@@ -60,6 +60,20 @@ const handleClick = () => {
     });
 };
 
+const handleIconClick = () => {
+    if (!showInput.value) {
+        handleClick();
+        return;
+    }
+
+    if (inputRef.value) {
+        inputRef.value.blur();
+        return;
+    }
+
+    handleBlur();
+};
+
 onMounted(() => {
     updateWidth();
 });
@@ -79,7 +93,7 @@ watch(locale, () => {
 
 <template>
     <div class="flex items-center gap-2">
-        <TextCursorInputIcon class="size-4 shrink-0" />
+        <TextCursorInputIcon class="size-4 shrink-0 cursor-pointer" @mousedown.prevent @click="handleIconClick" />
         <div
             class="group flex max-w-38 items-center"
             :style="{ width: currentWidth }"
