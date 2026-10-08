@@ -11,7 +11,17 @@ export function useExport() {
     const t = i18n.global.t;
 
     const stringify = (tabGroup: TabGroup): string => {
-        const { id, tabs_meta, create_time, update_time, is_locked, is_starred, category_id } = tabGroup;
+        const {
+            id,
+            tabs_meta,
+            create_time,
+            update_time,
+            is_locked,
+            is_starred,
+            is_deleted,
+            deleted_time,
+            category_id,
+        } = tabGroup;
         return JSON.stringify({
             id,
             tabs_meta,
@@ -19,6 +29,8 @@ export function useExport() {
             update_time,
             is_locked,
             is_starred,
+            is_deleted,
+            deleted_time,
             category_id,
         });
     };

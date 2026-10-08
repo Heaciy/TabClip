@@ -13,13 +13,23 @@ import {
     StarIcon,
 } from '@radix-icons/vue';
 import { format } from 'date-fns';
-import { CalendarClockIcon, ChartBarBigIcon, Check, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
+import { CalendarClockIcon, ChartBarBigIcon, Check, Folder, TrashIcon, Undo2Icon, XIcon } from 'lucide-vue-next';
 import { AcceptableValue, SelectItem as SelectItemReka, SelectItemText, SelectTrigger } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
 import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
-import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -43,13 +53,14 @@ import {
 import { useConfirmDialog } from '@/composables/useConfirmDialog.ts';
 import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category, type Tab, type TabGroup } from '@/database';
+import { cn } from '@/lib/utils';
 import { useCategoryStore } from '@/store/category.ts';
 import { useSettingStore } from '@/store/settings.ts';
 
 const { t } = useI18n();
 const settingStore = useSettingStore();
-const props = defineProps<{ tabGroup: TabGroup; searchText?: string }>();
-const emits = defineEmits(['remove-group', 'remove-tab', 'update-group']);
+const props = defineProps<{ tabGroup: TabGroup; searchText?: string; inTrash?: boolean }>();
+const emits = defineEmits(['remove-group', 'restore-group', 'remove-tab', 'update-group']);
 const tabs = ref<Array<Tab>>(props.tabGroup.tabs_meta);
 const spaceClass = computed(() => {
     const map: Record<number, string> = {
@@ -62,6 +73,20 @@ const spaceClass = computed(() => {
     return map[settingStore.settings.spaceBetweenTabs] || 'space-y-2';
 });
 const { openDialog: openConfirmDialog } = useConfirmDialog();
+const isPermanentDeleteOpen = ref(false);
+
+function requestRemoveGroup() {
+    if (props.inTrash) {
+        isPermanentDeleteOpen.value = true;
+        return;
+    }
+    emits('remove-group');
+}
+
+function confirmPermanentDelete() {
+    isPermanentDeleteOpen.value = false;
+    emits('remove-group');
+}
 
 function isTabOpenable(tab: Tab): boolean {
     const blockedPrefixes = ['about:', 'javascript:', 'file:', 'view-source:', 'data:'];
@@ -92,15 +117,20 @@ function removeTab(id: number | string) {
 
 async function handleLinkClick(id: number | string) {
     const index = tabs.value.findIndex((tab) => tab.id === id);
-    if (index !== -1) {
-        const tab = tabs.value[index];
-        if (!isTabOpenable(tab)) {
-            await navigator.clipboard.writeText(tab.url!);
-            toast.warning(t('tabGroup.openTab.notAllow.dialogTitle'), {
-                description: t('tabGroup.openTab.notAllow.dialogDesc'),
-            });
-            return;
-        }
+    if (index === -1) return;
+
+    const tab = tabs.value[index];
+    if (!isTabOpenable(tab)) {
+        await navigator.clipboard.writeText(tab.url!);
+        toast.warning(t('tabGroup.openTab.notAllow.dialogTitle'), {
+            description: t('tabGroup.openTab.notAllow.dialogDesc'),
+        });
+        return;
+    }
+
+    if (props.inTrash) {
+        browser.tabs.create({ url: tab.url });
+        return;
     }
 
     const tabToOpen = removeTab(id);
@@ -128,7 +158,7 @@ async function openTabGroup(tabGroup: TabGroup, newWindow: boolean = false) {
             );
         }
     } else {
-        await doOpenTabGroup(tabGroup, newWindow, true);
+        await doOpenTabGroup(tabGroup, newWindow, !props.inTrash);
     }
 }
 
@@ -207,6 +237,7 @@ const bindNewCategoryToGroup = (category: Category) => {
                     class="min-w-0"
                     :name="props.tabGroup.name"
                     :search-text="props.searchText"
+                    :readonly="props.inTrash"
                     @update-name="
                         (name) => {
                             $emit('update-group', { name: name });
@@ -232,10 +263,19 @@ const bindNewCategoryToGroup = (category: Category) => {
 
             <!-- buttons -->
             <div class="hidden shrink-0 gap-3 @min-[60rem]:flex">
-                <Button :disabled="props.tabGroup.is_locked" variant="ghost" size="icon" @click="$emit('remove-group')">
+                <Button v-if="props.inTrash" variant="ghost" size="icon" @click="$emit('restore-group')">
+                    <Undo2Icon class="shrink-0" />
+                </Button>
+                <Button
+                    :disabled="props.tabGroup.is_locked && !props.inTrash"
+                    variant="ghost"
+                    size="icon"
+                    @click="requestRemoveGroup"
+                >
                     <TrashIcon class="shrink-0" />
                 </Button>
                 <Button
+                    v-if="!props.inTrash"
                     variant="ghost"
                     size="icon"
                     @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })"
@@ -244,6 +284,7 @@ const bindNewCategoryToGroup = (category: Category) => {
                     <StarIcon v-else />
                 </Button>
                 <Button
+                    v-if="!props.inTrash"
                     variant="ghost"
                     size="icon"
                     @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })"
@@ -261,7 +302,7 @@ const bindNewCategoryToGroup = (category: Category) => {
                 <Button variant="ghost" size="icon" @click="copyTabGroup(tabGroup)">
                     <CopyIcon />
                 </Button>
-                <Select v-model="selectedValue" @update:model-value="handleSelectChange">
+                <Select v-if="!props.inTrash" v-model="selectedValue" @update:model-value="handleSelectChange">
                     <SelectTrigger as-child>
                         <Button
                             variant="ghost"
@@ -305,22 +346,34 @@ const bindNewCategoryToGroup = (category: Category) => {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent class="w-56" align="end">
+                    <DropdownMenuItem v-if="props.inTrash" @click="$emit('restore-group')">
+                        <span class="mr-auto">{{ $t('tabGroup.actions.restore') }}</span>
+                        <Undo2Icon />
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                         variant="destructive"
-                        :disabled="props.tabGroup.is_locked"
-                        @click="$emit('remove-group')"
+                        :disabled="props.tabGroup.is_locked && !props.inTrash"
+                        @click="requestRemoveGroup"
                     >
-                        <span class="mr-auto">{{ $t('tabGroup.actions.delete') }}</span>
+                        <span class="mr-auto">{{
+                            props.inTrash ? $t('tabGroup.actions.deletePermanently') : $t('tabGroup.actions.delete')
+                        }}</span>
                         <TrashIcon />
                     </DropdownMenuItem>
-                    <DropdownMenuItem @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })">
+                    <DropdownMenuItem
+                        v-if="!props.inTrash"
+                        @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })"
+                    >
                         <span class="mr-auto">{{
                             props.tabGroup.is_starred ? $t('tabGroup.actions.unstar') : $t('tabGroup.actions.star')
                         }}</span>
                         <StarFilledIcon v-if="props.tabGroup.is_starred" />
                         <StarIcon v-else />
                     </DropdownMenuItem>
-                    <DropdownMenuItem @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })">
+                    <DropdownMenuItem
+                        v-if="!props.inTrash"
+                        @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })"
+                    >
                         <span class="mr-auto">{{
                             props.tabGroup.is_locked ? $t('tabGroup.actions.unlock') : $t('tabGroup.actions.lock')
                         }}</span>
@@ -335,10 +388,10 @@ const bindNewCategoryToGroup = (category: Category) => {
                         <span class="mr-auto">{{ $t('tabGroup.actions.copy') }}</span>
                         <CopyIcon />
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuSub>
+                    <DropdownMenuSeparator v-if="!props.inTrash" />
+                    <DropdownMenuSub v-if="!props.inTrash">
                         <DropdownMenuSubTrigger
-                            class="[&_svg]:text-muted-foreground data-[state=open]:[&_svg]:text-inherit hover:[&_svg]:text-inherit"
+                            class="[&_svg]:text-muted-foreground hover:[&_svg]:text-inherit data-[state=open]:[&_svg]:text-inherit"
                             :show-chevron="false"
                         >
                             <span class="mr-auto truncate">{{
@@ -368,9 +421,9 @@ const bindNewCategoryToGroup = (category: Category) => {
         </div>
         <VueDraggable
             v-model="tabs"
-            :disabled="!!props.tabGroup.is_locked"
+            :disabled="!!props.tabGroup.is_locked || !!props.inTrash"
+            :group="props.inTrash ? { name: 'tabGroup', pull: false, put: false } : 'tabGroup'"
             :animation="150"
-            group="tabGroup"
             ghost-class="ghost"
             :class="spaceClass"
             @update="onTabsMetaUpdate"
@@ -380,7 +433,7 @@ const bindNewCategoryToGroup = (category: Category) => {
             <div v-for="tab in tabs" :key="tab.id" class="group flex items-center gap-2">
                 <button
                     class="text-muted-foreground hover:text-foreground invisible flex items-center opacity-0 transition-[opacity,colors] duration-200 ease-in-out group-hover:visible group-hover:opacity-100"
-                    :style="{ visibility: props.tabGroup.is_locked ? 'hidden' : 'visible' }"
+                    :style="{ visibility: props.tabGroup.is_locked || props.inTrash ? 'hidden' : 'visible' }"
                     @click="removeTab(tab.id!)"
                 >
                     <XIcon class="size-4" />
@@ -407,6 +460,31 @@ const bindNewCategoryToGroup = (category: Category) => {
                 </a>
             </div>
         </VueDraggable>
+        <AlertDialog :open="isPermanentDeleteOpen">
+            <AlertDialogContent>
+                <AlertDialogHeader class="text-red-500">
+                    <AlertDialogTitle>{{
+                        $t('tabGroup.deletePermanentlyConfirm.dialogTitle', {
+                            name: props.tabGroup.name || $t('tabGroup.unnamedGroup'),
+                        })
+                    }}</AlertDialogTitle>
+                    <AlertDialogDescription class="text-red-500">
+                        {{ $t('tabGroup.deletePermanentlyConfirm.dialogDesc') }}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel @click="isPermanentDeleteOpen = false">
+                        {{ $t('tabGroup.deletePermanentlyConfirm.buttonCancel') }}
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                        :class="cn(buttonVariants({ variant: 'destructive' }))"
+                        @click="confirmPermanentDelete"
+                    >
+                        {{ $t('tabGroup.deletePermanentlyConfirm.buttonDelete') }}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </div>
 </template>
 
