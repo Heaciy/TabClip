@@ -1,55 +1,39 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRefreshStore } from '@/store/refreshStore.ts';
-import { useSearchStore } from '@/store/search';
-
-enum StarStatus {
-    // eslint-disable-next-line no-unused-vars
-    All,
-    // eslint-disable-next-line no-unused-vars
-    StarredOnly,
-}
+import { useSearchStore } from '@/store/search.ts';
+import { Tab, useTabStore } from '@/store/tab.ts';
 
 const { locale } = useI18n();
-const starStatus = ref(StarStatus.All);
 const searchStore = useSearchStore();
 const refreshStore = useRefreshStore();
+const tabStore = useTabStore();
 
-const isPassivelyRefreshing = ref(false);
+const isSearching = computed(() => !searchStore.isEmpty({ ignoreIsStarred: tabStore.currentTab === Tab.Starred }));
 
-watch(starStatus, () => {
-    if (!isPassivelyRefreshing.value) {
-        searchStore.updateSearchConditions({ starredOnly: starStatus.value === StarStatus.StarredOnly });
+function handleTabChange(value: string | number) {
+    if (value === Tab.Starred) {
+        tabStore.selectStarred();
+    } else if (value === Tab.All) {
+        tabStore.selectAll();
     }
-    isPassivelyRefreshing.value = false;
-});
-
-watch(
-    () => searchStore.passivelyRefreshed,
-    () => {
-        const newStatus = searchStore.searchConditions.starredOnly ? StarStatus.StarredOnly : StarStatus.All;
-        if (newStatus !== starStatus.value) {
-            isPassivelyRefreshing.value = true;
-            starStatus.value = newStatus;
-        }
-    },
-);
+}
 </script>
 <template>
     <div>
-        <Tabs v-model:model-value="starStatus" :default-value="StarStatus.All" class="mt-4 mb-1">
+        <Tabs :model-value="tabStore.currentTab" class="mt-4 mb-1" @update:model-value="handleTabChange">
             <div class="flex px-5">
                 <div class="flex-auto">
                     <h2 class="text-foreground font-semibold" :class="locale !== 'zh' ? 'text-lg leading-none' : ''">
                         {{
-                            !searchStore.isEmpty()
+                            isSearching
                                 ? $t('toolBar.searchTitle')
-                                : starStatus === StarStatus.All
-                                  ? $t('toolBar.allTabsTitle')
-                                  : $t('toolBar.starredTitle')
+                                : tabStore.currentTab === Tab.Starred
+                                  ? $t('toolBar.starredTitle')
+                                  : $t('toolBar.allTabsTitle')
                         }}
                     </h2>
                     <div class="text-muted-foreground space-x-2 text-sm">
@@ -58,10 +42,10 @@ watch(
                     </div>
                 </div>
                 <TabsList>
-                    <TabsTrigger :value="StarStatus.All" class="px-3">
+                    <TabsTrigger :value="Tab.All" class="px-3">
                         {{ $t('toolBar.allTabsTab') }}
                     </TabsTrigger>
-                    <TabsTrigger :value="StarStatus.StarredOnly" class="px-3">
+                    <TabsTrigger :value="Tab.Starred" class="px-3">
                         {{ $t('toolBar.starredTab') }}
                     </TabsTrigger>
                 </TabsList>

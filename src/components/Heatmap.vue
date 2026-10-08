@@ -24,9 +24,11 @@ import {
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { db, getDateRange, type HeatmapData } from '@/database.ts';
 import { useSearchStore } from '@/store/search.ts';
+import { useTabStore } from '@/store/tab.ts';
 
 const { locale } = useI18n();
 const searchStore = useSearchStore();
+const tabStore = useTabStore();
 const mode = useColorMode();
 use([CanvasRenderer, HeatmapChart, TitleComponent, TooltipComponent, CalendarComponent, VisualMapComponent]);
 provide(THEME_KEY, mode);
@@ -68,12 +70,12 @@ const langMonthLabelMap = new Map<string, Array<string>>(
 const doSearch = (params: any) => {
     if (params && params.data && params.data[0]) {
         const dateStr = params.data[0];
+        tabStore.selectAll();
         searchStore.resetSearchConditions();
         searchStore.updateSearchConditions(
             {
                 startTime: parseDate(dateStr),
                 endTime: parseDate(dateStr),
-                starredOnly: false,
             },
             true,
         );

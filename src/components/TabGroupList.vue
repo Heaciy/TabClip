@@ -15,11 +15,12 @@ import BackToTop from './BackToTop.vue';
 import EditCategoryDialog from './sidebar/EditCategoryDialog.vue';
 import TabGroupComponent from './TabGroup.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
-import type { Tab, TabGroup } from '@/database.ts';
+import type { Tab as ClipTab, TabGroup } from '@/database.ts';
 import { db } from '@/database.ts';
 import { useRefreshStore } from '@/store/refreshStore.ts';
 import { useSearchStore } from '@/store/search.ts';
 import { useSettingStore } from '@/store/settings.ts';
+import { useTabStore } from '@/store/tab.ts';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
@@ -29,6 +30,7 @@ const isLoading = ref(false);
 const searchStore = useSearchStore();
 const settingsStore = useSettingStore();
 const refreshStore = useRefreshStore();
+const tabStore = useTabStore();
 
 const offset = ref(0);
 const pageSize: ComputedRef<number> = computed(() => settingsStore.settings?.pageSize);
@@ -53,7 +55,7 @@ const fetchTabGroups = async () => {
 
     isLoading.value = true;
     const data = await db.getAllTabGroups({
-        ...searchStore.searchConditions,
+        ...tabStore.applyView(searchStore.searchConditions),
         ...{
             offset: offset.value,
             pageSize: pageSize.value,
@@ -82,6 +84,7 @@ const fetchTabGroups = async () => {
 watch(
     [
         () => searchStore.searchConditions,
+        () => tabStore.currentTab,
         () => refreshStore.refreshed,
         pageSize,
         () => settingsStore.settings?.useGoogleIcon,
@@ -170,7 +173,7 @@ const updateGroup = async (
         name?: string;
         is_starred?: boolean;
         is_locked?: boolean;
-        tabs_meta?: Array<Tab>;
+        tabs_meta?: Array<ClipTab>;
         category_id?: string | null;
     },
 ) => {
@@ -186,10 +189,11 @@ const updateGroup = async (
     await db.updateTabGroup(group);
 
     // Unstar the group or clear its category, then remove it from the current list
-    const { starredOnly, categoryId, text } = searchStore.searchConditions;
+    const { isStarred, categoryId, text } = tabStore.applyView(searchStore.searchConditions);
     const loweredText = text?.toLowerCase();
 
-    const isStarredMismatch = starredOnly && params.is_starred === false;
+    const isStarredMismatch =
+        (isStarred === true && params.is_starred === false) || (isStarred === false && params.is_starred === true);
     const isCategoryMismatch = categoryId && 'category_id' in updates && updates.category_id !== categoryId;
     const isTextMismatch =
         loweredText &&

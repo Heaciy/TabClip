@@ -156,7 +156,7 @@ class TabGroupDatabase extends Dexie {
             text,
             startTime,
             endTime,
-            starredOnly,
+            isStarred,
             pageSize = settings.pageSize,
             pageIndex = 1,
             offset = 0,
@@ -164,7 +164,8 @@ class TabGroupDatabase extends Dexie {
         } = searchConditions;
 
         let querySet = this.tabGroups.orderBy('create_time').reverse();
-        if (starredOnly) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
+        if (isStarred === true) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
+        if (isStarred === false) querySet = querySet.filter((tabGroup) => tabGroup.is_starred !== true);
         if (startTime)
             querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
         if (endTime)

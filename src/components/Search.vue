@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
 import { MixIcon } from '@radix-icons/vue';
 import { format } from 'date-fns';
-import { CalendarSearchIcon, CircleXIcon, FolderSearchIcon, Trash2Icon } from 'lucide-vue-next';
+import { CalendarSearchIcon, CircleXIcon, FolderSearchIcon, StarIcon, Trash2Icon } from 'lucide-vue-next';
 import { SelectTrigger } from 'reka-ui';
 
 import { Button } from '@/components/ui/button';
@@ -16,17 +16,20 @@ import { Category } from '@/database.ts';
 import { cn } from '@/lib/utils.ts';
 import { useCategoryStore } from '@/store/category.ts';
 import { type SearchConditions, useSearchStore } from '@/store/search.ts';
+import { Tab, useTabStore } from '@/store/tab.ts';
 
 const { t, locale } = useI18n();
 const df = computed(() => new DateFormatter(locale.value, { dateStyle: 'long' }));
 const searched = ref(false);
 const searchStore = useSearchStore();
 const categoryStore = useCategoryStore();
+const tabStore = useTabStore();
 
 const searchConditions: Ref<SearchConditions> = ref({
     text: undefined,
     startTime: undefined,
     endTime: undefined,
+    isStarred: undefined,
     categoryId: undefined,
 });
 
@@ -35,13 +38,14 @@ function resetSearchConditions() {
         text: undefined,
         startTime: undefined,
         endTime: undefined,
+        isStarred: undefined,
         categoryId: undefined,
     };
 }
 
 const doSearch = () => {
     searchStore.updateSearchConditions(searchConditions.value);
-    searched.value = !searchConditionsIsEmpty.value;
+    searched.value = !searchStore.isEmpty();
 };
 
 const doReset = () => {
@@ -66,11 +70,19 @@ const inputPlaceholder = computed(() => {
     if (!conditions.text && !popoverConditionsIsEmpty.value) {
         const formatStr = 'yyyy/MM/dd';
         const categoryName = selectedCategory.value?.name ?? null;
+        const starLabel =
+            tabStore.currentTab !== Tab.Starred && conditions.isStarred !== undefined
+                ? conditions.isStarred
+                    ? t('search.starred')
+                    : t('search.unstarred')
+                : null;
         const startTimeStr = conditions.startTime ? formatDateValue(conditions.startTime, formatStr) : null;
         const endTimeStr = conditions.endTime ? formatDateValue(conditions.endTime, formatStr) : null;
         const placeholders = [
             categoryName,
-            categoryName && (startTimeStr || endTimeStr) ? ',' : '',
+            categoryName && starLabel ? ', ' : '',
+            starLabel,
+            (categoryName || starLabel) && (startTimeStr || endTimeStr) ? ',' : '',
             startTimeStr,
             startTimeStr || endTimeStr ? '-' : '',
             endTimeStr,
@@ -80,15 +92,23 @@ const inputPlaceholder = computed(() => {
     return defaultPlaceholder;
 });
 
+const isStarredCounts = computed(() => tabStore.currentTab !== Tab.Starred);
+
 const searchConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
-    return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId;
+    const starActive = isStarredCounts.value && conditions.isStarred !== undefined;
+    return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive;
 });
 
 const popoverConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
-    return !conditions.startTime && !conditions.endTime && !conditions.categoryId;
+    const starActive = isStarredCounts.value && conditions.isStarred !== undefined;
+    return !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive;
 });
+
+const showCancel = computed(
+    () => searched.value && !searchStore.isEmpty({ ignoreIsStarred: tabStore.currentTab === Tab.Starred }),
+);
 
 const isPassivelyRefreshing = ref(false);
 
@@ -112,6 +132,7 @@ watch(
             text: searchStore.searchConditions.text,
             startTime: searchStore.searchConditions.startTime,
             endTime: searchStore.searchConditions.endTime,
+            isStarred: searchStore.searchConditions.isStarred,
             categoryId: searchStore.searchConditions.categoryId,
         };
         searched.value = !searchStore.isEmpty();
@@ -281,6 +302,70 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                     </Button>
                                 </div>
                             </div>
+                            <div v-if="tabStore.currentTab !== Tab.Starred" class="flex items-center gap-4">
+                                <div class="mr-auto">
+                                    <label>{{ $t('search.starStatus') }}</label>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-48">
+                                        <Select
+                                            :model-value="
+                                                searchConditions.isStarred === undefined
+                                                    ? undefined
+                                                    : String(searchConditions.isStarred)
+                                            "
+                                            @update:model-value="
+                                                (value) => {
+                                                    searchConditions.isStarred =
+                                                        value === 'true' ? true : value === 'false' ? false : undefined;
+                                                }
+                                            "
+                                        >
+                                            <SelectTrigger class="w-full">
+                                                <Button
+                                                    variant="outline"
+                                                    :class="
+                                                        cn(
+                                                            'w-full justify-start text-left font-normal',
+                                                            searchConditions.isStarred === undefined &&
+                                                                'text-muted-foreground',
+                                                        )
+                                                    "
+                                                >
+                                                    <StarIcon class="mr-2 h-4 w-4"></StarIcon>
+                                                    <SelectValue
+                                                        :placeholder="t('search.starStatusPlaceholder')"
+                                                        class="inline-block truncate"
+                                                    />
+                                                </Button>
+                                            </SelectTrigger>
+                                            <SelectContent class="max-w-48">
+                                                <SelectGroup>
+                                                    <SelectLabel>{{ $t('search.starStatus') }}</SelectLabel>
+                                                    <SelectItem value="true">
+                                                        {{ $t('search.starred') }}
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        {{ $t('search.unstarred') }}
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        class="text-muted-foreground hover:text-accent-foreground"
+                                        @click="
+                                            () => {
+                                                searchConditions.isStarred = undefined;
+                                            }
+                                        "
+                                    >
+                                        <Trash2Icon />
+                                    </Button>
+                                </div>
+                            </div>
                             <div class="flex items-center gap-4">
                                 <div class="mr-auto">
                                     <label>{{ $t('search.category') }}</label>
@@ -339,7 +424,7 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                 </PopoverContent>
             </Popover>
         </div>
-        <Button v-if="!searched" @click="doSearch">{{ $t('search.buttonSearch') }}</Button>
+        <Button v-if="!showCancel" @click="doSearch">{{ $t('search.buttonSearch') }}</Button>
         <Button v-else variant="destructive" @click="doReset">
             <span class="invisible">{{ $t('search.buttonSearch') }}</span>
             <span class="absolute">{{ $t('search.buttonCancel') }}</span>
