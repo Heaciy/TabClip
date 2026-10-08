@@ -15,6 +15,9 @@
         "buttonSearch": "검색",
         "buttonCancel": "취소"
     },
+    "navbar": {
+        "theme": "테마"
+    },
     "i18n": {
         "label": "언어 선택"
     },
@@ -139,6 +142,16 @@
         "unnamedGroup": "이름 없는 그룹",
         "inputGroupName": "이름 입력",
         "total": "{total} 탭",
+        "actions": {
+            "delete": "삭제",
+            "star": "즐겨찾기",
+            "unstar": "즐겨찾기 해제",
+            "lock": "잠금",
+            "unlock": "잠금 해제",
+            "open": "열기",
+            "copy": "링크 복사",
+            "categorySection": "카테고리 설정"
+        },
         "copyLinks": {
             "toastTitle": "링크 복사 성공",
             "toastDesc": "{total}개의 탭 링크를 성공적으로 복사했습니다."

@@ -15,6 +15,9 @@
         "buttonSearch": "検索",
         "buttonCancel": "キャンセル"
     },
+    "navbar": {
+        "theme": "テーマ"
+    },
     "i18n": {
         "label": "言語を選択"
     },
@@ -139,6 +142,16 @@
         "unnamedGroup": "名称未設定グループ",
         "inputGroupName": "名前を入力",
         "total": "{total} タブ",
+        "actions": {
+            "delete": "削除",
+            "star": "スター",
+            "unstar": "スター解除",
+            "lock": "ロック",
+            "unlock": "ロック解除",
+            "open": "開く",
+            "copy": "リンクをコピー",
+            "categorySection": "カテゴリを設定"
+        },
         "copyLinks": {
             "toastTitle": "リンクをコピーしました",
             "toastDesc": "{total} 件のタブリンクをコピーしました。"

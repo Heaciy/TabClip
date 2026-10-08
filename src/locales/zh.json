@@ -15,6 +15,9 @@
         "buttonSearch": "搜索",
         "buttonCancel": "取消"
     },
+    "navbar": {
+        "theme": "主题"
+    },
     "i18n": {
         "label": "选择语言"
     },
@@ -139,6 +142,16 @@
         "unnamedGroup": "未命名标签组",
         "inputGroupName": "输入名称",
         "total": "{total} 个标签页",
+        "actions": {
+            "delete": "删除",
+            "star": "收藏",
+            "unstar": "取消收藏",
+            "lock": "锁定",
+            "unlock": "解锁",
+            "open": "打开",
+            "copy": "复制链接",
+            "categorySection": "设置分类"
+        },
         "copyLinks": {
             "toastTitle": "复制标签组链接成功",
             "toastDesc": "成功复制 {total} 个标签链接"

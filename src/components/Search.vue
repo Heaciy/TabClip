@@ -20,18 +20,18 @@ import { Tab, useTabStore } from '@/store/tab.ts';
 
 const { t, locale } = useI18n();
 const df = computed(() => new DateFormatter(locale.value, { dateStyle: 'long' }));
-const searched = ref(false);
 const searchStore = useSearchStore();
 const categoryStore = useCategoryStore();
 const tabStore = useTabStore();
 
 const searchConditions: Ref<SearchConditions> = ref({
-    text: undefined,
-    startTime: undefined,
-    endTime: undefined,
-    isStarred: undefined,
-    categoryId: undefined,
+    text: searchStore.searchConditions.text,
+    startTime: searchStore.searchConditions.startTime,
+    endTime: searchStore.searchConditions.endTime,
+    isStarred: searchStore.searchConditions.isStarred,
+    categoryId: searchStore.searchConditions.categoryId,
 });
+const searched = ref(!searchStore.isEmpty());
 
 function resetSearchConditions() {
     searchConditions.value = {
@@ -153,14 +153,14 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
 </script>
 
 <template>
-    <div class="flex items-center space-x-4">
-        <div class="relative items-center">
+    <div class="flex min-w-0 max-w-full items-center gap-4">
+        <div class="relative w-80 min-w-40 max-w-full shrink">
             <Input
                 id="search"
                 v-model="searchConditions.text"
                 type="text"
                 :placeholder="inputPlaceholder"
-                class="w-80 pr-16"
+                class="w-full pr-16 text-sm"
                 @keyup.enter="doSearch"
             />
             <Popover>

@@ -159,8 +159,11 @@ onBeforeMount(async () => {
     await fetchHeatmapData();
 });
 
-const handleOpenChange = async (open: boolean) => {
-    if (open) {
+const open = ref(false);
+
+const handleOpenChange = async (next: boolean) => {
+    open.value = next;
+    if (next) {
         if (heatmapYear.value == -1) {
             await fetchHeatmapData(heatmapYear.value);
         } else {
@@ -168,10 +171,16 @@ const handleOpenChange = async (open: boolean) => {
         }
     }
 };
+
+function show() {
+    void handleOpenChange(true);
+}
+
+defineExpose({ show });
 </script>
 
 <template>
-    <Drawer @update:open="handleOpenChange">
+    <Drawer :open="open" @update:open="handleOpenChange">
         <DrawerTrigger as-child>
             <Button variant="ghost" size="icon">
                 <ChartColumnIcon />
