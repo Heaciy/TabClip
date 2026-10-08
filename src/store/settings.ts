@@ -13,6 +13,8 @@ interface Settings {
     storeBrowserGroup: boolean;
     spaceBetweenTabs: number;
     tabWhitelist: string[];
+    trashEnabled: boolean;
+    trashRetentionDays: number;
 }
 
 const defaultSettings: Settings = {
@@ -25,7 +27,15 @@ const defaultSettings: Settings = {
     storeBrowserGroup: false,
     spaceBetweenTabs: 2,
     tabWhitelist: blankTabs,
+    trashEnabled: false,
+    trashRetentionDays: 30,
 };
+
+const DEFAULT_TRASH_RETENTION_DAYS = 30;
+
+function resolveTrashRetentionDays(settings: Settings): number {
+    return settings.trashRetentionDays ?? DEFAULT_TRASH_RETENTION_DAYS;
+}
 
 async function loadSettings(): Promise<Settings> {
     const { settings: rawSettings } = await browser.storage.local.get('settings');
@@ -64,4 +74,4 @@ export const useSettingStore = defineStore('setting', () => {
     };
 });
 
-export { defaultSettings, loadSettings, type Settings };
+export { defaultSettings, loadSettings, resolveTrashRetentionDays, type Settings };

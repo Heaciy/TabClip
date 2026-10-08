@@ -20,7 +20,7 @@ import { db } from '@/database.ts';
 import { useRefreshStore } from '@/store/refreshStore.ts';
 import { useSearchStore } from '@/store/search.ts';
 import { useSettingStore } from '@/store/settings.ts';
-import { useTabStore } from '@/store/tab.ts';
+import { Tab, useTabStore } from '@/store/tab.ts';
 
 const tabGroups: Ref<TabGroup[]> = ref([]);
 const tabGroupRefs = ref(new Map<string, ComponentPublicInstance>());
@@ -88,6 +88,7 @@ watch(
         () => refreshStore.refreshed,
         pageSize,
         () => settingsStore.settings?.useGoogleIcon,
+        () => settingsStore.settings?.trashEnabled,
     ],
     async () => {
         resetTabGroups();
@@ -96,6 +97,7 @@ watch(
 );
 
 onMounted(async () => {
+    await db.purgeExpiredDeletedGroups();
     await fetchTabGroups();
     browser.runtime.onMessage.addListener(async (message, _sender, _sendResponse) => {
         if (message.event === 'TabGroupUpdate') {
@@ -138,24 +140,55 @@ function observeLastTabGroup() {
 }
 
 const removeGroup = async (groupIndex: number, removeFromDB: boolean = true) => {
-    if (removeFromDB && tabGroups.value[groupIndex].is_locked) {
+    const group = tabGroups.value[groupIndex];
+    const permanent = removeFromDB && group.is_deleted === true;
+    if (removeFromDB && group.is_locked && !permanent) {
         return;
     }
 
-    const removedGroup = tabGroups.value.splice(groupIndex, 1)[0];
-    tabGroupRefs.value.delete(removedGroup.id!);
-
     if (removeFromDB) {
-        await db.deleteTabGroup(removedGroup.id!);
+        if (permanent) {
+            await db.deleteTabGroup(group.id!);
+        } else {
+            await db.softDeleteTabGroup(group.id!);
+        }
     }
 
+    const applied = tabStore.applyView(searchStore.searchConditions);
+    const stillVisible = removeFromDB && !permanent && applied.isDeleted !== false;
+    if (stillVisible) {
+        group.is_deleted = true;
+        group.deleted_time = new Date();
+        return;
+    }
+
+    tabGroups.value.splice(groupIndex, 1);
+    tabGroupRefs.value.delete(group.id!);
+
     offset.value -= 1;
-    refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - removedGroup.tabs_meta.length);
+    refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - group.tabs_meta.length);
+};
+
+const restoreGroup = async (groupIndex: number) => {
+    const group = tabGroups.value[groupIndex];
+    await db.restoreTabGroup(group.id!);
+
+    const applied = tabStore.applyView(searchStore.searchConditions);
+    if (applied.isDeleted !== true) {
+        group.is_deleted = false;
+        group.deleted_time = undefined;
+        return;
+    }
+
+    tabGroups.value.splice(groupIndex, 1);
+    tabGroupRefs.value.delete(group.id!);
+    offset.value -= 1;
+    refreshStore.refreshTotal(refreshStore.groupTotal - 1, refreshStore.tabTotal - group.tabs_meta.length);
 };
 
 const removeTab = async (groupIndex: number, tabIndex: number) => {
     const group: TabGroup = tabGroups.value[groupIndex];
-    if (group.is_locked) {
+    if (group.is_locked || group.is_deleted) {
         return;
     }
     group.tabs_meta.splice(tabIndex, 1);
@@ -173,11 +206,14 @@ const updateGroup = async (
         name?: string;
         is_starred?: boolean;
         is_locked?: boolean;
+        is_deleted?: boolean;
         tabs_meta?: Array<ClipTab>;
         category_id?: string | null;
     },
 ) => {
     const group = tabGroups.value[groupIndex];
+    if (group.is_deleted) return;
+
     const updates = Object.fromEntries(Object.entries(params).filter(([_, value]) => value !== undefined));
     Object.assign(group, updates);
 
@@ -189,11 +225,13 @@ const updateGroup = async (
     await db.updateTabGroup(group);
 
     // Unstar the group or clear its category, then remove it from the current list
-    const { isStarred, categoryId, text } = tabStore.applyView(searchStore.searchConditions);
+    const { isStarred, isDeleted, categoryId, text } = tabStore.applyView(searchStore.searchConditions);
     const loweredText = text?.toLowerCase();
 
     const isStarredMismatch =
         (isStarred === true && params.is_starred === false) || (isStarred === false && params.is_starred === true);
+    const isDeletedMismatch =
+        (isDeleted === true && params.is_deleted === false) || (isDeleted === false && params.is_deleted === true);
     const isCategoryMismatch = categoryId && 'category_id' in updates && updates.category_id !== categoryId;
     const isTextMismatch =
         loweredText &&
@@ -204,7 +242,7 @@ const updateGroup = async (
                 (tab) => tab.title?.toLowerCase().includes(loweredText) || tab.url?.toLowerCase().includes(loweredText),
             )
         );
-    if (isStarredMismatch || isCategoryMismatch || isTextMismatch) {
+    if (isStarredMismatch || isDeletedMismatch || isCategoryMismatch || isTextMismatch) {
         await removeGroup(groupIndex, false);
     }
 };
@@ -226,7 +264,9 @@ const updateGroup = async (
             "
             :tab-group="tabGroup"
             :search-text="searchStore.searchConditions.text"
+            :in-trash="tabGroup.is_deleted === true"
             @remove-group="removeGroup(index)"
+            @restore-group="restoreGroup(index)"
             @remove-tab="removeTab(index, $event)"
             @update-group="updateGroup(index, $event)"
         >

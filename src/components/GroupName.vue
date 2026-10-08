@@ -6,7 +6,7 @@ import { TextCursorInputIcon } from 'lucide-vue-next';
 import HighlightText from '@/components/HighlightText.vue';
 
 const { t, locale } = useI18n();
-const props = defineProps<{ name: string | undefined; searchText: string | undefined }>();
+const props = defineProps<{ name: string | undefined; searchText: string | undefined; readonly?: boolean }>();
 const emits = defineEmits(['updateName']);
 
 const showInput = ref(false);
@@ -52,6 +52,7 @@ const handleBlur = () => {
 };
 
 const handleClick = () => {
+    if (props.readonly) return;
     showInput.value = true;
     nextTick(() => {
         setTimeout(() => {
@@ -61,6 +62,7 @@ const handleClick = () => {
 };
 
 const handleIconClick = () => {
+    if (props.readonly) return;
     if (!showInput.value) {
         handleClick();
         return;
@@ -93,7 +95,12 @@ watch(locale, () => {
 
 <template>
     <div class="flex items-center gap-2">
-        <TextCursorInputIcon class="size-4 shrink-0 cursor-pointer" @mousedown.prevent @click="handleIconClick" />
+        <TextCursorInputIcon
+            v-if="!readonly"
+            class="size-4 shrink-0 cursor-pointer"
+            @mousedown.prevent
+            @click="handleIconClick"
+        />
         <div
             class="group flex max-w-38 items-center"
             :style="{ width: currentWidth }"

@@ -16,12 +16,14 @@ import { Category } from '@/database.ts';
 import { cn } from '@/lib/utils.ts';
 import { useCategoryStore } from '@/store/category.ts';
 import { type SearchConditions, useSearchStore } from '@/store/search.ts';
+import { useSettingStore } from '@/store/settings.ts';
 import { Tab, useTabStore } from '@/store/tab.ts';
 
 const { t, locale } = useI18n();
 const df = computed(() => new DateFormatter(locale.value, { dateStyle: 'long' }));
 const searchStore = useSearchStore();
 const categoryStore = useCategoryStore();
+const settingsStore = useSettingStore();
 const tabStore = useTabStore();
 
 const searchConditions: Ref<SearchConditions> = ref({
@@ -29,6 +31,8 @@ const searchConditions: Ref<SearchConditions> = ref({
     startTime: searchStore.searchConditions.startTime,
     endTime: searchStore.searchConditions.endTime,
     isStarred: searchStore.searchConditions.isStarred,
+    isDeleted: searchStore.searchConditions.isDeleted,
+    matchAnyDeleted: searchStore.searchConditions.matchAnyDeleted,
     categoryId: searchStore.searchConditions.categoryId,
 });
 const searched = ref(!searchStore.isEmpty());
@@ -39,6 +43,8 @@ function resetSearchConditions() {
         startTime: undefined,
         endTime: undefined,
         isStarred: undefined,
+        isDeleted: undefined,
+        matchAnyDeleted: undefined,
         categoryId: undefined,
     };
 }
@@ -76,13 +82,23 @@ const inputPlaceholder = computed(() => {
                     ? t('search.starred')
                     : t('search.unstarred')
                 : null;
+        const deletedLabel =
+            settingsStore.settings.trashEnabled &&
+            tabStore.currentTab !== Tab.Trash &&
+            (conditions.isDeleted === true || conditions.matchAnyDeleted)
+                ? conditions.isDeleted === true
+                    ? t('search.deleted')
+                    : t('search.deletedAny')
+                : null;
         const startTimeStr = conditions.startTime ? formatDateValue(conditions.startTime, formatStr) : null;
         const endTimeStr = conditions.endTime ? formatDateValue(conditions.endTime, formatStr) : null;
         const placeholders = [
             categoryName,
-            categoryName && starLabel ? ', ' : '',
+            categoryName && (starLabel || deletedLabel) ? ', ' : '',
             starLabel,
-            (categoryName || starLabel) && (startTimeStr || endTimeStr) ? ',' : '',
+            starLabel && deletedLabel ? ', ' : '',
+            deletedLabel,
+            (categoryName || starLabel || deletedLabel) && (startTimeStr || endTimeStr) ? ',' : '',
             startTimeStr,
             startTimeStr || endTimeStr ? '-' : '',
             endTimeStr,
@@ -93,21 +109,36 @@ const inputPlaceholder = computed(() => {
 });
 
 const isStarredCounts = computed(() => tabStore.currentTab !== Tab.Starred);
+const isDeletedCounts = computed(() => settingsStore.settings.trashEnabled && tabStore.currentTab !== Tab.Trash);
 
 const searchConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
     const starActive = isStarredCounts.value && conditions.isStarred !== undefined;
-    return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive;
+    const deletedActive = isDeletedCounts.value && (conditions.isDeleted === true || !!conditions.matchAnyDeleted);
+    return (
+        !conditions.text &&
+        !conditions.startTime &&
+        !conditions.endTime &&
+        !conditions.categoryId &&
+        !starActive &&
+        !deletedActive
+    );
 });
 
 const popoverConditionsIsEmpty = computed(() => {
     const conditions = searchConditions.value;
     const starActive = isStarredCounts.value && conditions.isStarred !== undefined;
-    return !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive;
+    const deletedActive = isDeletedCounts.value && (conditions.isDeleted === true || !!conditions.matchAnyDeleted);
+    return !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive && !deletedActive;
 });
 
 const showCancel = computed(
-    () => searched.value && !searchStore.isEmpty({ ignoreIsStarred: tabStore.currentTab === Tab.Starred }),
+    () =>
+        searched.value &&
+        !searchStore.isEmpty({
+            ignoreIsStarred: tabStore.currentTab === Tab.Starred,
+            ignoreIsDeleted: tabStore.currentTab === Tab.Trash || !settingsStore.settings.trashEnabled,
+        }),
 );
 
 const isPassivelyRefreshing = ref(false);
@@ -133,6 +164,8 @@ watch(
             startTime: searchStore.searchConditions.startTime,
             endTime: searchStore.searchConditions.endTime,
             isStarred: searchStore.searchConditions.isStarred,
+            isDeleted: searchStore.searchConditions.isDeleted,
+            matchAnyDeleted: searchStore.searchConditions.matchAnyDeleted,
             categoryId: searchStore.searchConditions.categoryId,
         };
         searched.value = !searchStore.isEmpty();
@@ -153,8 +186,8 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
 </script>
 
 <template>
-    <div class="flex min-w-0 max-w-full items-center gap-4">
-        <div class="relative w-80 min-w-40 max-w-full shrink">
+    <div class="flex max-w-full min-w-0 items-center gap-4">
+        <div class="relative w-80 max-w-full min-w-40 shrink">
             <Input
                 id="search"
                 v-model="searchConditions.text"
@@ -359,6 +392,80 @@ watch([() => searchConditions.value.categoryId, () => categoryStore.categories],
                                         @click="
                                             () => {
                                                 searchConditions.isStarred = undefined;
+                                            }
+                                        "
+                                    >
+                                        <Trash2Icon />
+                                    </Button>
+                                </div>
+                            </div>
+                            <div v-if="isDeletedCounts" class="flex items-center gap-4">
+                                <div class="mr-auto">
+                                    <label>{{ $t('search.deletedStatus') }}</label>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="w-48">
+                                        <Select
+                                            :model-value="
+                                                searchConditions.matchAnyDeleted
+                                                    ? 'any'
+                                                    : searchConditions.isDeleted === true
+                                                      ? 'true'
+                                                      : searchConditions.isDeleted === false
+                                                        ? 'false'
+                                                        : undefined
+                                            "
+                                            @update:model-value="
+                                                (value) => {
+                                                    searchConditions.matchAnyDeleted =
+                                                        value === 'any' ? true : undefined;
+                                                    searchConditions.isDeleted =
+                                                        value === 'true' ? true : value === 'false' ? false : undefined;
+                                                }
+                                            "
+                                        >
+                                            <SelectTrigger class="w-full">
+                                                <Button
+                                                    variant="outline"
+                                                    :class="
+                                                        cn(
+                                                            'w-full justify-start text-left font-normal',
+                                                            searchConditions.isDeleted === undefined &&
+                                                                'text-muted-foreground',
+                                                        )
+                                                    "
+                                                >
+                                                    <Trash2Icon class="mr-2 h-4 w-4"></Trash2Icon>
+                                                    <SelectValue
+                                                        :placeholder="t('search.deletedStatusPlaceholder')"
+                                                        class="inline-block truncate"
+                                                    />
+                                                </Button>
+                                            </SelectTrigger>
+                                            <SelectContent class="max-w-48">
+                                                <SelectGroup>
+                                                    <SelectLabel>{{ $t('search.deletedStatus') }}</SelectLabel>
+                                                    <SelectItem value="any">
+                                                        {{ $t('search.deletedAny') }}
+                                                    </SelectItem>
+                                                    <SelectItem value="true">
+                                                        {{ $t('search.deleted') }}
+                                                    </SelectItem>
+                                                    <SelectItem value="false">
+                                                        {{ $t('search.notDeleted') }}
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        class="text-muted-foreground hover:text-accent-foreground"
+                                        @click="
+                                            () => {
+                                                searchConditions.isDeleted = undefined;
+                                                searchConditions.matchAnyDeleted = undefined;
                                             }
                                         "
                                     >

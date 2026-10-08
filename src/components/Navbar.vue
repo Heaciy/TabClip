@@ -11,9 +11,10 @@ import {
     UploadIcon,
 } from '@radix-icons/vue';
 import { useColorMode } from '@vueuse/core';
-import { BookIcon, ChartColumnIcon, InfoIcon } from 'lucide-vue-next';
+import { BookIcon, ChartColumnIcon, InfoIcon, TrashIcon } from 'lucide-vue-next';
 
 import AboutDialog from './AboutDialog.vue';
+import EmptyTrashDialog from '@/components/EmptyTrashDialog.vue';
 import ExportUtil from '@/components/ExportUtil.vue';
 import Heatmap from '@/components/Heatmap.vue';
 import I18n from '@/components/I18n.vue';
@@ -37,10 +38,12 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { useExport } from '@/composables/useExport';
 import { useImport } from '@/composables/useImport';
 import { useSearchStore } from '@/store/search.ts';
+import { useSettingStore } from '@/store/settings.ts';
 
 const { locale } = useI18n();
 const mode = useColorMode();
 const searchStore = useSearchStore();
+const settingsStore = useSettingStore();
 
 const headerRef = ref<HTMLElement | null>(null);
 const headerWidth = ref(0);
@@ -73,6 +76,7 @@ const { isExporting, exportProgress, exportLargeJsonFile } = useExport();
 const { isImporting, importProgress, importData, isImportDialogOpened } = useImport();
 
 const isTruncateDialogOpened = ref(false);
+const isEmptyTrashDialogOpened = ref(false);
 const isAboutDialogOpened = ref(false);
 const redirectToGithub = () => {
     window.open('https://github.com/Heaciy/TabClip', '_blank');
@@ -187,6 +191,14 @@ onUnmounted(() => {
                         <DropdownMenuLabel>{{ $t('moreOperations.dangerOperations.label') }}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
+                            <DropdownMenuItem
+                                v-if="settingsStore.settings.trashEnabled"
+                                variant="destructive"
+                                @click="isEmptyTrashDialogOpened = true"
+                            >
+                                <span class="mr-auto">{{ $t('moreOperations.dangerOperations.emptyTrash') }}</span>
+                                <TrashIcon />
+                            </DropdownMenuItem>
                             <DropdownMenuItem variant="destructive" @click="isTruncateDialogOpened = true">
                                 <span class="mr-auto">{{ $t('moreOperations.dangerOperations.truncateData') }}</span>
                                 <ExclamationTriangleIcon />
@@ -209,6 +221,7 @@ onUnmounted(() => {
                 </DropdownMenu>
             </div>
         </div>
+        <EmptyTrashDialog v-model="isEmptyTrashDialogOpened"></EmptyTrashDialog>
         <TruncateDialog v-model="isTruncateDialogOpened"></TruncateDialog>
         <ImportDialog
             v-model="isImportDialogOpened"

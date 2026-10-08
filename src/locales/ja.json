@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "指定なし",
         "starred": "お気に入り",
         "unstarred": "お気に入り以外",
+        "deletedStatus": "削除",
+        "deletedStatusPlaceholder": "未削除",
+        "deleted": "削除済み",
+        "notDeleted": "未削除",
+        "deletedAny": "指定なし",
         "popoverTitle": "検索条件",
         "popoverDesc": "詳細な検索条件を設定します。",
         "buttonSearch": "検索",
@@ -48,6 +53,17 @@
             "title": "起動ページに設定",
             "desc": "ブラウザ起動時にTabClipを自動的にホームページとして開きます。"
         },
+        "trash": {
+            "title": "ゴミ箱",
+            "desc": "削除したグループはゴミ箱に残り、復元できます。"
+        },
+        "trashRetention": {
+            "title": "保持期間",
+            "selectLabel": "保持期間",
+            "desc": "この期間を過ぎた削除済みグループは消去されます。",
+            "days": "{days} 日",
+            "never": "自動で消去しない"
+        },
         "pageSize": {
             "title": "1ページあたりの表示数",
             "selectLabel": "ページサイズ",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "危険な操作",
+            "emptyTrash": "ゴミ箱を空にする",
             "truncateData": "すべてのデータを削除"
         },
         "moreInfo": {
             "label": "詳細情報",
             "userGuide": "ユーザーガイド",
             "about": "バージョン情報"
+        }
+    },
+    "emptyTrash": {
+        "title": "ゴミ箱を空にする",
+        "descLeft": "ゴミ箱内のすべてのグループが完全に削除されます。確認のため、",
+        "descRight": "と入力してください。",
+        "buttonDelete": "空にする",
+        "buttonCancel": "キャンセル",
+        "success": {
+            "toastTitle": "ゴミ箱を空にしました",
+            "toastDesc": "ゴミ箱内のグループをすべて削除しました。"
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "お気に入り",
         "allTabsTab": "すべて",
         "starredTab": "お気に入り",
+        "trashTab": "ゴミ箱",
+        "trashTitle": "ゴミ箱",
         "groupNum": "{groupNum} グループ",
         "tabNum": "{tabNum} タブ"
     },
@@ -144,6 +174,8 @@
         "total": "{total} タブ",
         "actions": {
             "delete": "削除",
+            "deletePermanently": "完全に削除",
+            "restore": "復元",
             "star": "スター",
             "unstar": "スター解除",
             "lock": "ロック",

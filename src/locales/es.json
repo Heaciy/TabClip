@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Cualquiera",
         "starred": "Favoritos",
         "unstarred": "No favoritos",
+        "deletedStatus": "Eliminación",
+        "deletedStatusPlaceholder": "No eliminado",
+        "deleted": "Eliminado",
+        "notDeleted": "No eliminado",
+        "deletedAny": "Cualquiera",
         "popoverTitle": "Filtros de búsqueda",
         "popoverDesc": "Establecer más condiciones de búsqueda.",
         "buttonSearch": "Buscar",
@@ -48,6 +53,17 @@
             "title": "Establecer como página de inicio",
             "desc": "Abre TabClip automáticamente como página de inicio al iniciar el navegador."
         },
+        "trash": {
+            "title": "Papelera",
+            "desc": "Los grupos eliminados permanecen en la papelera y se pueden restaurar."
+        },
+        "trashRetention": {
+            "title": "Conservación",
+            "selectLabel": "Conservación",
+            "desc": "Los grupos eliminados se borran después de este tiempo.",
+            "days": "{days} días",
+            "never": "Nunca"
+        },
         "pageSize": {
             "title": "Grupos por página",
             "selectLabel": "Tamaño de página",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Zona de peligro",
+            "emptyTrash": "Vaciar la papelera",
             "truncateData": "Eliminar todos los datos"
         },
         "moreInfo": {
             "label": "Más información",
             "userGuide": "Guía de usuario",
             "about": "Acerca de y versión"
+        }
+    },
+    "emptyTrash": {
+        "title": "Vaciar la papelera",
+        "descLeft": "Esto eliminará permanentemente todos los grupos de la papelera. Escribe",
+        "descRight": "para confirmar.",
+        "buttonDelete": "Vaciar",
+        "buttonCancel": "Cancelar",
+        "success": {
+            "toastTitle": "Papelera vaciada",
+            "toastDesc": "Se eliminaron todos los grupos de la papelera."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Favoritos",
         "allTabsTab": "Todo",
         "starredTab": "Favoritos",
+        "trashTab": "Papelera",
+        "trashTitle": "Papelera",
         "groupNum": "{groupNum} grupos",
         "tabNum": "{tabNum} pestañas"
     },
@@ -144,6 +174,8 @@
         "total": "{total} pestañas",
         "actions": {
             "delete": "Eliminar",
+            "deletePermanently": "Eliminar permanentemente",
+            "restore": "Restaurar",
             "star": "Destacar",
             "unstar": "Quitar destacado",
             "lock": "Bloquear",

@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "不限",
         "starred": "已收藏",
         "unstarred": "未收藏",
+        "deletedStatus": "刪除",
+        "deletedStatusPlaceholder": "未刪除",
+        "deleted": "已刪除",
+        "notDeleted": "未刪除",
+        "deletedAny": "不限",
         "popoverTitle": "搜尋條件",
         "popoverDesc": "設定更多搜尋條件",
         "buttonSearch": "搜尋",
@@ -48,6 +53,17 @@
             "title": "設為啟動頁",
             "desc": "每次啟動瀏覽器時自動開啟 TabClip 作為首頁"
         },
+        "trash": {
+            "title": "回收站",
+            "desc": "開啟後可在回收站查看並還原已刪除的標籤組"
+        },
+        "trashRetention": {
+            "title": "保留時長",
+            "selectLabel": "保留時長",
+            "desc": "超過保留時長的已刪除標籤組會被清理",
+            "days": "{days} 天",
+            "never": "不自動清理"
+        },
         "pageSize": {
             "title": "每頁群組數量",
             "selectLabel": "分頁大小",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "危險操作",
+            "emptyTrash": "清空回收站",
             "truncateData": "刪除所有資料"
         },
         "moreInfo": {
             "label": "更多資訊",
             "userGuide": "使用者指南",
             "about": "關於"
+        }
+    },
+    "emptyTrash": {
+        "title": "清空回收站",
+        "descLeft": "此操作將徹底刪除回收站中的所有分頁群組，輸入",
+        "descRight": "以確認",
+        "buttonDelete": "清空",
+        "buttonCancel": "取消",
+        "success": {
+            "toastTitle": "清空成功",
+            "toastDesc": "回收站已清空"
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "已收藏",
         "allTabsTab": "全部",
         "starredTab": "收藏",
+        "trashTab": "回收站",
+        "trashTitle": "回收站",
         "groupNum": "{groupNum} 個群組",
         "tabNum": "{tabNum} 個分頁"
     },
@@ -144,6 +174,8 @@
         "total": "{total} 個分頁",
         "actions": {
             "delete": "刪除",
+            "deletePermanently": "徹底刪除",
+            "restore": "還原",
             "star": "收藏",
             "unstar": "取消收藏",
             "lock": "鎖定",

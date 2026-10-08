@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Any",
         "starred": "Starred",
         "unstarred": "Unstarred",
+        "deletedStatus": "Deleted",
+        "deletedStatusPlaceholder": "Not deleted",
+        "deleted": "Deleted",
+        "notDeleted": "Not deleted",
+        "deletedAny": "Any",
         "popoverTitle": "Search",
         "popoverDesc": "Set more query conditions.",
         "buttonSearch": "Search",
@@ -48,6 +53,17 @@
             "title": "Set As Startup Page",
             "desc": "Automatically open TabClip as the home page every time you start your browser."
         },
+        "trash": {
+            "title": "Trash",
+            "desc": "Deleted groups stay in Trash and can be restored."
+        },
+        "trashRetention": {
+            "title": "Keep for",
+            "selectLabel": "Keep for",
+            "desc": "Deleted groups are removed after this time.",
+            "days": "{days} days",
+            "never": "Never"
+        },
         "pageSize": {
             "title": "Groups Per Page",
             "selectLabel": "Page Size",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Danger Operations",
+            "emptyTrash": "Empty Trash",
             "truncateData": "Delete All Data"
         },
         "moreInfo": {
             "label": "More Info",
             "userGuide": "User Guide",
             "about": "About & Version"
+        }
+    },
+    "emptyTrash": {
+        "title": "Empty Trash",
+        "descLeft": "This will permanently delete every group in Trash. Type",
+        "descRight": "to confirm.",
+        "buttonDelete": "Empty",
+        "buttonCancel": "Cancel",
+        "success": {
+            "toastTitle": "Trash emptied",
+            "toastDesc": "All groups in Trash were deleted."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Starred",
         "allTabsTab": "All Tabs",
         "starredTab": "Starred",
+        "trashTab": "Trash",
+        "trashTitle": "Trash",
         "groupNum": "{groupNum} Groups",
         "tabNum": "{tabNum} Tabs"
     },
@@ -144,6 +174,8 @@
         "total": "{total} Tabs",
         "actions": {
             "delete": "Delete",
+            "deletePermanently": "Delete permanently",
+            "restore": "Restore",
             "star": "Star",
             "unstar": "Unstar",
             "lock": "Lock",

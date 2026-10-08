@@ -3,7 +3,7 @@ import { addDays, eachDayOfInterval, format, parse } from 'date-fns';
 import Dexie, { type EntityTable } from 'dexie';
 
 import { type SearchConditions } from '@/store/search';
-import { loadSettings } from '@/store/settings';
+import { loadSettings, resolveTrashRetentionDays } from '@/store/settings';
 
 interface Tab {
     id?: number | string;
@@ -20,9 +20,11 @@ interface TabGroup {
     tabs_meta: Array<Tab>;
     is_starred?: boolean;
     is_locked?: boolean;
+    is_deleted?: boolean;
     is_browser_group?: boolean; // is_raw_group
     create_time?: Date;
     update_time?: Date;
+    deleted_time?: Date;
     category_id?: string;
 }
 
@@ -55,6 +57,10 @@ class TabGroupDatabase extends Dexie {
         super('TabClip');
         this.version(2).stores({
             tabGroups: 'id, is_starred, is_locked, create_time, category_id',
+            categories: 'id, name, create_time',
+        });
+        this.version(3).stores({
+            tabGroups: 'id, is_starred, is_locked, is_deleted, create_time, category_id',
             categories: 'id, name, create_time',
         });
 
@@ -107,6 +113,8 @@ class TabGroupDatabase extends Dexie {
             id: tabGroup.id || crypto.randomUUID(),
             is_starred: tabGroup.is_starred || false,
             is_locked: tabGroup.is_locked || settings.defaultLockGroup,
+            is_deleted: tabGroup.is_deleted === true,
+            deleted_time: tabGroup.deleted_time,
             is_browser_group: tabGroup.is_browser_group,
             create_time: tabGroup.create_time || new Date(),
             update_time: new Date(),
@@ -145,6 +153,57 @@ class TabGroupDatabase extends Dexie {
         return this.tabGroups.delete(tabGroupId);
     }
 
+    async softDeleteTabGroup(tabGroupId: string) {
+        return this.tabGroups.update(tabGroupId, {
+            is_deleted: true,
+            deleted_time: new Date(),
+            update_time: new Date(),
+        });
+    }
+
+    async restoreTabGroup(tabGroupId: string) {
+        await this.tabGroups.update(tabGroupId, {
+            is_deleted: false,
+            update_time: new Date(),
+        });
+        return this.tabGroups
+            .where('id')
+            .equals(tabGroupId)
+            .modify((tabGroup) => {
+                delete tabGroup.deleted_time;
+            });
+    }
+
+    async purgeExpiredDeletedGroups() {
+        const settings = await loadSettings();
+        const days = resolveTrashRetentionDays(settings);
+        if (days <= 0) return;
+
+        const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+        const expiredIds: string[] = [];
+        await this.tabGroups
+            .filter((tabGroup) => tabGroup.is_deleted === true)
+            .each((tabGroup) => {
+                const deletedAt = tabGroup.deleted_time ? new Date(tabGroup.deleted_time).getTime() : 0;
+                if (deletedAt && deletedAt <= cutoff && tabGroup.id) expiredIds.push(tabGroup.id);
+            });
+        if (expiredIds.length > 0) {
+            await this.tabGroups.bulkDelete(expiredIds);
+        }
+    }
+
+    async emptyTrash() {
+        const deletedIds: string[] = [];
+        await this.tabGroups
+            .filter((tabGroup) => tabGroup.is_deleted === true)
+            .each((tabGroup) => {
+                if (tabGroup.id) deletedIds.push(tabGroup.id);
+            });
+        if (deletedIds.length > 0) {
+            await this.tabGroups.bulkDelete(deletedIds);
+        }
+    }
+
     /** 查询所有 TabGroup */
     async getAllTabGroups(searchConditions: SearchConditions = {}): Promise<{
         tabGroups: TabGroup[];
@@ -157,6 +216,7 @@ class TabGroupDatabase extends Dexie {
             startTime,
             endTime,
             isStarred,
+            isDeleted,
             pageSize = settings.pageSize,
             pageIndex = 1,
             offset = 0,
@@ -166,6 +226,8 @@ class TabGroupDatabase extends Dexie {
         let querySet = this.tabGroups.orderBy('create_time').reverse();
         if (isStarred === true) querySet = querySet.filter((tabGroup) => tabGroup.is_starred === true);
         if (isStarred === false) querySet = querySet.filter((tabGroup) => tabGroup.is_starred !== true);
+        if (isDeleted === true) querySet = querySet.filter((tabGroup) => tabGroup.is_deleted === true);
+        if (isDeleted === false) querySet = querySet.filter((tabGroup) => tabGroup.is_deleted !== true);
         if (startTime)
             querySet = querySet.filter((tabGroup) => tabGroup.create_time! >= startTime.toDate(getLocalTimeZone()));
         if (endTime)
@@ -218,6 +280,8 @@ class TabGroupDatabase extends Dexie {
             tabs_meta: tabGroup.tabs_meta.map(this.formatTab),
             create_time: tabGroup.create_time ? new Date(tabGroup.create_time) : new Date(),
             update_time: new Date(),
+            is_deleted: tabGroup.is_deleted === true,
+            deleted_time: tabGroup.deleted_time ? new Date(tabGroup.deleted_time) : undefined,
         }));
         await this.tabGroups.bulkPut(data);
     }
@@ -243,13 +307,22 @@ class TabGroupDatabase extends Dexie {
 
         const years: Array<number> = [];
         const endYear = new Date().getFullYear();
-        const startYear = (await querySet.clone().last())?.create_time?.getFullYear() || new Date().getFullYear();
+        const startYear =
+            (
+                await querySet
+                    .clone()
+                    .filter((tabGroup) => tabGroup.is_deleted !== true)
+                    .last()
+            )?.create_time?.getFullYear() || new Date().getFullYear();
         for (let year = startYear; year <= endYear; year++) {
             years.unshift(year);
         }
 
         querySet = querySet.filter(
-            (tabGroup) => tabGroup.create_time! >= startDate && tabGroup.create_time! < addDays(endDate, 1),
+            (tabGroup) =>
+                tabGroup.is_deleted !== true &&
+                tabGroup.create_time! >= startDate &&
+                tabGroup.create_time! < addDays(endDate, 1),
         );
         await querySet.each((tabGroup) => {
             if (!tabGroup.create_time) return;
@@ -320,8 +393,14 @@ class TabGroupDatabase extends Dexie {
     /** 删除分类和关联的 TabGroup 数据 */
     async deleteCategoryAndAssociatedGroups(categoryId: string) {
         return this.transaction('rw', this.categories, this.tabGroups, async () => {
+            const deletedTime = new Date();
+            await this.tabGroups.where('category_id').equals(categoryId).modify({
+                is_deleted: true,
+                deleted_time: deletedTime,
+                category_id: undefined,
+                update_time: deletedTime,
+            });
             await this.categories.delete(categoryId);
-            await this.tabGroups.where('category_id').equals(categoryId).delete();
         });
     }
 

@@ -43,10 +43,12 @@ import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category } from '@/database.ts';
 import { useCategoryStore } from '@/store/category';
 import { useSearchStore } from '@/store/search.ts';
+import { useSettingStore } from '@/store/settings.ts';
 import { Tab, useTabStore } from '@/store/tab.ts';
 
 const categoryStore = useCategoryStore();
 const searchStore = useSearchStore();
+const settingsStore = useSettingStore();
 const tabStore = useTabStore();
 
 onBeforeMount(async () => {
@@ -57,6 +59,7 @@ const { orderedCategories, isLoading: isLoadingCategories } = storeToRefs(catego
 
 const isAllActive = computed(() => tabStore.currentTab === Tab.All && !searchStore.searchConditions.categoryId);
 const isStarredActive = computed(() => tabStore.currentTab === Tab.Starred && !searchStore.searchConditions.categoryId);
+const isTrashActive = computed(() => tabStore.currentTab === Tab.Trash && !searchStore.searchConditions.categoryId);
 const isCategoryActive = (category: Category) => searchStore.searchConditions.categoryId === category.id;
 
 const categoryToDelete = ref<Category | null>(null);
@@ -79,6 +82,11 @@ function handleSelectAll() {
 
 function handleSelectStarred() {
     tabStore.selectStarred();
+    searchStore.updateSearchConditions({ categoryId: undefined }, true);
+}
+
+function handleSelectTrash() {
+    tabStore.selectTrash();
     searchStore.updateSearchConditions({ categoryId: undefined }, true);
 }
 
@@ -130,6 +138,12 @@ async function handleDragEnd() {
                         <SidebarMenuButton :is-active="isStarredActive" @click="handleSelectStarred">
                             <StarIcon />
                             <span>{{ $t('toolBar.starredTab') }}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem v-if="settingsStore.settings.trashEnabled">
+                        <SidebarMenuButton :is-active="isTrashActive" @click="handleSelectTrash">
+                            <TrashIcon />
+                            <span>{{ $t('toolBar.trashTab') }}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Alle",
         "starred": "Favoriten",
         "unstarred": "Keine Favoriten",
+        "deletedStatus": "Löschen",
+        "deletedStatusPlaceholder": "Nicht gelöscht",
+        "deleted": "Gelöscht",
+        "notDeleted": "Nicht gelöscht",
+        "deletedAny": "Alle",
         "popoverTitle": "Suchoptionen",
         "popoverDesc": "Weitere Suchfilter festlegen.",
         "buttonSearch": "Suchen",
@@ -48,6 +53,17 @@
             "title": "Als Startseite festlegen",
             "desc": "Öffnet TabClip automatisch als Startseite bei jedem Browserstart."
         },
+        "trash": {
+            "title": "Papierkorb",
+            "desc": "Gelöschte Gruppen bleiben im Papierkorb und können wiederhergestellt werden."
+        },
+        "trashRetention": {
+            "title": "Aufbewahrung",
+            "selectLabel": "Aufbewahrung",
+            "desc": "Gelöschte Gruppen werden nach dieser Zeit entfernt.",
+            "days": "{days} Tage",
+            "never": "Nie"
+        },
         "pageSize": {
             "title": "Gruppen pro Seite",
             "selectLabel": "Anzahl",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Gefährliche Aktionen",
+            "emptyTrash": "Papierkorb leeren",
             "truncateData": "Alle Daten löschen"
         },
         "moreInfo": {
             "label": "Mehr Info",
             "userGuide": "Benutzerhandbuch",
             "about": "Über & Version"
+        }
+    },
+    "emptyTrash": {
+        "title": "Papierkorb leeren",
+        "descLeft": "Dadurch werden alle Gruppen im Papierkorb endgültig gelöscht. Geben Sie",
+        "descRight": "ein, um zu bestätigen.",
+        "buttonDelete": "Leeren",
+        "buttonCancel": "Abbrechen",
+        "success": {
+            "toastTitle": "Papierkorb geleert",
+            "toastDesc": "Alle Gruppen im Papierkorb wurden gelöscht."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Favoriten",
         "allTabsTab": "Alle",
         "starredTab": "Favoriten",
+        "trashTab": "Papierkorb",
+        "trashTitle": "Papierkorb",
         "groupNum": "{groupNum} Gruppen",
         "tabNum": "{tabNum} Tabs"
     },
@@ -144,6 +174,8 @@
         "total": "{total} Tabs",
         "actions": {
             "delete": "Löschen",
+            "deletePermanently": "Endgültig löschen",
+            "restore": "Wiederherstellen",
             "star": "Favorit",
             "unstar": "Favorit entfernen",
             "lock": "Sperren",

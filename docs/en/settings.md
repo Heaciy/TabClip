@@ -40,6 +40,20 @@ This page will explain the settings items in the extension.
 - Default/Recommended Value: On ✅
 - Configuration Description: Automatically open TabClip as the homepage every time the browser starts. On by default.
 
+## Trash
+
+- Default/Recommended Value: Off ❎
+- Configuration Description: Deleted groups stay in Trash and can be restored. When this is on, Trash appears in the
+  sidebar and the top tabs, and Empty Trash is available under danger operations. When it is off, those entries are
+  hidden, and deleted groups do not appear in All or Starred. Off by default.
+
+## Keep for
+
+- Default/Recommended Value: 30 days
+- Configuration Description: Shown only while Trash is on. Choose 7 days, 30 days, 90 days, or Never. Never leaves
+  deleted groups in place. Otherwise, groups older than the chosen duration are removed when you open the extension or
+  save settings. Turning Trash off does not change this choice.
+
 ## Groups Per Page
 
 - Default/Recommended Value: 10

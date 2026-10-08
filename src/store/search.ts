@@ -7,6 +7,8 @@ export interface SearchConditions {
     startTime?: DateValue;
     endTime?: DateValue;
     isStarred?: boolean;
+    isDeleted?: boolean;
+    matchAnyDeleted?: boolean;
     pageSize?: number;
     pageIndex?: number;
     offset?: number;
@@ -19,15 +21,24 @@ export const useSearchStore = defineStore('search', () => {
         startTime: undefined,
         endTime: undefined,
         isStarred: undefined,
+        isDeleted: undefined,
+        matchAnyDeleted: undefined,
         categoryId: undefined,
     });
     const passivelyRefreshed: Ref<number> = ref(0);
 
-    function isEmpty(options?: { ignoreIsStarred?: boolean }): boolean {
+    function isEmpty(options?: { ignoreIsStarred?: boolean; ignoreIsDeleted?: boolean }): boolean {
         const conditions = searchConditions.value;
         const starActive = !options?.ignoreIsStarred && conditions.isStarred !== undefined;
+        const deletedActive =
+            !options?.ignoreIsDeleted && (conditions.isDeleted === true || !!conditions.matchAnyDeleted);
         return (
-            !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive
+            !conditions.text &&
+            !conditions.startTime &&
+            !conditions.endTime &&
+            !conditions.categoryId &&
+            !starActive &&
+            !deletedActive
         );
     }
 
@@ -46,6 +57,8 @@ export const useSearchStore = defineStore('search', () => {
                 startTime: undefined,
                 endTime: undefined,
                 isStarred: undefined,
+                isDeleted: undefined,
+                matchAnyDeleted: undefined,
                 categoryId: undefined,
             },
         };

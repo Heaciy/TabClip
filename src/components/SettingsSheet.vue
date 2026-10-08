@@ -28,11 +28,15 @@ import {
 } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { db } from '@/database.ts';
+import { useRefreshStore } from '@/store/refreshStore.ts';
 import { defaultSettings, Settings, useSettingStore } from '@/store/settings.ts';
 
 const opened = ref(false);
 const settingsStore = useSettingStore();
+const refreshStore = useRefreshStore();
 const pageSizeChoices = [5, 10, 20, 50, 100];
+const trashRetentionChoices = [7, 30, 90, 0];
 const spaceBewteenTabsChoices = [0, 0.5, 1, 1.5, 2];
 
 const formSchema = toTypedSchema(
@@ -45,6 +49,8 @@ const formSchema = toTypedSchema(
         spaceBetweenTabs: z.number().optional(),
         isStartupPage: z.boolean().optional(),
         storeBrowserGroup: z.boolean().optional(),
+        trashEnabled: z.boolean().optional(),
+        trashRetentionDays: z.number().optional(),
         tabWhitelist: z.string().optional(),
     }),
 );
@@ -66,7 +72,7 @@ const handleOpenChange = (open: boolean) => {
     opened.value = open;
 };
 
-const onSubmit = form.handleSubmit((values) => {
+const onSubmit = form.handleSubmit(async (values) => {
     settingsStore.refreshSettings({
         ...values,
         tabWhitelist: values.tabWhitelist
@@ -74,6 +80,8 @@ const onSubmit = form.handleSubmit((values) => {
             .map((line) => line.trim())
             .filter((line) => line.length > 0),
     });
+    await db.purgeExpiredDeletedGroups();
+    refreshStore.refresh();
     handleOpenChange(false);
 });
 
@@ -212,6 +220,64 @@ defineExpose({ show });
                                         aria-readonly="true"
                                         @update:model-value="handleChange"
                                     />
+                                </FormControl>
+                            </FormItem>
+                        </FormField>
+                        <FormField v-slot="{ value, handleChange }" name="trashEnabled">
+                            <FormItem class="flex flex-row items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <FormLabel class="text-base">
+                                        {{ $t('settings.trash.title') }}
+                                    </FormLabel>
+                                    <FormDescription>
+                                        {{ $t('settings.trash.desc') }}
+                                    </FormDescription>
+                                </div>
+                                <FormControl>
+                                    <Switch :model-value="value" @update:model-value="handleChange" />
+                                </FormControl>
+                            </FormItem>
+                        </FormField>
+                        <FormField
+                            v-show="form.values.trashEnabled"
+                            v-slot="{ componentField }"
+                            name="trashRetentionDays"
+                        >
+                            <FormItem class="flex flex-row items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <FormLabel class="text-base">
+                                        {{ $t('settings.trashRetention.title') }}
+                                    </FormLabel>
+                                    <FormDescription>
+                                        {{ $t('settings.trashRetention.desc') }}
+                                    </FormDescription>
+                                </div>
+                                <FormControl>
+                                    <Select v-bind="componentField">
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue :placeholder="$t('settings.trashRetention.selectLabel')" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>{{
+                                                    $t('settings.trashRetention.selectLabel')
+                                                }}</SelectLabel>
+                                                <SelectItem
+                                                    v-for="days in trashRetentionChoices"
+                                                    :key="days"
+                                                    :value="days"
+                                                >
+                                                    {{
+                                                        days === 0
+                                                            ? $t('settings.trashRetention.never')
+                                                            : $t('settings.trashRetention.days', { days })
+                                                    }}
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
                                 </FormControl>
                             </FormItem>
                         </FormField>

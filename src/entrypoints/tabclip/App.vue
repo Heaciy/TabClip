@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 
 import Navbar from '@/components/Navbar.vue';
 import { Sidebar } from '@/components/sidebar';
@@ -7,6 +7,20 @@ import TabGroupList from '@/components/TabGroupList.vue';
 import Toolbar from '@/components/Toolbar.vue';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
+import { useSettingStore } from '@/store/settings.ts';
+import { Tab, useTabStore } from '@/store/tab.ts';
+
+const settingsStore = useSettingStore();
+const tabStore = useTabStore();
+
+watch(
+    () => settingsStore.settings.trashEnabled,
+    (enabled) => {
+        if (!enabled && tabStore.currentTab === Tab.Trash) {
+            tabStore.selectAll();
+        }
+    },
+);
 
 const pinTab = (tab: Browser.tabs.Tab) => {
     browser.tabs.update(tab.id!, { active: true, pinned: true });

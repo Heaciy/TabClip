@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Tous",
         "starred": "Favoris",
         "unstarred": "Non favoris",
+        "deletedStatus": "Suppression",
+        "deletedStatusPlaceholder": "Non supprimé",
+        "deleted": "Supprimé",
+        "notDeleted": "Non supprimé",
+        "deletedAny": "Tous",
         "popoverTitle": "Filtres de recherche",
         "popoverDesc": "Définir plus de conditions.",
         "buttonSearch": "Rechercher",
@@ -48,6 +53,17 @@
             "title": "Définir comme page de démarrage",
             "desc": "Ouvre automatiquement TabClip comme page d'accueil au lancement du navigateur."
         },
+        "trash": {
+            "title": "Corbeille",
+            "desc": "Les groupes supprimés restent dans la corbeille et peuvent être restaurés."
+        },
+        "trashRetention": {
+            "title": "Conservation",
+            "selectLabel": "Conservation",
+            "desc": "Les groupes supprimés sont effacés après ce délai.",
+            "days": "{days} jours",
+            "never": "Jamais"
+        },
         "pageSize": {
             "title": "Groupes par page",
             "selectLabel": "Taille de la page",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Zone de danger",
+            "emptyTrash": "Vider la corbeille",
             "truncateData": "Supprimer toutes les données"
         },
         "moreInfo": {
             "label": "Plus d'infos",
             "userGuide": "Guide utilisateur",
             "about": "À propos & Version"
+        }
+    },
+    "emptyTrash": {
+        "title": "Vider la corbeille",
+        "descLeft": "Cette action supprimera définitivement tous les groupes de la corbeille. Saisissez",
+        "descRight": "pour confirmer.",
+        "buttonDelete": "Vider",
+        "buttonCancel": "Annuler",
+        "success": {
+            "toastTitle": "Corbeille vidée",
+            "toastDesc": "Tous les groupes de la corbeille ont été supprimés."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Favoris",
         "allTabsTab": "Tout",
         "starredTab": "Favoris",
+        "trashTab": "Corbeille",
+        "trashTitle": "Corbeille",
         "groupNum": "{groupNum} Groupes",
         "tabNum": "{tabNum} Onglets"
     },
@@ -144,6 +174,8 @@
         "total": "{total} Onglets",
         "actions": {
             "delete": "Supprimer",
+            "deletePermanently": "Supprimer définitivement",
+            "restore": "Restaurer",
             "star": "Favori",
             "unstar": "Retirer le favori",
             "lock": "Verrouiller",

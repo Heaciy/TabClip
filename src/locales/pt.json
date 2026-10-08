@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Qualquer",
         "starred": "Favoritos",
         "unstarred": "Não favoritos",
+        "deletedStatus": "Exclusão",
+        "deletedStatusPlaceholder": "Não excluído",
+        "deleted": "Excluído",
+        "notDeleted": "Não excluído",
+        "deletedAny": "Qualquer",
         "popoverTitle": "Filtros de pesquisa",
         "popoverDesc": "Definir mais condições de pesquisa.",
         "buttonSearch": "Pesquisar",
@@ -48,6 +53,17 @@
             "title": "Definir como página inicial",
             "desc": "Abrir o TabClip automaticamente como página inicial ao iniciar o navegador."
         },
+        "trash": {
+            "title": "Lixeira",
+            "desc": "Os grupos excluídos ficam na lixeira e podem ser restaurados."
+        },
+        "trashRetention": {
+            "title": "Retenção",
+            "selectLabel": "Retenção",
+            "desc": "Os grupos excluídos são removidos após este período.",
+            "days": "{days} dias",
+            "never": "Nunca"
+        },
         "pageSize": {
             "title": "Grupos por página",
             "selectLabel": "Tamanho da página",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Zona de perigo",
+            "emptyTrash": "Esvaziar a lixeira",
             "truncateData": "Excluir todos os dados"
         },
         "moreInfo": {
             "label": "Mais informações",
             "userGuide": "Guia do usuário",
             "about": "Sobre e versão"
+        }
+    },
+    "emptyTrash": {
+        "title": "Esvaziar a lixeira",
+        "descLeft": "Isso excluirá permanentemente todos os grupos da lixeira. Digite",
+        "descRight": "para confirmar.",
+        "buttonDelete": "Esvaziar",
+        "buttonCancel": "Cancelar",
+        "success": {
+            "toastTitle": "Lixeira esvaziada",
+            "toastDesc": "Todos os grupos da lixeira foram excluídos."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Favoritos",
         "allTabsTab": "Tudo",
         "starredTab": "Favoritos",
+        "trashTab": "Lixeira",
+        "trashTitle": "Lixeira",
         "groupNum": "{groupNum} Grupos",
         "tabNum": "{tabNum} Abas"
     },
@@ -144,6 +174,8 @@
         "total": "{total} Abas",
         "actions": {
             "delete": "Excluir",
+            "deletePermanently": "Excluir permanentemente",
+            "restore": "Restaurar",
             "star": "Favoritar",
             "unstar": "Remover favorito",
             "lock": "Bloquear",

@@ -10,6 +10,11 @@
         "starStatusPlaceholder": "Любой",
         "starred": "В избранном",
         "unstarred": "Не в избранном",
+        "deletedStatus": "Удаление",
+        "deletedStatusPlaceholder": "Не удалено",
+        "deleted": "Удалено",
+        "notDeleted": "Не удалено",
+        "deletedAny": "Любой",
         "popoverTitle": "Параметры поиска",
         "popoverDesc": "Дополнительные условия поиска.",
         "buttonSearch": "Найти",
@@ -48,6 +53,17 @@
             "title": "Сделать стартовой страницей",
             "desc": "Автоматически открывать TabClip как домашнюю страницу при запуске браузера."
         },
+        "trash": {
+            "title": "Корзина",
+            "desc": "Удалённые группы остаются в корзине, их можно восстановить."
+        },
+        "trashRetention": {
+            "title": "Срок хранения",
+            "selectLabel": "Срок хранения",
+            "desc": "Удалённые группы удаляются по истечении этого срока.",
+            "days": "{days} дн.",
+            "never": "Не очищать"
+        },
         "pageSize": {
             "title": "Групп на странице",
             "selectLabel": "Размер страницы",
@@ -75,12 +91,24 @@
         },
         "dangerOperations": {
             "label": "Опасная зона",
+            "emptyTrash": "Очистить корзину",
             "truncateData": "Удалить все данные"
         },
         "moreInfo": {
             "label": "Информация",
             "userGuide": "Руководство",
             "about": "О программе"
+        }
+    },
+    "emptyTrash": {
+        "title": "Очистить корзину",
+        "descLeft": "Это навсегда удалит все группы в корзине. Введите",
+        "descRight": ", чтобы подтвердить.",
+        "buttonDelete": "Очистить",
+        "buttonCancel": "Отмена",
+        "success": {
+            "toastTitle": "Корзина очищена",
+            "toastDesc": "Все группы в корзине удалены."
         }
     },
     "truncateData": {
@@ -135,6 +163,8 @@
         "starredTitle": "Избранное",
         "allTabsTab": "Все",
         "starredTab": "Избранное",
+        "trashTab": "Корзина",
+        "trashTitle": "Корзина",
         "groupNum": "{groupNum} Групп",
         "tabNum": "{tabNum} Вкладок"
     },
@@ -144,6 +174,8 @@
         "total": "{total} Вкладок",
         "actions": {
             "delete": "Удалить",
+            "deletePermanently": "Удалить навсегда",
+            "restore": "Восстановить",
             "star": "В избранное",
             "unstar": "Убрать из избранного",
             "lock": "Заблокировать",
