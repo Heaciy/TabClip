@@ -43,9 +43,11 @@ import { useEditCategoryDialog } from '@/composables/useEditCategoryDialog.ts';
 import { Category } from '@/database.ts';
 import { useCategoryStore } from '@/store/category';
 import { useSearchStore } from '@/store/search.ts';
+import { Tab, useTabStore } from '@/store/tab.ts';
 
 const categoryStore = useCategoryStore();
 const searchStore = useSearchStore();
+const tabStore = useTabStore();
 
 onBeforeMount(async () => {
     await categoryStore.loadCategories();
@@ -53,12 +55,8 @@ onBeforeMount(async () => {
 
 const { orderedCategories, isLoading: isLoadingCategories } = storeToRefs(categoryStore);
 
-const isAllActive = computed(
-    () => !searchStore.searchConditions.starredOnly && !searchStore.searchConditions.categoryId,
-);
-const isStarredActive = computed(
-    () => !!searchStore.searchConditions.starredOnly && !searchStore.searchConditions.categoryId,
-);
+const isAllActive = computed(() => tabStore.currentTab === Tab.All && !searchStore.searchConditions.categoryId);
+const isStarredActive = computed(() => tabStore.currentTab === Tab.Starred && !searchStore.searchConditions.categoryId);
 const isCategoryActive = (category: Category) => searchStore.searchConditions.categoryId === category.id;
 
 const categoryToDelete = ref<Category | null>(null);
@@ -75,11 +73,18 @@ function handleAddCategory() {
 }
 
 function handleSelectAll() {
-    searchStore.updateSearchConditions({ starredOnly: false, categoryId: undefined }, true);
+    tabStore.selectAll();
+    searchStore.updateSearchConditions({ categoryId: undefined }, true);
 }
 
 function handleSelectStarred() {
-    searchStore.updateSearchConditions({ starredOnly: true, categoryId: undefined }, true);
+    tabStore.selectStarred();
+    searchStore.updateSearchConditions({ categoryId: undefined }, true);
+}
+
+function handleSelectCategory(category: Category) {
+    if (!category.id) return;
+    searchStore.updateSearchConditions({ categoryId: category.id }, true);
 }
 
 function handleEditCategory(category: Category) {
@@ -155,11 +160,7 @@ async function handleDragEnd() {
                             <SidebarMenuButton
                                 as-child
                                 :is-active="isCategoryActive(category)"
-                                @click="
-                                    () => {
-                                        searchStore.updateSearchConditions({ categoryId: category.id }, true);
-                                    }
-                                "
+                                @click="handleSelectCategory(category)"
                             >
                                 <div class="flex">
                                     <FolderIcon />

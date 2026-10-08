@@ -44,11 +44,11 @@ const dialogDesc = computed(() => {
 const handleDeleteCategory = async () => {
     if (props.categoryToDelete) {
         await categoryStore.deleteCategory(props.categoryToDelete.id!, props.deleteTabGroup);
+        if (!searchStore.searchConditions.categoryId) {
+            refreshStore.refresh();
+        }
     }
     isDialogOpened.value = false;
-    if (!searchStore.searchConditions.categoryId) {
-        refreshStore.refresh();
-    }
 };
 </script>
 

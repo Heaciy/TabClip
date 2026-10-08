@@ -6,7 +6,7 @@ export interface SearchConditions {
     text?: string;
     startTime?: DateValue;
     endTime?: DateValue;
-    starredOnly?: boolean;
+    isStarred?: boolean;
     pageSize?: number;
     pageIndex?: number;
     offset?: number;
@@ -18,13 +18,17 @@ export const useSearchStore = defineStore('search', () => {
         text: undefined,
         startTime: undefined,
         endTime: undefined,
+        isStarred: undefined,
         categoryId: undefined,
     });
     const passivelyRefreshed: Ref<number> = ref(0);
 
-    function isEmpty(): boolean {
+    function isEmpty(options?: { ignoreIsStarred?: boolean }): boolean {
         const conditions = searchConditions.value;
-        return !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId;
+        const starActive = !options?.ignoreIsStarred && conditions.isStarred !== undefined;
+        return (
+            !conditions.text && !conditions.startTime && !conditions.endTime && !conditions.categoryId && !starActive
+        );
     }
 
     function updateSearchConditions(newConditions: SearchConditions, passivelyRefresh: boolean = false) {
@@ -41,6 +45,7 @@ export const useSearchStore = defineStore('search', () => {
                 text: undefined,
                 startTime: undefined,
                 endTime: undefined,
+                isStarred: undefined,
                 categoryId: undefined,
             },
         };
