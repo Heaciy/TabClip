@@ -10,9 +10,11 @@ import {
 } from "reka-ui"
 import { cn } from "@/lib/utils"
 
-const props = defineProps<DropdownMenuSubTriggerProps & { class?: HTMLAttributes["class"], inset?: boolean }>()
+const props = withDefaults(defineProps<DropdownMenuSubTriggerProps & { class?: HTMLAttributes["class"], inset?: boolean, showChevron?: boolean }>(), {
+  showChevron: true,
+})
 
-const delegatedProps = reactiveOmit(props, "class", "inset")
+const delegatedProps = reactiveOmit(props, "class", "inset", "showChevron")
 const forwardedProps = useForwardProps(delegatedProps)
 </script>
 
@@ -26,6 +28,6 @@ const forwardedProps = useForwardProps(delegatedProps)
     )"
   >
     <slot />
-    <ChevronRight class="ml-auto size-4" />
+    <ChevronRight v-if="props.showChevron" class="ml-auto size-4" />
   </DropdownMenuSubTrigger>
 </template>

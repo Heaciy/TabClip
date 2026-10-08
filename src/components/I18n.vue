@@ -11,9 +11,14 @@ import {
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
     DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { availableLocales } from '@/locales';
+
+withDefaults(defineProps<{ variant?: 'icon' | 'sub' }>(), { variant: 'icon' });
 
 const { locale } = useI18n();
 const currentLang = ref(locale.value);
@@ -34,7 +39,7 @@ watch(currentLang, () => {
 </script>
 
 <template>
-    <DropdownMenu>
+    <DropdownMenu v-if="variant === 'icon'">
         <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon">
                 <LanguagesIcon />
@@ -50,4 +55,20 @@ watch(currentLang, () => {
             </DropdownMenuRadioGroup>
         </DropdownMenuContent>
     </DropdownMenu>
+    <DropdownMenuSub v-else>
+        <DropdownMenuSubTrigger
+            class="[&_svg]:text-muted-foreground hover:[&_svg]:text-inherit data-[state=open]:[&_svg]:text-inherit"
+            :show-chevron="false"
+        >
+            <span class="mr-auto">{{ $t('i18n.label') }}</span>
+            <LanguagesIcon class="size-4" />
+        </DropdownMenuSubTrigger>
+        <DropdownMenuSubContent class="w-56">
+            <DropdownMenuRadioGroup v-model="currentLang">
+                <DropdownMenuRadioItem v-for="(label, key) in availableLocales" :key="key" :value="key">
+                    {{ label }}
+                </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+        </DropdownMenuSubContent>
+    </DropdownMenuSub>
 </template>

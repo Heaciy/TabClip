@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { toast } from 'vue-sonner';
 import {
     CopyIcon,
+    DotsVerticalIcon,
     LockClosedIcon,
     LockOpen1Icon,
     OpenInNewWindowIcon,
@@ -12,13 +13,24 @@ import {
     StarIcon,
 } from '@radix-icons/vue';
 import { format } from 'date-fns';
-import { CalendarClockIcon, ChartBarBigIcon, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
+import { CalendarClockIcon, ChartBarBigIcon, Check, Folder, TrashIcon, XIcon } from 'lucide-vue-next';
 import { AcceptableValue, SelectItem as SelectItemReka, SelectItemText, SelectTrigger } from 'reka-ui';
 
 import GroupName from './GroupName.vue';
 import HighlightText from './HighlightText.vue';
 import TabIcon from './TabIcon.vue';
 import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     Select,
     SelectContent,
@@ -169,10 +181,16 @@ const handleSelectChange = (val: AcceptableValue) => {
         selectedValue.value = previousValue; // 保持值不变
         openEditCategoryDialog(undefined, bindNewCategoryToGroup);
         return;
+    } else {
+        selectedValue.value = val;
     }
     previousValue = selectedValue.value;
     emits('update-group', { category_id: selectedValue.value });
 };
+
+const selectedCategoryName = computed(
+    () => categoryStore.orderedCategories.find((category) => category.id === selectedValue.value)?.name,
+);
 
 const bindNewCategoryToGroup = (category: Category) => {
     emits('update-group', { category_id: category.id });
@@ -183,9 +201,10 @@ const bindNewCategoryToGroup = (category: Category) => {
 
 <template>
     <div class="m-5">
-        <div class="mb-2 flex flex-row gap-5.5 align-middle">
-            <div class="flex items-center gap-8">
+        <div class="@container mb-2 flex min-w-0 flex-row items-center gap-5.5">
+            <div class="flex min-w-0 items-center gap-8">
                 <GroupName
+                    class="min-w-0"
                     :name="props.tabGroup.name"
                     :search-text="props.searchText"
                     @update-name="
@@ -196,14 +215,14 @@ const bindNewCategoryToGroup = (category: Category) => {
                 >
                 </GroupName>
 
-                <div class="text-muted-foreground flex items-center gap-2">
+                <div class="text-muted-foreground hidden shrink-0 items-center gap-2 @min-[26rem]:flex">
                     <CalendarClockIcon class="size-4 shrink-0" />
                     <span class="text-muted-foreground inline-flex items-center whitespace-nowrap">
                         {{ format(props.tabGroup.create_time!, 'yyyy/MM/dd HH:mm:ss') }}</span
                     >
                 </div>
 
-                <div class="text-muted-foreground flex items-center gap-2">
+                <div class="text-muted-foreground hidden shrink-0 items-center gap-2 @min-[36rem]:flex">
                     <ChartBarBigIcon class="size-4 shrink-0" />
                     <span class="text-muted-foreground inline-flex items-center whitespace-nowrap">
                         {{ $t('tabGroup.total', { total: props.tabGroup.tabs_meta.length }) }}
@@ -212,7 +231,7 @@ const bindNewCategoryToGroup = (category: Category) => {
             </div>
 
             <!-- buttons -->
-            <div class="flex gap-3">
+            <div class="hidden shrink-0 gap-3 @min-[60rem]:flex">
                 <Button :disabled="props.tabGroup.is_locked" variant="ghost" size="icon" @click="$emit('remove-group')">
                     <TrashIcon class="shrink-0" />
                 </Button>
@@ -279,6 +298,73 @@ const bindNewCategoryToGroup = (category: Category) => {
                     </SelectContent>
                 </Select>
             </div>
+            <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                    <Button variant="ghost" size="icon" class="shrink-0 @min-[60rem]:hidden">
+                        <DotsVerticalIcon />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-56" align="end">
+                    <DropdownMenuItem
+                        variant="destructive"
+                        :disabled="props.tabGroup.is_locked"
+                        @click="$emit('remove-group')"
+                    >
+                        <span class="mr-auto">{{ $t('tabGroup.actions.delete') }}</span>
+                        <TrashIcon />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="$emit('update-group', { is_starred: !props.tabGroup.is_starred })">
+                        <span class="mr-auto">{{
+                            props.tabGroup.is_starred ? $t('tabGroup.actions.unstar') : $t('tabGroup.actions.star')
+                        }}</span>
+                        <StarFilledIcon v-if="props.tabGroup.is_starred" />
+                        <StarIcon v-else />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="$emit('update-group', { is_locked: !props.tabGroup.is_locked })">
+                        <span class="mr-auto">{{
+                            props.tabGroup.is_locked ? $t('tabGroup.actions.unlock') : $t('tabGroup.actions.lock')
+                        }}</span>
+                        <LockClosedIcon v-if="props.tabGroup.is_locked" />
+                        <LockOpen1Icon v-else />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="openTabGroup(tabGroup, settingStore.settings.openGroupInNewWindow)">
+                        <span class="mr-auto">{{ $t('tabGroup.actions.open') }}</span>
+                        <OpenInNewWindowIcon />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="copyTabGroup(tabGroup)">
+                        <span class="mr-auto">{{ $t('tabGroup.actions.copy') }}</span>
+                        <CopyIcon />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger
+                            class="[&_svg]:text-muted-foreground data-[state=open]:[&_svg]:text-inherit hover:[&_svg]:text-inherit"
+                            :show-chevron="false"
+                        >
+                            <span class="mr-auto truncate">{{
+                                selectedCategoryName || $t('tabGroup.actions.categorySection')
+                            }}</span>
+                            <Folder class="size-4" />
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent class="w-48">
+                            <ScrollArea class="max-h-48">
+                                <DropdownMenuItem
+                                    v-for="category in categoryStore.orderedCategories"
+                                    :key="category.id"
+                                    @click="handleSelectChange(category.id!)"
+                                >
+                                    <span class="mr-auto truncate">{{ category.name }}</span>
+                                    <Check v-if="selectedValue === category.id" class="size-4" />
+                                </DropdownMenuItem>
+                            </ScrollArea>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem @click="handleSelectChange('ADD_NEW_CATEGORY')">
+                                <span class="mr-auto">{{ $t('category.quickActions.add') }}</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
         <VueDraggable
             v-model="tabs"
@@ -293,7 +379,7 @@ const bindNewCategoryToGroup = (category: Category) => {
         >
             <div v-for="tab in tabs" :key="tab.id" class="group flex items-center gap-2">
                 <button
-                    class="text-muted-foreground hover:text-foreground invisible hidden items-center opacity-0 transition-[opacity,colors] duration-200 ease-in-out group-hover:visible group-hover:opacity-100 md:flex"
+                    class="text-muted-foreground hover:text-foreground invisible flex items-center opacity-0 transition-[opacity,colors] duration-200 ease-in-out group-hover:visible group-hover:opacity-100"
                     :style="{ visibility: props.tabGroup.is_locked ? 'hidden' : 'visible' }"
                     @click="removeTab(tab.id!)"
                 >

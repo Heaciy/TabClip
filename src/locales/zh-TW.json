@@ -15,6 +15,9 @@
         "buttonSearch": "搜尋",
         "buttonCancel": "取消"
     },
+    "navbar": {
+        "theme": "主題"
+    },
     "i18n": {
         "label": "選擇語言"
     },
@@ -139,6 +142,16 @@
         "unnamedGroup": "未命名群組",
         "inputGroupName": "輸入名稱",
         "total": "{total} 個分頁",
+        "actions": {
+            "delete": "刪除",
+            "star": "收藏",
+            "unstar": "取消收藏",
+            "lock": "鎖定",
+            "unlock": "解鎖",
+            "open": "開啟",
+            "copy": "複製連結",
+            "categorySection": "設定分類"
+        },
         "copyLinks": {
             "toastTitle": "複製連結成功",
             "toastDesc": "成功複製 {total} 個分頁連結"

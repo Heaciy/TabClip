@@ -15,6 +15,9 @@
         "buttonSearch": "Rechercher",
         "buttonCancel": "Annuler"
     },
+    "navbar": {
+        "theme": "Thème"
+    },
     "i18n": {
         "label": "Choisir la langue"
     },
@@ -139,6 +142,16 @@
         "unnamedGroup": "Groupe sans nom",
         "inputGroupName": "Saisir un nom",
         "total": "{total} Onglets",
+        "actions": {
+            "delete": "Supprimer",
+            "star": "Favori",
+            "unstar": "Retirer le favori",
+            "lock": "Verrouiller",
+            "unlock": "Déverrouiller",
+            "open": "Ouvrir",
+            "copy": "Copier les liens",
+            "categorySection": "Définir la catégorie"
+        },
         "copyLinks": {
             "toastTitle": "Liens copiés",
             "toastDesc": "{total} liens copiés dans le presse-papiers."

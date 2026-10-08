@@ -84,6 +84,12 @@ const doReset = () => {
 const doRestoreDefaults = () => {
     form.resetForm({ values: formatSettings(defaultSettings) });
 };
+
+function show() {
+    handleOpenChange(true);
+}
+
+defineExpose({ show });
 </script>
 
 <template>
