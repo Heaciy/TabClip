@@ -6,7 +6,7 @@ import { db, type Tab, type TabGroup } from '@/database.ts';
 import { i18n } from '@/locales';
 import { useCategoryStore } from '@/store/category';
 import { useRefreshStore } from '@/store/refreshStore';
-import { useSettingStore } from '@/store/settings.ts';
+import { type Settings, useSettingStore } from '@/store/settings.ts';
 
 export function useImport() {
     const isImporting = ref<boolean>(false);
@@ -52,7 +52,8 @@ export function useImport() {
             const data = JSON.parse(jsonStr);
             importProgress.value = 10;
 
-            let appType, tabGroups, categories, settings;
+            let appType, tabGroups, categories;
+            let settings: Partial<Settings> | undefined;
 
             if (data.state?.tabGroups) {
                 appType = 'Onetab';
@@ -61,13 +62,15 @@ export function useImport() {
                 appType = 'TabClip';
                 tabGroups = data.tabGroups;
                 categories = data.categories || [];
-                settings = data.settings || {};
+                settings = data.settings;
             } else {
                 throw new Error('File format error');
             }
 
             await db.bulkPutCategories(categories);
-            settingsStore.refreshSettings(settings);
+            if (settings) {
+                settingsStore.refreshSettings(settings);
+            }
             const categoryIds = new Set((await db.getAllCategories()).map((category) => category.id));
 
             const pageSize = 100;

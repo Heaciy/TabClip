@@ -1,4 +1,4 @@
-import { type Ref, ref, watch } from 'vue';
+import { type Ref, ref, toRaw, watch } from 'vue';
 import { defineStore } from 'pinia';
 
 const blankTabs = ['about:blank', 'about:newtab', 'about:home', 'chrome://newtab', 'edge://newtab'];
@@ -37,14 +37,27 @@ function resolveTrashRetentionDays(settings: Settings): number {
     return settings.trashRetentionDays ?? DEFAULT_TRASH_RETENTION_DAYS;
 }
 
+function normalizeTabWhitelist(value: unknown): string[] {
+    if (Array.isArray(value)) {
+        return value.filter((item): item is string => typeof item === 'string');
+    }
+    return [...blankTabs];
+}
+
+function plainSettings(settings: Settings): Settings {
+    const plain = JSON.parse(JSON.stringify(toRaw(settings))) as Settings;
+    plain.tabWhitelist = normalizeTabWhitelist(plain.tabWhitelist);
+    return plain;
+}
+
 async function loadSettings(): Promise<Settings> {
     const { settings: rawSettings } = await browser.storage.local.get('settings');
     try {
         const storedSettings: Partial<Settings> =
             typeof rawSettings === 'string' ? JSON.parse(rawSettings) : rawSettings;
-        return { ...defaultSettings, ...storedSettings };
+        return plainSettings({ ...defaultSettings, ...storedSettings });
     } catch {
-        return defaultSettings;
+        return plainSettings(defaultSettings);
     }
 }
 
@@ -60,12 +73,12 @@ export const useSettingStore = defineStore('setting', () => {
     watch(settings, async (_newSettings) => {
         // 只有在加载完成后才保存设置，避免覆盖原始设置
         if (isLoaded.value) {
-            await browser.storage.local.set({ settings: toRaw(settings.value) });
+            await browser.storage.local.set({ settings: plainSettings(settings.value) });
         }
     });
 
-    function refreshSettings(newSettings = {}) {
-        settings.value = { ...settings.value, ...newSettings };
+    function refreshSettings(newSettings: Partial<Settings> = {}) {
+        settings.value = plainSettings({ ...toRaw(settings.value), ...newSettings });
     }
 
     return {

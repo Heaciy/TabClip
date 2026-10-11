@@ -4,6 +4,7 @@ import { toast } from 'vue-sonner';
 import { Category, db, type TabGroup } from '@/database.ts';
 import { i18n } from '@/locales';
 import { ORDERED_CATEGORIES } from '@/store/category';
+import { loadSettings } from '@/store/settings';
 
 export function useExport() {
     const isExporting = ref(false);
@@ -53,8 +54,7 @@ export function useExport() {
                 async start(controller) {
                     try {
                         // 写入JSON开头
-                        const rawSettings = await browser.storage.local.get('settings');
-                        const settings = rawSettings.settings || {};
+                        const settings = await loadSettings();
                         const rawCategories = await browser.storage.local.get(ORDERED_CATEGORIES);
                         const categories = (rawCategories[ORDERED_CATEGORIES] as Category[]) || [];
                         controller.enqueue(
