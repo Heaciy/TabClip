@@ -219,7 +219,7 @@ class TabGroupDatabase extends Dexie {
             isDeleted,
             pageSize = settings.pageSize,
             pageIndex = 1,
-            offset = 0,
+            offset,
             categoryId,
         } = searchConditions;
 
